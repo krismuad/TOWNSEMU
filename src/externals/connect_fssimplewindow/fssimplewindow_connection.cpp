@@ -14,6 +14,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 << LICENSE */
 #include <stdio.h>
 
+#include <algorithm>			//muad ( for std::min )
+
 #include "fssimplewindow.h"
 #include "fssimplewindow_connection.h"
 
