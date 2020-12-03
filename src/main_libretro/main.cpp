@@ -32,143 +32,98 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 //outside_word_retroarch wrapper ( better else where in a own file )
 #include "outside_world.h"
 #include "yssimplesound.h"
-//#include <vector>
-//#include <algorithm>			//muad ( for std::min )
-
 
 
 /*
 Tsugaru libretro port : muad
 date : 20201127
 
-https://github.com/libretro
-http://www.retroarch.com/ and https://www.libretro.com/index.php/api/
 
 
 Notes :
-I focused on not modified other file. 
-So i had to take part of code from some parts of your code to put in main.cpp
+I had to take part of code from some parts of your code to put in main.cpp
+At least in windows, add #include <algorithm>	if compile error for std::min
 
+
+Port Status :
 Emulation: seems slower
-Video : visual error ( in palette ? )
-Sound : seems ok
-Gamepad : ok ( I guess - only tested from keyboard )
+Video : ok
+Sound :  ok
+Gamepad : ok ( second gamepad isn't working )
 Mouse : ok
+keyboard : ok 
 
 
-main.cpp
-libretro.h
+ToDo:
+support iso and fd at the same time.
 
 
 
-https://github.com/captainys/TOWNSEMU
 
-cd TOWNSEMU-master
-mkdir build
-cd build
-cmake ../src -DCMAKE_GENERATOR_PLATFORM=x64
 
-Open Tsugaru.sln with MS Visual Studio ( I use MS VS 2017 )
 
-Select Tsugaru_CUI project
-for both : release and debug
-Project->Settings->
-General : Extension : ".exe" -> ".dll"
-General : Type : "Application .exe" -> "Dynamic link Library .dll"
-General : Target Name : "libretro_tsugaru.dll"
-Link Editor : Input :
-( For Release )
-..\towns\Release\towns.lib
-command\Release\townscommand.lib
-argv\Release\townsargv.lib
-..\towns\render\Release\townsrender.lib
-..\towns\outside_world\Release\outside_world.lib
-..\lineparser\Release\lineParser.lib
-..\externals\yspng\Release\yspng.lib
-..\diskimg\Release\diskimg.lib
-..\towns\cdrom\Release\townscdrom.lib
-..\towns\sound\Release\townssound.lib
-..\towns\gameport\Release\townsgameport.lib
-..\towns\timer\Release\townstimer.lib
-..\towns\memory\Release\townsmem.lib
-..\towns\keyboard\Release\townskeyboard.lib
-..\towns\rtc\Release\townsrtc.lib
-..\towns\pic\Release\townspic.lib
-..\towns\dmac\Release\townsdmac.lib
-..\towns\crtc\Release\townscrtc.lib
-..\towns\sprite\Release\townssprite.lib
-..\towns\fdc\Release\townsfdc.lib
-..\towns\scsi\Release\townsscsi.lib
-..\towns\serialport\Release\townsserial.lib
-..\towns\vndrv\Release\townsvndrv.lib
-..\towns\eventlog\Release\townseventlog.lib
-..\ym2612\Release\ym2612.lib
-..\rf5c68\Release\rf5c68.lib
-..\externals\d77\Release\d77.lib
-..\discimg\Release\discimg.lib
-..\i8251\Release\i8251.lib
-..\miscutil\Release\miscutil.lib
-..\cpu\Release\cpu.lib
-..\ramrom\Release\ramrom.lib
-..\inout\Release\inout.lib
-..\vmbase\Release\vmbase.lib
-..\device\Release\device.lib
-..\osdependent\filesys\Release\filesys.lib
-..\towns\townsdef\Release\townsdef.lib
-..\cheapmath\Release\cheapmath.lib
-..\cpputil\Release\cpputil.lib
-..\externals\fssimplewindow\src\Release\fssimplenowindow.lib
-..\osdependent\gamepad\Release\ysgamepad.lib
-..\externals\yssimplesound\src\windows_dsound\Release\yssimplesound_dsound.lib
-..\externals\yssimplesound\src\Release\yssimplesound.lib
+File RetroArch\info\tsugaru_libretro.info
 
-( For Debug  )
-..\towns\Debug\towns.lib
-command\Debug\townscommand.lib
-argv\Debug\townsargv.lib
-..\towns\render\Debug\townsrender.lib
-..\towns\outside_world\Debug\outside_world.lib
-..\lineparser\Debug\lineParser.lib
-..\externals\yspng\Debug\yspng.lib
-..\diskimg\Debug\diskimg.lib
-..\towns\cdrom\Debug\townscdrom.lib
-..\towns\sound\Debug\townssound.lib
-..\towns\gameport\Debug\townsgameport.lib
-..\towns\timer\Debug\townstimer.lib
-..\towns\memory\Debug\townsmem.lib
-..\towns\keyboard\Debug\townskeyboard.lib
-..\towns\rtc\Debug\townsrtc.lib
-..\towns\pic\Debug\townspic.lib
-..\towns\dmac\Debug\townsdmac.lib
-..\towns\crtc\Debug\townscrtc.lib
-..\towns\sprite\Debug\townssprite.lib
-..\towns\fdc\Debug\townsfdc.lib
-..\towns\scsi\Debug\townsscsi.lib
-..\towns\serialport\Debug\townsserial.lib
-..\towns\vndrv\Debug\townsvndrv.lib
-..\towns\eventlog\Debug\townseventlog.lib
-..\ym2612\Debug\ym2612.lib
-..\rf5c68\Debug\rf5c68.lib
-..\externals\d77\Debug\d77.lib
-..\discimg\Debug\discimg.lib
-..\i8251\Debug\i8251.lib
-..\miscutil\Debug\miscutil.lib
-..\cpu\Debug\cpu.lib
-..\ramrom\Debug\ramrom.lib
-..\inout\Debug\inout.lib
-..\vmbase\Debug\vmbase.lib
-..\device\Debug\device.lib
-..\osdependent\filesys\Debug\filesys.lib
-..\towns\townsdef\Debug\townsdef.lib
-..\cheapmath\Debug\cheapmath.lib
-..\cpputil\Debug\cpputil.lib
-..\externals\fssimplewindow\src\Debug\fssimplenowindow.lib
-..\externals\yssimplesound\src\windows_dsound\Debug\yssimplesound_dsound.lib
-..\externals\yssimplesound\src\Debug\yssimplesound.lib
+# Software Information
+display_name = "Fujitsu FM TOWN (Tsugaru)"
+authors = "CaptainYS"
+supported_extensions = "iso|bin|cue"
+corename = "tsugaru_libretro"
+categories = "Emulator"
+license = "BSD 3-Clause 'New' or 'Revised' License"
+permissions = ""
+display_version = "v20201126"
 
--->> GENERATE SOLUTION
+# Hardware Information
+manufacturer = "Fujitsu"
+systemname = "FM TOWNS"
+systemid = "FM TOWNS"
 
-add #include <algorithm>	if compile error for std::min
+# Libretro Features
+database = "FM TOWNS"
+supports_no_game = "false"
+savestate = "false"
+savestate_features = "basic"
+cheats = "false"
+input_descriptors = "true"
+memory_descriptors = "false"
+libretro_saves = "false"
+core_options = "true"
+load_subsystem = "false"
+hw_render = "false"
+needs_fullpath = "true"
+disk_control = "false"
+is_experimental = "false"
+
+# BIOS/Firmware
+firmware_count = 5
+
+firmware0_desc = "FMT_DIC.ROM (BIOS)"
+firmware0_path = "FMT_DIC.ROM"
+firmware0_opt = "false"
+notes = "(!) FMT_DIC.ROM (md5): 8fa4e553f28cfc0c30a0a1e589799942"
+
+firmware1_desc = "FMT_DOS.ROM (BIOS)"
+firmware1_path = "FMT_DOS.ROM"
+firmware1_opt = "false"
+notes = "(!) FMT_DOS.ROM (md5): 0585b19930d4a7f4c71bcc8a33746588"
+
+firmware2_desc = "FMT_F20.ROM (BIOS)"
+firmware2_path = "FMT_F20.ROM"
+firmware2_opt = "false"
+notes = "(!) FMT_F20.ROM (md5): ac0c7021e9bf48ca84b51ab651169a88"
+
+firmware3_desc = "FMT_FNT.ROM (BIOS)"
+firmware3_path = "FMT_FNT.ROM"
+firmware3_opt = "false"
+notes = "(!) FMT_FNT.ROM (md5): b91300e55b70227ce98b59c5f02fa8dd"
+
+firmware4_desc = "FMT_SYS.ROM (BIOS)"
+firmware4_path = "FMT_SYS.ROM"
+firmware4_opt = "false"
+notes = "(!) FMT_SYS.ROM (md5): 86fb6f7280689259f0ca839dd3dd6cde"
+
+End File RetroArch\info\tsugaru_libretro.info
 
 */
 
@@ -185,7 +140,6 @@ retro_audio_sample_t audio_cb;
 retro_audio_sample_batch_t audio_batch_cb;
 retro_input_poll_t input_poll_cb;
 retro_input_state_t input_state_cb;
-
 
 
 
@@ -273,8 +227,6 @@ public:
 	FsRetroArchConnection();
 	~FsRetroArchConnection();
 
-	//std::vector <struct YsGamePadReading> gamePads, prevGamePads;
-
 	// For mouse emulation by pad digital axes.
 	int mouseDX = 0, mouseDY = 0;
 
@@ -330,8 +282,8 @@ public:
 
 FsRetroArchConnection::FsRetroArchConnection()
 {
-	FSKEYtoTownsKEY = new unsigned int[RETROK_LAST/*FSKEY_NUM_KEYCODE*/];
-	FSKEYState = new unsigned int[RETROK_LAST/*FSKEY_NUM_KEYCODE*/];
+	FSKEYtoTownsKEY = new unsigned int[RETROK_LAST];
+	FSKEYState = new unsigned int[RETROK_LAST];
 
 	SetKeyboardMode(TOWNS_KEYBOARD_MODE_DIRECT);
 	SetKeyboardLayout(KEYBOARD_LAYOUT_US);
@@ -411,9 +363,6 @@ int FsRetroArchConnection::FsGetKeyState(int fsKeyCode)
 	{
 		winY0 = 48;
 	}
-
-
-	//FsPollDevice();    //muad: todo
 
 
 	soundPlayer.Start();
@@ -696,62 +645,10 @@ void FsRetroArchConnection::PollGamePads(void) {  }
 }
 
 
-// Uselesss, keep for Status update code
-/* virtual */ void FsRetroArchConnection::Render(const TownsRender::Image &img)
-{
-	/*
-	int winWid, winHei;
-	FsGetWindowSize(winWid, winHei);
+// 
+/* virtual */ void FsRetroArchConnection::Render(const TownsRender::Image &img) { }
 
-	if (true == autoScaling)
-	{
-		if (0<img.wid && 0<img.hei)
-		{
-			unsigned int scaleX = 100 * winWid / img.wid;
-			unsigned int scaleY = 100 * (winHei - STATUS_HEI) / img.hei;
-			this->scaling = std::min(scaleX, scaleY);
-		}
-	}
-	else
-	{
-		if (this->winWid != img.wid || this->winHei != img.hei)
-		{
-			this->winWid = img.wid;
-			this->winHei = img.hei;
-			sinceLastResize = 10;
-		}
-		else if (0<sinceLastResize)
-		{
-			--sinceLastResize;
-			if (0 == sinceLastResize)
-			{
-				//FsResizeWindow(this->winWid*scaling / 100, this->winHei*scaling / 100 + STATUS_HEI);
-			}
-		}
-	}
 
-	unsigned int renderWid = img.wid*this->scaling / 100;
-	unsigned int renderHei = img.hei*this->scaling / 100;
-	this->dx = (renderWid<winWid ? (winWid - renderWid) / 2 : 0);
-	this->dy = (renderHei<(winHei - STATUS_HEI) ? (winHei - STATUS_HEI - renderHei) / 2 : 0);
-	
-	glClear(GL_COLOR_BUFFER_BIT);
-	glViewport(0, 0, winWid, winHei);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0.0f, float(winWid), float(winHei), 0.0f, -1, 1);
-
-	glPixelZoom((float)scaling / 100.0f, (float)scaling / 100.0f);
-	glRasterPos2i(this->dx, (img.hei*scaling / 100) + dy - 1);
-	glDrawPixels(img.wid, img.hei, GL_RGBA, GL_UNSIGNED_BYTE, img.rgba);
-
-	glRasterPos2i(0, winHei - 1);
-	glPixelZoom(1, 1);
-	glDrawPixels(STATUS_WID, STATUS_HEI, GL_RGBA, GL_UNSIGNED_BYTE, statusBitmap);
-	
-	FsSwapBuffers();
-	*/
-}
 /* virtual */ bool FsRetroArchConnection::ImageNeedsFlip(void)
 {
 	return true;  // OpenGL does require flip.
