@@ -1186,10 +1186,16 @@ void CheckImageReady(FMTowns &towns, Outside_World &world)
 
 
 			//  Not so bad - Only displayed when accessed.
-			//	STATUS_WID=640, STATUS_HEI = 16
 			world.UpdateStatusBitmap(towns);
-			if(world.cdAccessLamp || world.fdAccessLamp[0] || world.fdAccessLamp[1])
-				memcpy((char*)tt.rgba+(640*4*(480-16)), world.statusBitmap, sizeof(char) * 640 * 4 * 16);
+			if (world.cdAccessLamp || world.fdAccessLamp[0] || world.fdAccessLamp[1])
+			{
+				//copy everything
+				//memcpy((char*)tt.rgba + (640 * 4 * (480 - 16)), world.statusBitmap, sizeof(char) * 640 * 4 * 16);
+
+				//copy only first 144pixel of each line
+				for (int i = 0; i < 16; i++)
+					memcpy( (char*)tt.rgba + (640 * 4 * (480 - 16)) + (i * 640 * 4),  (char*)world.statusBitmap + (i * 640 * 4), sizeof(char) * 144 * 4 );
+			}
 
 			// main video ram
 			video_cb(tt.rgba, tt.wid, tt.hei, tt.wid * 4);
@@ -1531,10 +1537,13 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 									"[BootDisk].hdm",	"[BootDisk].bin",	"[BootDisk].D88",
 									"[SystemDisk].hdm", "[SystemDisk].bin", "[SystemDisk].D88",
 									"[GameDisk].hdm",	"[GameDisk].bin",	"[GameDisk].D88",
-									"[SaveDisk].hdm",	"[SaveDisk].bin",	"[SaveDisk].D88"
+									"[SaveDisk].hdm",	"[SaveDisk].bin",	"[SaveDisk].D88",
+									
+									//powermonger ?
+									"[BootDisk-En].bin" 
 	
 	}; 
-	int nbUserDiskTemplate = 16;
+	int nbUserDiskTemplate = 17;
 
 	char szUserDisk[512];
 	char bFindUserDisk = false;
