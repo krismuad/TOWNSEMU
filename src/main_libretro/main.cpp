@@ -32,31 +32,32 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 //outside_word_retroarch wrapper ( better else where in a own file )
 #include "outside_world.h"
 #include "yssimplesound.h"
-
+#include "diskimg.h"
 
 /*
 Tsugaru libretro port : muad
 date : 20201127
 
-
-
-Notes :
-I had to take part of code from some parts of your code to put in main.cpp
-At least in windows, add #include <algorithm>	if compile error for std::min
-
-
-Port Status :
+Port Status 
 Emulation: seems slower
 Video : ok
-Sound :  ok
+Sound :  ok ( sound will desync if the emulator is paused )
 Gamepad : ok ( second gamepad isn't working )
-Mouse : ok
-keyboard : ok 
+Mouse : ok 
+keyboard : ok ( need to config an hotkey for proper working )
+
+The libretro port try to find associated [BootDisk] ( or [SystemDisk] )
+Generate a save disk per game
 
 
 ToDo:
-support iso and fd at the same time.
+Handle the need of hdd
 
+Notes :
+At least for MS Visual Studio, add #include <algorithm>	if compile error for std::min
+
+Notes 2:
+No MDS/MDF, no chd compatibility
 
 
 
@@ -67,10 +68,10 @@ File RetroArch\info\tsugaru_libretro.info
 # Software Information
 display_name = "Fujitsu FM TOWN (Tsugaru)"
 authors = "CaptainYS"
-supported_extensions = "iso|bin|cue"
+supported_extensions = "iso|cue"
 corename = "tsugaru_libretro"
 categories = "Emulator"
-license = "BSD 3-Clause 'New' or 'Revised' License"
+license = "Open Source with 3-clause BSD License."
 permissions = ""
 display_version = "v20201126"
 
@@ -146,8 +147,8 @@ retro_input_state_t input_state_cb;
 struct retro_variable options[5] = {
 	{ "gameport_0", "Select Gameport 0 type; gamepad|mouse|key|none" },
 	{ "gameport_1", "Select Gameport 1 type; none|gamepad|mouse|key" },
-    { "app_specific", "Application compatibility settings; none|WINGCOMMANDER1|WINGCOMMANDER2|SUPERDAISEN|LEMMINGS|LEMMINGS2|STRIKECOMMANDER|AMARANTH3|ULTIMAUNDERWORLD" },
-    { "keyboard", "Select keyboard mode; DIRECT|TRANS|TRANS2|TRANS3" },
+	{ "app_specific", "Application compatibility settings; none|WINGCOMMANDER1|WINGCOMMANDER2|SUPERDAISEN|LEMMINGS|LEMMINGS2|STRIKECOMMANDER|AMARANTH3|ULTIMAUNDERWORLD" },
+	{ "keyboard", "Select keyboard mode; DIRECT|TRANS|TRANS2|TRANS3" },
 	{ NULL, NULL }
 };
 
@@ -314,43 +315,13 @@ int FsRetroArchConnection::FsGetKeyState(int fsKeyCode)
 
 /* virtual */ std::vector <std::string> FsRetroArchConnection::MakeKeyMappingText(void) const
 {
-	
-
 	std::vector <std::string> text;
-	
-	/*
-	for (int i = 0; i<FSKEY_NUM_KEYCODE; ++i)
-	{
-		text.push_back("");
-		text.back() += FsKeyCodeToString(i);
-		text.back() += " ";
-		while (text.back().size()<24)
-		{
-			text.back() += " ";
-		}
-		text.back() += TownsKeyCodeToStr(FSKEYtoTownsKEY[i]);
-	}
-	*/
+
 	return text;
 }
 /* virtual */ void FsRetroArchConnection::LoadKeyMappingFromText(const std::vector <std::string> &text)
 {
-	/*
-	for (int i = 0; i<FSKEY_NUM_KEYCODE; ++i)
-	{
-		FSKEYtoTownsKEY[i] = TOWNS_JISKEY_NULL;
-	}
-	for (auto str : text)
-	{
-		auto argv = cpputil::Parser(str.c_str());
-		if (2 == argv.size())
-		{
-			auto fsKey = FsStringToKeyCode(argv[0].c_str());
-			auto townsKey = TownsStrToKeyCode(argv[1]);
-			FSKEYtoTownsKEY[fsKey] = townsKey;
-		}
-	}
-	*/
+
 }
 
 /* virtual */ void FsRetroArchConnection::Start(void)
@@ -552,13 +523,10 @@ void FsRetroArchConnection::processMouseH( float mouse_speed)
 	if (checkKeyAfterThisTIme > towns.state.townsTime) return;
 	
 
-
-	checkKeyAfterThisTIme = towns.state.townsTime + 150000000; // Give sub-thread some time. - 3000000
-
-	//** Keyboard not working - NEED DEBUG
+	checkKeyAfterThisTIme = towns.state.townsTime + 150000000; // 
 	int key;
 
-	if (STATE_RENDERING == state && checkImageAfterThisTIme<towns.state.townsTime)
+	//if (STATE_RENDERING == state && checkImageAfterThisTIme<towns.state.townsTime)
 
 
 	//check release
@@ -1217,11 +1185,11 @@ void CheckImageReady(FMTowns &towns, Outside_World &world)
 			}
 
 
-			// find a better way
+			//  Not so bad - Only displayed when accessed.
 			//	STATUS_WID=640, STATUS_HEI = 16
-			//glDrawPixels(STATUS_WID, STATUS_HEI, GL_RGBA, GL_UNSIGNED_BYTE, statusBitmap);
-			//world.UpdateStatusBitmap(towns);
-			//memcpy((char*)tt.rgba+(640*4*(480-16)), world.statusBitmap, sizeof(char) * 640 * 4 * 16);
+			world.UpdateStatusBitmap(towns);
+			if(world.cdAccessLamp || world.fdAccessLamp[0] || world.fdAccessLamp[1])
+				memcpy((char*)tt.rgba+(640*4*(480-16)), world.statusBitmap, sizeof(char) * 640 * 4 * 16);
 
 			// main video ram
 			video_cb(tt.rgba, tt.wid, tt.hei, tt.wid * 4);
@@ -1324,12 +1292,7 @@ RETRO_API void retro_set_input_state(retro_input_state_t istate)
 
 
 
-RETRO_API void retro_init(void) { 
-
-
-
-
-}
+RETRO_API void retro_init(void) {  }
 
 RETRO_API void retro_deinit(void) { }
 
@@ -1339,7 +1302,7 @@ RETRO_API void retro_get_system_info(struct retro_system_info *info)
 {
 	info->library_name = "Tsugaru";
 	info->library_version = "v.20201126";
-	info->valid_extensions = "iso|cue|bin";
+	info->valid_extensions = "iso|cue";
 	info->need_fullpath = true;
 	info->block_extract = false;
 }
@@ -1558,8 +1521,88 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 
 	// Creating run parameters string
 	sprintf_s(szCD, "%s", game->path);
-	int ac = 14;
-	char *av[] = { "","./system", "-SCALE" , "100" , "-GAMEPORT0",  szGamePad0, "-GAMEPORT1",  szGamePad1, "-APP", szAppSpecific, "-KEYBOARD",szKeyboard,  "-CD" , szCD  };
+
+	// Find UserDisk 
+	//auto withoutExt=cpputil::RemoveExtension(fName.c_str());
+
+
+	//ça marche ça ?!
+	char* szUserDiskTemplate[] = {	"[UserDisk].hdm",	"[UserDisk].bin" ,	"[UserDisk].D88", "[UserDisk].xdf",
+									"[BootDisk].hdm",	"[BootDisk].bin",	"[BootDisk].D88",
+									"[SystemDisk].hdm", "[SystemDisk].bin", "[SystemDisk].D88",
+									"[GameDisk].hdm",	"[GameDisk].bin",	"[GameDisk].D88",
+									"[SaveDisk].hdm",	"[SaveDisk].bin",	"[SaveDisk].D88"
+	
+	}; 
+	int nbUserDiskTemplate = 16;
+
+	char szUserDisk[512];
+	char bFindUserDisk = false;
+	auto  withoutExt = cpputil::RemoveExtension(game->path);
+	for (int j = 0; j < nbUserDiskTemplate; j++)
+	{
+		
+		sprintf_s(szUserDisk, "%s%s", withoutExt.c_str(), szUserDiskTemplate[j]);
+		
+
+		if (cpputil::FileExists(szUserDisk))
+		{
+			bFindUserDisk = true;
+			//sprintf_s(szCD, "%s -FD0 %s", game->path, szUserDisk);
+			printf("UserDisk : %s\n", szUserDisk);
+			break;
+		}
+
+	}
+
+	//Find a save disk
+	char szSaveDisk[512];
+	char bFindSaveDisk = false;
+	sprintf_s(szSaveDisk, "%s%s", withoutExt.c_str(), "]SaveDisk[.hdm");
+	if (cpputil::FileExists(szSaveDisk))
+	{
+		bFindSaveDisk = true;
+		printf("SaveDisk : %s\n", szSaveDisk);
+		
+	}
+	else
+	{
+		//Generate a SaveDisk
+		std::vector <unsigned char> img;
+		img = Get1232KBFloppyDiskImage();
+
+
+		if (true != cpputil::WriteBinaryFile(szSaveDisk, img.size(), img.data()))
+		{
+			std::cout << "Failed to write file: " << szSaveDisk << std::endl;
+			bFindSaveDisk = false;
+		}
+		else
+		{
+			std::cout << "Created FD Image: " << szSaveDisk << std::endl;
+			bFindSaveDisk = true;
+		}
+
+
+	}
+
+	//If Generated SaveDisk exist and there is no other Floppy, 
+	// load Generated SaveDisk in FD0
+	//else load Generated SaveDisk in FD1
+	if ((bFindSaveDisk == true) && (bFindUserDisk == false))
+	{
+		strcpy(szUserDisk, szSaveDisk);
+		strcpy(szSaveDisk, "NULL");
+
+	}
+
+
+
+
+	int ac = 18;
+	char *av[] = { "","./system", "-SCALE" , "100" , "-GAMEPORT0",  szGamePad0, "-GAMEPORT1",  szGamePad1, "-APP", szAppSpecific, "-KEYBOARD",szKeyboard,  "-CD" , szCD ,"-FD0", szUserDisk ,"-FD1", szSaveDisk };
+
+
 
 	
 	// Check parameters string
