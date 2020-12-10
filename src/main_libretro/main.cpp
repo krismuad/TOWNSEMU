@@ -29,39 +29,56 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include "icons.h"
 #include "render.h"
 
-//outside_word_retroarch wrapper ( better else where in a own file )
+//outside_word_retroarch wrapper
 #include "outside_world.h"
 #include "yssimplesound.h"
 #include "diskimg.h"
 
 /*
 Tsugaru libretro port : muad
-date : 20201127
+date : 20201209
 
 Port Status 
-Emulation: seems slower
-Video : ok
-Sound :  ok ( sound will desync if the emulator is paused )
-Gamepad : ok ( second gamepad isn't working )
-Mouse : ok 
-keyboard : ok ( need to config an hotkey for proper working )
 
-The libretro port try to find associated [BootDisk] ( or [SystemDisk] )
-Generate a save disk per game
+Support iso and bin/cue file ( no zip, no chd, no mdf/mds )
+The libretro port try to find associated [BootDisk] ( or [SystemDisk]  or [UserDisk]) ans insert it in FD0
+Generate a save disk per game called "gamename]SaveDisk[.hdm" and inserted in FD0 or FD1
+
+if the mouse isn't working, try the fix in "Application Settings" menu option.
+After change in a game setting, you have to reset the emulator. 
+
+
+
+Retroarch config:
+Settings->Input->Hotkeys->Hotkey Enable : ( i use 'tilde' but you can choose what you want )
+ with this settings, you have to hit 'tilde' + F1 to access menu while emulation
+ and you can send all keystrock to the emulator
+
+While in emulation il you hit [yourhotkey] + F11 , you can hide the host mouse cursor.
+ usefull for mouse game.
+ 
+
+Emulator default setting : 
+	Port1 : Gamepad
+	Port2 : Mouse
+
+
+
+Emulation: ok
+Video : ok
+Sound :  ok ( sound will desync if the emulator is paused ) 
+Gamepad : ok ( second gamepad isn't working )
+Mouse : ok ( hit F11 to hide host cursor )
+keyboard : ok ( qwerty - no shift - capslock  )
+
 
 
 ToDo:
 Handle the need of hdd
+Split main.cpp
 
 Notes :
 At least for MS Visual Studio, add #include <algorithm>	if compile error for std::min
-
-Notes 2:
-No MDS/MDF, no chd compatibility
-
-
-
-
 
 File RetroArch\info\tsugaru_libretro.info
 
@@ -145,8 +162,8 @@ retro_input_state_t input_state_cb;
 
 
 struct retro_variable options[5] = {
-	{ "gameport_0", "Select Gameport 0 type; gamepad|mouse|key|none" },
-	{ "gameport_1", "Select Gameport 1 type; none|gamepad|mouse|key" },
+	{ "gameport_0", "Select Gameport 0 type; gamepad|mouse|none" },
+	{ "gameport_1", "Select Gameport 1 type; mouse|none|gamepad" },
 	{ "app_specific", "Application compatibility settings; none|WINGCOMMANDER1|WINGCOMMANDER2|SUPERDAISEN|LEMMINGS|LEMMINGS2|STRIKECOMMANDER|AMARANTH3|ULTIMAUNDERWORLD" },
 	{ "keyboard", "Select keyboard mode; DIRECT|TRANS|TRANS2|TRANS3" },
 	{ NULL, NULL }
@@ -164,7 +181,7 @@ retro_game_info game_info;
 
 TownsARGV argv;
 static FMTowns towns;
-Outside_World *outside_world;
+Outside_World *outside_world = NULL;
 
 TownsRender render;
 int runMode;
@@ -1307,7 +1324,7 @@ RETRO_API unsigned retro_api_version(void) { return RETRO_API_VERSION; }
 RETRO_API void retro_get_system_info(struct retro_system_info *info)
 {
 	info->library_name = "Tsugaru";
-	info->library_version = "v.20201126";
+	info->library_version = "v.20201209";
 	info->valid_extensions = "iso|cue";
 	info->need_fullpath = true;
 	info->block_extract = false;
@@ -1533,17 +1550,17 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 
 
 	//ça marche ça ?!
-	char* szUserDiskTemplate[] = {	"[UserDisk].hdm",	"[UserDisk].bin" ,	"[UserDisk].D88", "[UserDisk].xdf",
-									"[BootDisk].hdm",	"[BootDisk].bin",	"[BootDisk].D88",
-									"[SystemDisk].hdm", "[SystemDisk].bin", "[SystemDisk].D88",
-									"[GameDisk].hdm",	"[GameDisk].bin",	"[GameDisk].D88",
+	char* szUserDiskTemplate[] = {	"[UserDisk].hdm",	"[UserDisk].bin" ,	"[UserDisk].D88", "[UserDisk].xdf", " (User disk).hdm",
+									"[BootDisk].hdm",	"[BootDisk].bin",	"[BootDisk].D88", " (Boot disk).hdm",
+									"[SystemDisk].hdm", "[SystemDisk].bin", "[SystemDisk].D88", " (System disk).hdm",
+									"[GameDisk].hdm",	"[GameDisk].bin",	"[GameDisk].D88", " (Game disk).hdm",
 									"[SaveDisk].hdm",	"[SaveDisk].bin",	"[SaveDisk].D88",
 									
 									//powermonger ?
 									"[BootDisk-En].bin" 
 	
 	}; 
-	int nbUserDiskTemplate = 17;
+	int nbUserDiskTemplate = 21;
 
 	char szUserDisk[512];
 	char bFindUserDisk = false;
@@ -1620,6 +1637,12 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 		return false;
 	}
 
+
+	//workaround for the issue : no sound when loading another roms
+	if (outside_world != NULL)
+		outside_world->Stop();
+
+
 	outside_world = new FsRetroArchConnection;		// class must be in own file
 
 	// Create / Init
@@ -1666,7 +1689,7 @@ RETRO_API void retro_unload_game(void)
 	}
 
 	outside_world->Stop();
-
+	
 
 
 
