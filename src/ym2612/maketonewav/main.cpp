@@ -3,6 +3,7 @@
 
 #include "fssimplewindow.h"
 #include "ym2612.h"
+#include "cpputil.h"
 #include <yssimplesound.h>
 
 
@@ -213,7 +214,7 @@ void StopTone(YM2612 &ym2612)
 std::vector <unsigned char> MakeSample(YM2612 &ym2612)
 {
 	ym2612.KeyOn(0);
-	auto wave=ym2612.MakeWave(0,100); // 100ms
+	auto wave=ym2612.MakeWave(0,1000); // 1sec
 	ym2612.KeyOff(0);
 	return wave;
 }
@@ -232,11 +233,13 @@ int main(void)
 
 	YM2612 ym2612;
 
+	// CH:3  F_NUM=  692  BLOCK=3  FB=7  CONNECT=5  L=1  R=1  AMS=0  PMS=0  ActiveSlots=00
+
 	ym2612.state.LFO=false;
 
-	ym2612.state.channels[0].F_NUM=924;
+	ym2612.state.channels[0].F_NUM=692;
 	ym2612.state.channels[0].BLOCK=3;
-	ym2612.state.channels[0].FB=0;
+	ym2612.state.channels[0].FB=7;
 	ym2612.state.channels[0].CONNECT=5;
 	ym2612.state.channels[0].L=1;
 	ym2612.state.channels[0].R=1;
@@ -244,11 +247,12 @@ int main(void)
 	ym2612.state.channels[0].PMS=0;
 	ym2612.state.channels[0].usingSlot=0x0F;
 
+	// SLOT:DT=0  MULTI= 1  TL= 26(19dB)  KS=0  AR=15  AM=0  DR=10  SR= 0  SL= 2( 6dB)  RR= 5  SSG_EG=0
 	ym2612.state.channels[0].slots[0].DT=0;
-	ym2612.state.channels[0].slots[0].MULTI=0;
+	ym2612.state.channels[0].slots[0].MULTI=1;
 	ym2612.state.channels[0].slots[0].TL=26;
 	ym2612.state.channels[0].slots[0].KS=0;
-	ym2612.state.channels[0].slots[0].AR=31;
+	ym2612.state.channels[0].slots[0].AR=15;
 	ym2612.state.channels[0].slots[0].AM=0;
 	ym2612.state.channels[0].slots[0].DR=10;
 	ym2612.state.channels[0].slots[0].SR= 0;
@@ -256,11 +260,14 @@ int main(void)
 	ym2612.state.channels[0].slots[0].RR= 5;
 	ym2612.state.channels[0].slots[0].SSG_EG=0;
 
+	// SLOT:DT=0  MULTI= 1  TL= 13( 9dB)  KS=0  AR=21  AM=0  DR=31  SR= 0  SL= 0( 0dB)  RR=10  SSG_EG=0
+	// SLOT:DT=0  MULTI= 1  TL= 13( 9dB)  KS=0  AR=21  AM=0  DR=31  SR= 0  SL= 0( 0dB)  RR=10  SSG_EG=0
+	// SLOT:DT=0  MULTI= 1  TL= 13( 9dB)  KS=0  AR=21  AM=0  DR=31  SR= 0  SL= 0( 0dB)  RR=10  SSG_EG=0
 	for(int s=1; s<4; ++s)
 	{
 		ym2612.state.channels[0].slots[s].DT=0;
 		ym2612.state.channels[0].slots[s].MULTI= 1;
-		ym2612.state.channels[0].slots[s].TL= 11;
+		ym2612.state.channels[0].slots[s].TL= 13;
 		ym2612.state.channels[0].slots[s].KS=0;
 		ym2612.state.channels[0].slots[s].AR=21;
 		ym2612.state.channels[0].slots[s].AM=0;
@@ -273,97 +280,10 @@ int main(void)
 
 	std::vector <unsigned char> wave=MakeSample(ym2612);
 
-	YsSoundPlayer sndPlayer;
-	sndPlayer.Start();
-
 	YsSoundPlayer::SoundData data;
-
-	FsOpenWindow(0,0,800,600,1);
-	for(;;)
-	{
-		FsPollDevice();
-		sndPlayer.KeepPlaying();
-
-		auto key=FsInkey();
-		if(FSKEY_ESC==key)
-		{
-			break;
-		}
-
-		if(FSKEY_SPACE==key)
-		{
-			wave=MakeSample(ym2612);
-			data.CreateFromSigned16bitStereo(44100,wave);
-			sndPlayer.PlayOneShot(data);
-			wave=MakeSample(ym2612);
-		}
-
-		if(FSKEY_Q==key)
-		{
-			++ym2612.state.channels[0].FB;
-			if(7<ym2612.state.channels[0].FB)
-			{
-				ym2612.state.channels[0].FB=7;
-			}
-			printf("FB %d\n",ym2612.state.channels[0].FB);
-			wave=MakeSample(ym2612);
-		}
-		else if(FSKEY_A==key)
-		{
-			if(ym2612.state.channels[0].FB>0)
-			{
-				--ym2612.state.channels[0].FB;
-			}
-			printf("FB %d\n",ym2612.state.channels[0].FB);
-			wave=MakeSample(ym2612);
-		}
-		else if(FSKEY_E==key)
-		{
-			++ym2612.state.channels[0].slots[0].TL;
-			printf("TL %d\n",ym2612.state.channels[0].slots[0].TL);
-			wave=MakeSample(ym2612);
-		}
-		else if(FSKEY_D==key)
-		{
-			--ym2612.state.channels[0].slots[0].TL;
-			printf("TL %d\n",ym2612.state.channels[0].slots[0].TL);
-			wave=MakeSample(ym2612);
-		}
-		else if(FSKEY_R==key)
-		{
-		}
-		else if(FSKEY_F==key)
-		{
-		}
-
-
-		int wid,hei;
-		FsGetWindowSize(wid,hei);
-		glViewport(0,0,wid,hei);
-
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-		glBegin(GL_LINE_STRIP);
-		for(int x=0; x<wid; ++x)
-		{
-			int samplePtr=x*4;
-			if(samplePtr+3<wave.size())
-			{
-				int data=wave[samplePtr]+(wave[samplePtr+1]<<8);
-				data=(data&0x7FFF)-(data&0x8000);
-				glVertex2i(x,hei/2-(data*hei/2)/32768);
-			}
-		}
-		glEnd();
-
-		glBegin(GL_LINES);
-		glVertex2i(wid/2,0);
-		glVertex2i(wid/2,hei);
-		glEnd();
-
-		FsSwapBuffers();
-	}
-
-	sndPlayer.End();
+	data.CreateFromSigned16bitStereo(44100,wave);
+	auto wavFile=data.MakeWavByteData();
+	cpputil::WriteBinaryFile("wave.wav",wavFile.size(),wavFile.data());
 
 	return 0;
 }

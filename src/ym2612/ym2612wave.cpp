@@ -705,6 +705,24 @@ static int AMS4096Table[4]=
 
 ////////////////////////////////////////////////////////////
 
+int YM2612::Slot::DetuneContributionToPhaseStepS12(unsigned int BLOCK,unsigned int NOTE) const
+{
+	// Hz ranges 1 to roughly 8000.  PHASE_STEPS=4096.  hertz*PHASE_STEPS=2^13*2^12=2^25. Fits in 32 bit.
+	long long int detuneStepContribution=0;
+	if(0!=DT)
+	{
+		long long int hertz1000=detune1000Table[(BLOCK<<4)+(NOTE<<2)+(DT&3)];
+		detuneStepContribution=(hertz1000*PHASE_STEPS);
+		detuneStepContribution<<=12;
+		detuneStepContribution/=1000;  // Now it is (hertz*PHASE_STEPS)<<12.
+		if(0!=(DT&4))
+		{
+			detuneStepContribution=-detuneStepContribution;
+		}
+	}
+	return (int)detuneStepContribution;
+}
+
 inline int YM2612::Slot::UnscaledOutput(int phase,int phaseShift) const
 {
 	// phaseShift is input from the upstream slot.
@@ -726,9 +744,11 @@ inline int YM2612::Slot::UnscaledOutput(int phase,int phaseShift,unsigned int FB
 		{
 			0,1,2,4,8,16,32,64
 		};
-		// lastSlotOut=1.0=>4096   4096=>2PI
-		// To make it 4PI at FB=4, must divide by 32.
-		phase+=(lastSlot0Out*FBScaleTable[FB]/32);
+		// lastSlotOut=1.0=>UNSCALED_MAX   4096=>2PI
+		// To make it 4PI(8192) at FB=7(scale=64), must divide by UNSCALED_MAX*64/8192.
+		// What was I thinking when I made div=32?  It should be 16.
+		const int div=UNSCALED_MAX*64/8192;
+		phase+=(lastSlot0Out*FBScaleTable[FB]/div);
 	}
 	//                     8.0       * (2PI / 2)     /   1.0
 	const int outputScale=SLOTOUT_TO_NPI*(PHASE_STEPS/2)/UNSCALED_MAX;
@@ -807,30 +827,43 @@ inline int YM2612::Slot::InterpolateEnvelope(unsigned int timeInMS) const
 	}
 }
 
+unsigned int YM2612::Channel::Note(void) const
+{
+	// Formula [2] pp.204
+	// There is an error.  F_NUM is 11bits.  There is no F11.
+	// Probably, F11, F10, F9, F8 should be read F10, F9, F8, F7.
+	unsigned int F10=((F_NUM>>10)&1);
+	unsigned int F9= ((F_NUM>> 9)&1);
+	unsigned int F8= ((F_NUM>> 8)&1);
+	unsigned int F7=((F_NUM>>11)&1);
+	unsigned int N3=(F10&(F9|F8|F7))|((~F10)&F9&F8&F7);
+	unsigned int NOTE=(F10<<1)|N3;
+	return NOTE;
+}
+
 ////////////////////////////////////////////////////////////
 
-void YM2612::KeyOn(unsigned int chNum)
+void YM2612::KeyOn(unsigned int chNum,unsigned int slotFlags)
 {
+	if(0==slotFlags)
+	{
+		return;
+	}
+
+
 	auto &ch=state.channels[chNum];
 
 	const unsigned int hertzX16=BLOCK_FNUM_to_FreqX16(ch.BLOCK,ch.F_NUM);
 
 	state.playingCh|=(1<<chNum);
 	ch.playState=CH_PLAYING;
-	ch.microsec12=0;
-	ch.lastSlot0Out=0;
-	ch.feedbackUpdateCycle=initialFeedbackUpdateCycle;
-
-
-	// Formula [2] pp.204
-	// There is an error.  F_NUM is 11bits.  There is no F11.
-	// Probably, F11, F10, F9, F8 should be read F10, F9, F8, F7.
-	unsigned int F10=((ch.F_NUM>>10)&1);
-	unsigned int F9= ((ch.F_NUM>> 9)&1);
-	unsigned int F8= ((ch.F_NUM>> 8)&1);
-	unsigned int F7=((ch.F_NUM>>11)&1);
-	unsigned int N3=(F10&(F9|F8|F7))|((~F10)&F9&F8&F7);
-	unsigned int NOTE=(F10<<1)|N3;
+	if(0!=(1&slotFlags))
+	{
+		ch.lastSlot0Out[0]=0;
+		ch.lastSlot0Out[1]=0;
+		ch.lastSlot0OutForNextWave[0]=ch.lastSlot0Out[0];
+		ch.lastSlot0OutForNextWave[1]=ch.lastSlot0Out[1];
+	}
 
 	// Formulat in [2] pp.204 suggests:
  	//   unsigned int KC=(ch.BLOCK<<2)|NOTE;
@@ -840,50 +873,54 @@ void YM2612::KeyOn(unsigned int chNum)
 	unsigned int KC=(ch.BLOCK<<2)|((ch.F_NUM>>9)&3);
 
 
-	for(auto &slot : ch.slots)
+	for(int i=0; i<NUM_SLOTS; ++i)
 	{
-		slot.InReleasePhase=false;
-		slot.lastDb100Cache=0;
-		slot.phase12=0;
-
-		// Hz ranges 1 to roughly 8000.  PHASE_STEPS=4096.  hertz*PHASE_STEPS=2^13*2^12=2^25. Fits in 32 bit.
-		long long int detuneStepContribution=0;
-		if(0!=slot.DT)
+		if(0!=(slotFlags&(1<<i)))
 		{
-			long long int hertz1000=detune1000Table[(ch.BLOCK<<4)+(NOTE<<2)+(slot.DT&3)];
-			detuneStepContribution=(hertz1000*PHASE_STEPS);
-			detuneStepContribution/=1000;
-			if(0!=(slot.DT&4))
+			auto &slot=ch.slots[i];
+
+			slot.InReleasePhase=false;
+			slot.phase12=0;
+
+			UpdatePhase12StepSlot(slot,hertzX16,slot.DetuneContributionToPhaseStepS12(ch.BLOCK,ch.Note()));
+
+			// (hertzX16*PHASE_STEPS)<<8==hertz*PHASE_STEPS*4096
+			CalculateEnvelope(slot.env,slot.RRCache,KC,slot);
+			slot.envDurationCache=slot.env[0]+slot.env[2]+slot.env[4];
+			slot.toneDurationMillisecS12=slot.envDurationCache;
+			slot.toneDurationMillisecS12<<=12;
+
+
+			// Observation tells that if key is turned on while the previous tone is still playing, 
+			// The initial output level must start from the last output level, in which case
+			// microsec12 must fast-forwarded so that the output matches the lastDb100Cache.
+			// Linear interpolation will have error, but should be better than nothing.
+			if(slot.lastDb100Cache<=0)
 			{
-				detuneStepContribution=-detuneStepContribution;
+				slot.microsecS12=0;
 			}
+			else if(slot.env[1]<=slot.lastDb100Cache)
+			{
+				slot.microsecS12=(slot.env[0]*1000)<<12;
+			}
+			else
+			{
+				slot.microsecS12=(slot.env[0]*slot.lastDb100Cache/slot.env[1])*1000<<12;
+			}
+			slot.lastDb100Cache=0;
+
+
+			slot.nextMicrosecS12=slot.microsecS12;
+			slot.nextPhase12=slot.phase12;
 		}
-
-		UpdatePhase12StepSlot(slot,hertzX16);
-
-		 // Should consider DETUNE.
-
-		// (hertzX16*PHASE_STEPS)<<8==hertz*PHASE_STEPS*4096
-		CalculateEnvelope(slot.env,slot.RRCache,KC,slot);
-		slot.envDurationCache=slot.env[0]+slot.env[2]+slot.env[4];
 	}
 
-	ch.toneDuration12=CalculateToneDurationMilliseconds(chNum);
-	ch.toneDuration12<<=12;
 #ifdef YM2612_DEBUGOUTPUT
-	printf("%d BLOCK %03xH F_NUM %03xH Hertz %d Max Duration %d\n",KC,ch.BLOCK,ch.F_NUM,hertzX16/16,ch.toneDuration12>>12);
+	printf("%d BLOCK %03xH F_NUM %03xH Hertz %d\n",KC,ch.BLOCK,ch.F_NUM,hertzX16/16);
 #endif
-
-	ch.nextMicrosec12=ch.microsec12;
-	ch.lastSlot0OutForNextWave=ch.lastSlot0Out;
-	ch.nextFeedbackUpdateCycle=ch.feedbackUpdateCycle;
-	ch.slots[0].nextPhase12=ch.slots[0].phase12;
-	ch.slots[1].nextPhase12=ch.slots[1].phase12;
-	ch.slots[2].nextPhase12=ch.slots[2].phase12;
-	ch.slots[3].nextPhase12=ch.slots[3].phase12;
 }
 
-void YM2612::UpdatePhase12StepSlot(Slot &slot,const unsigned int hertzX16)
+void YM2612::UpdatePhase12StepSlot(Slot &slot,const unsigned int hertzX16,int detuneContribution)
 {
 	// Phase runs hertz*PHASE_STEPS times per second.
 	//            hertz*PHASE_STEPS/WAVE_SAMPLING_RATE times per step.
@@ -892,6 +929,7 @@ void YM2612::UpdatePhase12StepSlot(Slot &slot,const unsigned int hertzX16)
 	unsigned long long phase12Step;
 	phase12Step=MULTITable[slot.MULTI]*hertzX16*PHASE_STEPS; // 2X from MULTITable, 16X from hertzX16
 	phase12Step<<=7;                                         // 128X  Overall 2x16x128=4096X
+	phase12Step+=MULTITable[slot.MULTI]*detuneContribution/2;
 	phase12Step/=WAVE_SAMPLING_RATE;
 	slot.phase12Step=(unsigned int)phase12Step;
 }
@@ -901,11 +939,11 @@ void YM2612::UpdatePhase12StepSlot(Channel &ch)
 	const unsigned int hertzX16=BLOCK_FNUM_to_FreqX16(ch.BLOCK,ch.F_NUM);
 	for(auto &slot : ch.slots)
 	{
-		UpdatePhase12StepSlot(slot,hertzX16);
+		UpdatePhase12StepSlot(slot,hertzX16,slot.DetuneContributionToPhaseStepS12(ch.BLOCK,ch.Note()));
 	};
 }
 
-void YM2612::KeyOff(unsigned int chNum)
+void YM2612::KeyOff(unsigned int chNum,unsigned int slotFlags)
 {
 	if(0!=(state.playingCh&(1<<chNum)))
 	{
@@ -915,10 +953,16 @@ void YM2612::KeyOff(unsigned int chNum)
 			if(true!=slot.InReleasePhase)
 			{
 				slot.InReleasePhase=true;
-				slot.ReleaseStartTime=(ch.microsec12>>12)/1000;
+
+				// 2020/12/15 nextMicrosecS12 retains up to what time point wave has been generated.
+				//            Therefore, here must be nextMicrosecS12, instead of microsecS12.
+				//            If microsecS12 is used, it virtually skips first 20ms of release,
+				//            and the amplitude drops like a stairstep.
+				//            It is inaudible in many situations, but clearly audible in Super Daisenryaku opening.
+				slot.ReleaseStartTime=(slot.nextMicrosecS12>>12)/1000;
 				slot.ReleaseStartDb100=slot.lastDb100Cache;
 
-				auto releaseTime=sustainDecayReleaseTime0to96dB[std::min<unsigned int>(slot.RRCache,63)];
+				uint64_t releaseTime=sustainDecayReleaseTime0to96dB[std::min<unsigned int>(slot.RRCache,63)];
 				releaseTime*=slot.lastDb100Cache;
 				releaseTime/=960000;
 				slot.ReleaseEndTime=slot.ReleaseStartTime+releaseTime;
@@ -941,11 +985,11 @@ void YM2612::CheckToneDone(unsigned int chNum)
 	}
 	else
 	{
-		auto millisec=(ch.microsec12>>12)/1000;
 		bool slotStillPlaying=false;
 		for(int i=0; i<connectionToOutputSlots[ch.CONNECT].nOutputSlots; ++i)
 		{
 			auto &slot=ch.slots[connectionToOutputSlots[ch.CONNECT].slots[i]];
+			auto millisec=(slot.microsecS12>>12)/1000;
 			if(true==slot.InReleasePhase && millisec<slot.ReleaseEndTime)
 			{
 				slotStillPlaying=true;
@@ -963,6 +1007,7 @@ void YM2612::CheckToneDone(unsigned int chNum)
 			ch.playState=CH_IDLE;
 			for(auto &s : ch.slots)
 			{
+				s.lastDb100Cache=0;
 				s.InReleasePhase=false;
 			}
 		}
@@ -1022,15 +1067,17 @@ class YM2612::WithLFO
 public:
 	static inline void CalculateLFO(int AMSAdjustment[4],int PMSAdjustment[4],unsigned int FREQCTRL,const Channel &ch)
 	{
-		unsigned long long int LFOPhase=(ch.microsec12>>12);
-		LFOPhase=LFOPhase*PHASE_STEPS/LFOCycleMicroSec[FREQCTRL];
 		if(0!=ch.PMS)
 		{
-			int PMSAdj=PMS16384Table[ch.PMS]*sineTable[LFOPhase&PHASE_MASK]/UNSCALED_MAX;
 			for(unsigned int i=0; i<connectionToOutputSlots[ch.CONNECT].nOutputSlots; ++i)
 			{
 				auto sl=connectionToOutputSlots[ch.CONNECT].slots[i];
 				int signedStep=ch.slots[sl].phase12Step;
+
+				unsigned long long int LFOPhase=(ch.slots[sl].microsecS12>>12);
+				LFOPhase=LFOPhase*PHASE_STEPS/LFOCycleMicroSec[FREQCTRL];
+
+				int PMSAdj=PMS16384Table[ch.PMS]*sineTable[LFOPhase&PHASE_MASK]/UNSCALED_MAX;
 				PMSAdjustment[sl]=signedStep*PMSAdj/16384/2;
 			}
 		}
@@ -1040,6 +1087,8 @@ public:
 				auto sl=connectionToOutputSlots[ch.CONNECT].slots[i];
 				if(0!=ch.slots[sl].AM)
 				{
+					unsigned long long int LFOPhase=(ch.slots[sl].microsecS12>>12);
+					LFOPhase=LFOPhase*PHASE_STEPS/LFOCycleMicroSec[FREQCTRL];
 					AMSAdjustment[sl]=4096+(AMS4096Table[ch.AMS]*sineTable[LFOPhase&PHASE_MASK])/UNSCALED_MAX;
 				}
 			}
@@ -1067,28 +1116,32 @@ long long int YM2612::MakeWaveForNSamplesTemplate(unsigned char wave[],unsigned 
 	// If microSec12=4096*microseconds, tm runs
 	//           4096000000/WAVE_SAMPLING_RATE per step
 
-	unsigned long long int microsec12[NUM_CHANNELS];
+	uint64_t microsec12[NUM_CHANNELS][NUM_SLOTS];
 	unsigned int phase12[NUM_CHANNELS][NUM_SLOTS];
-	int lastSlot0Out[NUM_CHANNELS];
-	int feedbackUpdateCycle[NUM_CHANNELS];
+	int lastSlot0Out[NUM_CHANNELS][2];
 	unsigned int LeftANDPtn[NUM_CHANNELS];
 	unsigned int RightANDPtn[NUM_CHANNELS];
-	unsigned long long int toneDurationMicrosec12[NUM_CHANNELS];
+	unsigned long long int toneDurationMicrosecS12[NUM_CHANNELS][NUM_SLOTS];
 
 	for(unsigned int chNum=0; chNum<NUM_CHANNELS; ++chNum)
 	{
 		auto &ch=state.channels[chNum];
-		microsec12[chNum]=ch.microsec12;
+		microsec12[chNum][0]=ch.slots[0].microsecS12;
+		microsec12[chNum][1]=ch.slots[1].microsecS12;
+		microsec12[chNum][2]=ch.slots[2].microsecS12;
+		microsec12[chNum][3]=ch.slots[3].microsecS12;
 		phase12[chNum][0]=ch.slots[0].phase12;
 		phase12[chNum][1]=ch.slots[1].phase12;
 		phase12[chNum][2]=ch.slots[2].phase12;
 		phase12[chNum][3]=ch.slots[3].phase12;
-		lastSlot0Out[chNum]=ch.lastSlot0Out;
-		feedbackUpdateCycle[chNum]=ch.feedbackUpdateCycle;
+		lastSlot0Out[chNum][0]=ch.lastSlot0Out[0];
+		lastSlot0Out[chNum][1]=ch.lastSlot0Out[1];
 		LeftANDPtn[chNum]=(0!=ch.L ? ~0 : 0);
 		RightANDPtn[chNum]=(0!=ch.R ? ~0 : 0);
-		toneDurationMicrosec12[chNum]=ch.toneDuration12;
-		toneDurationMicrosec12[chNum]*=1000;
+		toneDurationMicrosecS12[chNum][0]=ch.slots[0].toneDurationMillisecS12*1000;
+		toneDurationMicrosecS12[chNum][1]=ch.slots[1].toneDurationMillisecS12*1000;
+		toneDurationMicrosecS12[chNum][2]=ch.slots[2].toneDurationMillisecS12*1000;
+		toneDurationMicrosecS12[chNum][3]=ch.slots[3].toneDurationMillisecS12*1000;
 	}
 
 	unsigned int i;
@@ -1099,14 +1152,16 @@ long long int YM2612::MakeWaveForNSamplesTemplate(unsigned char wave[],unsigned 
 		{
 			auto chNum=playingCh[j];
 			auto &ch=state.channels[chNum];
-			if(toneDurationMicrosec12[chNum]<=microsec12[chNum])
+			if(toneDurationMicrosecS12[chNum][0]<=microsec12[chNum][0] &&
+			   toneDurationMicrosecS12[chNum][1]<=microsec12[chNum][1] &&
+			   toneDurationMicrosecS12[chNum][2]<=microsec12[chNum][2] &&
+			   toneDurationMicrosecS12[chNum][3]<=microsec12[chNum][3])
 			{
 				playingCh[j]=playingCh[nPlayingCh-1];
 				--nPlayingCh;
 				break;
 			}
 
-			const unsigned int microsec=(unsigned int)(microsec12[chNum]>>12);
 			int PMSAdjustment[4]=
 			{
 				0,0,0,0
@@ -1118,14 +1173,71 @@ long long int YM2612::MakeWaveForNSamplesTemplate(unsigned char wave[],unsigned 
 
 			LFOClass::CalculateLFO(AMSAdjustment,PMSAdjustment,state.FREQCTRL,ch);
 
-			auto s0Out=lastSlot0Out[chNum];
-			auto ampl=CalculateAmplitude(chNum,microsec/1000,phase12[chNum],AMSAdjustment,s0Out);  // Envelope takes milliseconds.
-			--feedbackUpdateCycle[chNum];
-			if(feedbackUpdateCycle[chNum]<=0)
-			{
-				feedbackUpdateCycle[chNum]=initialFeedbackUpdateCycle;
-				lastSlot0Out[chNum]=s0Out;
-			}
+
+			// Why take an average of last two samples, not just the last sample, for feedback?
+			// Cisc's FMGEN YM emulator does it.  I was wondering why.  But, it works as a damper to prevent
+			// premature divergence.
+			// 
+			// When feedback is given, the output from slot 0 is calculated as:
+			// 
+			//     y(i+1)=A*sin(i*dt+C*y(i))
+			// 
+			// A is amplitude calculated from the envelope, and C is defined by feedback level, and
+			// dt depends on the frequency of the tone.
+			// 
+			// Let's denote the angle given to the sine function as:
+			// 
+			//     X(i)=i*dt+C*y(i)
+			// 
+			// When the slope of sin(X(i)) is negative (0.5PI<X(i)<1.5PI), means the value is decreasing with
+			// increasing X, the function can become unstable and diverge, until the function returns to the
+			// positive slope.  Here's what can happen.
+			// 
+			// X(i) monotonicly increase if C=0, means no feedback.  However, if C is non-zero, i*dt increases, 
+			// but C*y(i) can increase or decrease depending on the slope of y(i).
+			// 
+			// If the one-step decrease of C*y(i) exceeds the increase of i*dt (which is dt), 
+			// X(i) will decrease overall, which means the input to the sine functions goes backward.
+			// Amplitude is positive, and if the slope of the sine function at X(i) was negative, and if 
+			// the input goes backward, y suddenly increases. i.e., y(i+1) is greater than y(i).
+			// 
+			// Then in the next step, both C*y and i*dt terms increase.  This makes a large jump of X.
+			// The sine function is going down with X, as a result y dives down bigger than the last 
+			// increase.  Then, the next comes even bigger increase of y, followed by even bigger dive, 
+			// and the function of y(i) starts oscillating every sample.
+			// 
+			// From the above, the condition that starts this divergence is:
+			// 
+			//     dt<-dY
+			// 
+			// where Y=C*y(i).  Interestingly, because of this condition, this particular mode of oscillation
+			// only appears when dY<0.
+			// 
+			// While it is a legitimate divergence that adds some noise component to the tone in some settings,
+			// Slot 0 starts this oscillation too easily.
+			// 
+			// Cisc's FMGEN YM-chip emulator, used in XM7 and M88 emulators (and maybe other emulators as well)
+			// solves this problem by feeding the average of the last two samples back to slot 0.
+			// 
+			// During the oscillation, the value of y jumps up and down.  But, if you look at the middle of the two
+			// consecutive outputs, it goes through a smooth decreasing curve.
+			// 
+			// The cause of this divergence is from the oscillation of the feedback term, C*y.  By taking average
+			// of the last two samples, it essentially damps the oscillation, and effectively prevents this divergence.
+			//
+			// So the modified formulation is:
+			//
+			//     y(i+1)=A*sin(i*dt+C*(y(i)+y(i-1))/2)
+			//
+			// Here I am explicitly writing it out, but Cisc's implementation embedded this division by two
+			// in the anyway-required bit shift.
+			//
+			// Very genious solution it is.
+
+			auto s0Out=(lastSlot0Out[chNum][1]+lastSlot0Out[chNum][0])/2;
+			auto ampl=CalculateAmplitude(chNum,microsec12[chNum],phase12[chNum],AMSAdjustment,s0Out);
+			lastSlot0Out[chNum][1]=lastSlot0Out[chNum][0];
+			lastSlot0Out[chNum][0]=s0Out;
 
 			leftOut+=(LeftANDPtn[chNum]&ampl);
 			rightOut+=(RightANDPtn[chNum]&ampl);
@@ -1134,7 +1246,10 @@ long long int YM2612::MakeWaveForNSamplesTemplate(unsigned char wave[],unsigned 
 			phase12[chNum][1]+=ch.slots[1].phase12Step+PMSAdjustment[1];
 			phase12[chNum][2]+=ch.slots[2].phase12Step+PMSAdjustment[2];
 			phase12[chNum][3]+=ch.slots[3].phase12Step+PMSAdjustment[3];
-			microsec12[chNum]+=microsec12Step;
+			microsec12[chNum][0]+=microsec12Step;
+			microsec12[chNum][1]+=microsec12Step;
+			microsec12[chNum][2]+=microsec12Step;
+			microsec12[chNum][3]+=microsec12Step;
 		}
 		WordOp_Set(wave+i*4  ,leftOut);
 		WordOp_Set(wave+i*4+2,rightOut);
@@ -1145,9 +1260,12 @@ long long int YM2612::MakeWaveForNSamplesTemplate(unsigned char wave[],unsigned 
 	for(unsigned int chNum=0; chNum<NUM_CHANNELS; ++chNum)
 	{
 		auto &ch=state.channels[chNum];
-		ch.nextMicrosec12=microsec12[chNum];
-		ch.lastSlot0OutForNextWave=lastSlot0Out[chNum];
-		ch.nextFeedbackUpdateCycle=feedbackUpdateCycle[chNum];
+		ch.lastSlot0OutForNextWave[0]=lastSlot0Out[chNum][0];
+		ch.lastSlot0OutForNextWave[1]=lastSlot0Out[chNum][1];
+		ch.slots[0].nextMicrosecS12=microsec12[chNum][0];
+		ch.slots[1].nextMicrosecS12=microsec12[chNum][1];
+		ch.slots[2].nextMicrosecS12=microsec12[chNum][2];
+		ch.slots[3].nextMicrosecS12=microsec12[chNum][3];
 		ch.slots[0].nextPhase12=phase12[chNum][0];
 		ch.slots[1].nextPhase12=phase12[chNum][1];
 		ch.slots[2].nextPhase12=phase12[chNum][2];
@@ -1180,9 +1298,12 @@ void YM2612::NextWave(unsigned int chNum)
 	auto &ch=state.channels[chNum];
 	if(CH_PLAYING==ch.playState)
 	{
-		ch.microsec12=ch.nextMicrosec12;
-		ch.lastSlot0Out=ch.lastSlot0OutForNextWave;
-		ch.feedbackUpdateCycle=ch.nextFeedbackUpdateCycle;
+		ch.lastSlot0Out[0]=ch.lastSlot0OutForNextWave[0];
+		ch.lastSlot0Out[1]=ch.lastSlot0OutForNextWave[1];
+		ch.slots[0].microsecS12=ch.slots[0].nextMicrosecS12;
+		ch.slots[1].microsecS12=ch.slots[1].nextMicrosecS12;
+		ch.slots[2].microsecS12=ch.slots[2].nextMicrosecS12;
+		ch.slots[3].microsecS12=ch.slots[3].nextMicrosecS12;
 		ch.slots[0].phase12=ch.slots[0].nextPhase12;
 		ch.slots[1].phase12=ch.slots[1].nextPhase12;
 		ch.slots[2].phase12=ch.slots[2].nextPhase12;
@@ -1196,21 +1317,6 @@ void YM2612::NextWaveAllChannels(void)
 	{
 		NextWave(chNum);
 	}
-}
-
-unsigned int YM2612::CalculateToneDurationMilliseconds(unsigned int chNum) const
-{
-	unsigned int durationInMS=0;
-	auto &ch=state.channels[chNum];
-	for(int slotNum=0; slotNum<NUM_SLOTS; ++slotNum)
-	{
-		if(0!=connToOutChannel[ch.CONNECT][slotNum])
-		{
-			auto &slot=ch.slots[slotNum];
-			durationInMS=std::max(durationInMS,slot.env[0]+slot.env[2]+slot.env[4]);
-		}
-	}
-	return durationInMS;
 }
 
 bool YM2612::CalculateEnvelope(unsigned int env[6],unsigned int &RR,unsigned int KC,const Slot &slot) const
@@ -1316,7 +1422,7 @@ bool YM2612::CalculateEnvelope(unsigned int env[6],unsigned int &RR,unsigned int
 	return true;
 }
 
-int YM2612::CalculateAmplitude(int chNum,unsigned int timeInMS,const unsigned int slotPhase12[4],const int AMS4096[4],int &lastSlot0Out) const
+int YM2612::CalculateAmplitude(int chNum,const uint64_t timeInMicrosecS12[NUM_SLOTS],const unsigned int slotPhase12[NUM_SLOTS],const int AMS4096[4],int &lastSlot0Out) const
 {
 	if(true==channelMute[chNum])
 	{
@@ -1332,77 +1438,85 @@ int YM2612::CalculateAmplitude(int chNum,unsigned int timeInMS,const unsigned in
 		0!=(ch.usingSlot&8) || ch.slots[3].InReleasePhase,
 	};
 
-	#define SLOTOUTEV_Db_0(phaseShift,timeInMS) ((true!=slotActive[0] ? 0 : ch.slots[0].EnvelopedOutputDb((slotPhase12[0]>>12),phaseShift,timeInMS,ch.FB,lastSlot0Out))*AMS4096[0]/4096)
-	#define SLOTOUTEV_Db_1(phaseShift,timeInMS) ((true!=slotActive[1] ? 0 : ch.slots[1].EnvelopedOutputDb((slotPhase12[1]>>12),phaseShift,timeInMS))*AMS4096[1]/4096)
-	#define SLOTOUTEV_Db_2(phaseShift,timeInMS) ((true!=slotActive[2] ? 0 : ch.slots[2].EnvelopedOutputDb((slotPhase12[2]>>12),phaseShift,timeInMS))*AMS4096[2]/4096)
-	#define SLOTOUTEV_Db_3(phaseShift,timeInMS) ((true!=slotActive[3] ? 0 : ch.slots[3].EnvelopedOutputDb((slotPhase12[3]>>12),phaseShift,timeInMS))*AMS4096[3]/4096)
+	unsigned int timeInMS[NUM_SLOTS]=
+	{
+		(unsigned int)((timeInMicrosecS12[0]>>12)/1000),
+		(unsigned int)((timeInMicrosecS12[1]>>12)/1000),
+		(unsigned int)((timeInMicrosecS12[2]>>12)/1000),
+		(unsigned int)((timeInMicrosecS12[3]>>12)/1000),
+	};
 
-	#define SLOTOUTEV_Ln_0(phaseShift,timeInMS) ((true!=slotActive[0] ? 0 : ch.slots[0].EnvelopedOutputLn((slotPhase12[0]>>12),phaseShift,timeInMS,ch.FB,lastSlot0Out))*AMS4096[0]/4096)
-	#define SLOTOUTEV_Ln_1(phaseShift,timeInMS) ((true!=slotActive[1] ? 0 : ch.slots[1].EnvelopedOutputLn((slotPhase12[1]>>12),phaseShift,timeInMS))*AMS4096[1]/4096)
-	#define SLOTOUTEV_Ln_2(phaseShift,timeInMS) ((true!=slotActive[2] ? 0 : ch.slots[2].EnvelopedOutputLn((slotPhase12[2]>>12),phaseShift,timeInMS))*AMS4096[2]/4096)
-	#define SLOTOUTEV_Ln_3(phaseShift,timeInMS) ((true!=slotActive[3] ? 0 : ch.slots[3].EnvelopedOutputLn((slotPhase12[3]>>12),phaseShift,timeInMS))*AMS4096[3]/4096)
+	#define SLOTOUTEV_Db_0(phaseShift) ((true!=slotActive[0] ? 0 : ch.slots[0].EnvelopedOutputDb((slotPhase12[0]>>12),phaseShift,timeInMS[0],ch.FB,lastSlot0Out))*AMS4096[0]/4096)
+	#define SLOTOUTEV_Db_1(phaseShift) ((true!=slotActive[1] ? 0 : ch.slots[1].EnvelopedOutputDb((slotPhase12[1]>>12),phaseShift,timeInMS[1]))*AMS4096[1]/4096)
+	#define SLOTOUTEV_Db_2(phaseShift) ((true!=slotActive[2] ? 0 : ch.slots[2].EnvelopedOutputDb((slotPhase12[2]>>12),phaseShift,timeInMS[2]))*AMS4096[2]/4096)
+	#define SLOTOUTEV_Db_3(phaseShift) ((true!=slotActive[3] ? 0 : ch.slots[3].EnvelopedOutputDb((slotPhase12[3]>>12),phaseShift,timeInMS[3]))*AMS4096[3]/4096)
 
-	#define SLOTOUT_0(phaseShift,timeInMS) ((true!=slotActive[0] ? 0 : ch.slots[0].UnscaledOutput((slotPhase12[0]>>12),phaseShift,ch.FB,lastSlot0Out))*AMS4096[0]/4096)
-	#define SLOTOUT_1(phaseShift,timeInMS) ((true!=slotActive[1] ? 0 : ch.slots[1].UnscaledOutput((slotPhase12[1]>>12),phaseShift))*AMS4096[1]/4096)
-	#define SLOTOUT_2(phaseShift,timeInMS) ((true!=slotActive[2] ? 0 : ch.slots[2].UnscaledOutput((slotPhase12[2]>>12),phaseShift))*AMS4096[2]/4096)
-	#define SLOTOUT_3(phaseShift,timeInMS) ((true!=slotActive[3] ? 0 : ch.slots[3].UnscaledOutput((slotPhase12[3]>>12),phaseShift))*AMS4096[3]/4096)
+	#define SLOTOUTEV_Ln_0(phaseShift) ((true!=slotActive[0] ? 0 : ch.slots[0].EnvelopedOutputLn((slotPhase12[0]>>12),phaseShift,timeInMS[0],ch.FB,lastSlot0Out))*AMS4096[0]/4096)
+	#define SLOTOUTEV_Ln_1(phaseShift) ((true!=slotActive[1] ? 0 : ch.slots[1].EnvelopedOutputLn((slotPhase12[1]>>12),phaseShift,timeInMS[1]))*AMS4096[1]/4096)
+	#define SLOTOUTEV_Ln_2(phaseShift) ((true!=slotActive[2] ? 0 : ch.slots[2].EnvelopedOutputLn((slotPhase12[2]>>12),phaseShift,timeInMS[2]))*AMS4096[2]/4096)
+	#define SLOTOUTEV_Ln_3(phaseShift) ((true!=slotActive[3] ? 0 : ch.slots[3].EnvelopedOutputLn((slotPhase12[3]>>12),phaseShift,timeInMS[3]))*AMS4096[3]/4096)
+
+	#define SLOTOUT_0(phaseShift) ((true!=slotActive[0] ? 0 : ch.slots[0].UnscaledOutput((slotPhase12[0]>>12),phaseShift,ch.FB,lastSlot0Out))*AMS4096[0]/4096)
+	#define SLOTOUT_1(phaseShift) ((true!=slotActive[1] ? 0 : ch.slots[1].UnscaledOutput((slotPhase12[1]>>12),phaseShift))*AMS4096[1]/4096)
+	#define SLOTOUT_2(phaseShift) ((true!=slotActive[2] ? 0 : ch.slots[2].UnscaledOutput((slotPhase12[2]>>12),phaseShift))*AMS4096[2]/4096)
+	#define SLOTOUT_3(phaseShift) ((true!=slotActive[3] ? 0 : ch.slots[3].UnscaledOutput((slotPhase12[3]>>12),phaseShift))*AMS4096[3]/4096)
 
 	int s0out,s1out,s2out,s3out;
 	switch(ch.CONNECT)
 	{
 	default:
 	case 0:
-		s0out=SLOTOUTEV_Db_0(0,    timeInMS);
+		s0out=SLOTOUTEV_Db_0(0);
 		lastSlot0Out=s0out;
-		s1out=SLOTOUTEV_Db_1(s0out,timeInMS);
-		s2out=SLOTOUTEV_Db_2(s1out,timeInMS);
-		return SLOTOUTEV_Db_3(s2out,timeInMS)*state.volume/UNSCALED_MAX;
+		s1out=SLOTOUTEV_Db_1(s0out);
+		s2out=SLOTOUTEV_Db_2(s1out);
+		return SLOTOUTEV_Db_3(s2out)*state.volume/UNSCALED_MAX;
 	case 1:
-		s0out=SLOTOUTEV_Db_0(0,timeInMS);
+		s0out=SLOTOUTEV_Db_0(0);
 		lastSlot0Out=s0out;
-		s1out=SLOTOUTEV_Db_1(0,timeInMS);
-		s2out=SLOTOUTEV_Db_2(s0out+s1out,timeInMS);
-		return SLOTOUTEV_Db_3(s2out,timeInMS)*state.volume/UNSCALED_MAX;
+		s1out=SLOTOUTEV_Db_1(0);
+		s2out=SLOTOUTEV_Db_2(s0out+s1out);
+		return SLOTOUTEV_Db_3(s2out)*state.volume/UNSCALED_MAX;
 	case 2:
-		s0out=SLOTOUTEV_Db_0(0,timeInMS);
+		s0out=SLOTOUTEV_Db_0(0);
 		lastSlot0Out=s0out;
-		s1out=SLOTOUTEV_Db_1(0,timeInMS);
-		s2out=SLOTOUTEV_Db_2(s1out,timeInMS);
-		return SLOTOUTEV_Db_3(s0out+s2out,timeInMS)*state.volume/UNSCALED_MAX;
+		s1out=SLOTOUTEV_Db_1(0);
+		s2out=SLOTOUTEV_Db_2(s1out);
+		return SLOTOUTEV_Db_3(s0out+s2out)*state.volume/UNSCALED_MAX;
 	case 3:
-		s0out=SLOTOUTEV_Db_0(0,    timeInMS);
+		s0out=SLOTOUTEV_Db_0(0);
 		lastSlot0Out=s0out;
-		s1out=SLOTOUTEV_Db_1(s0out,timeInMS);
-		s2out=SLOTOUTEV_Db_2(0    ,timeInMS);
-		return SLOTOUTEV_Db_3(s1out+s2out,timeInMS)*state.volume/UNSCALED_MAX;
+		s1out=SLOTOUTEV_Db_1(s0out);
+		s2out=SLOTOUTEV_Db_2(0);
+		return SLOTOUTEV_Db_3(s1out+s2out)*state.volume/UNSCALED_MAX;
 	case 4:
-		s0out=SLOTOUTEV_Db_0(0,    timeInMS);
+		s0out=SLOTOUTEV_Db_0(0);
 		lastSlot0Out=s0out;
-		s1out=SLOTOUTEV_Db_1(s0out,timeInMS);
-		s2out=SLOTOUTEV_Db_2(0    ,timeInMS);
-		s3out=SLOTOUTEV_Db_3(s2out,timeInMS);
+		s1out=SLOTOUTEV_Db_1(s0out);
+		s2out=SLOTOUTEV_Db_2(0);
+		s3out=SLOTOUTEV_Db_3(s2out);
 		return ((s1out+s3out)*state.volume/UNSCALED_MAX);
-		// Test only Slot 3 -> return SLOTOUTEV_Db_3(0,timeInMS)*state.volume/UNSCALED_MAX;
+		// Test only Slot 3 -> return SLOTOUTEV_Db_3(0)*state.volume/UNSCALED_MAX;
 	case 5:
-		s0out=SLOTOUTEV_Db_0(0,    timeInMS);
+		s0out=SLOTOUTEV_Db_0(0);
 		lastSlot0Out=s0out;
-		s1out=SLOTOUTEV_Db_1(s0out,timeInMS);
-		s2out=SLOTOUTEV_Db_2(s0out,timeInMS);
-		s3out=SLOTOUTEV_Db_3(s0out,timeInMS);
+		s1out=SLOTOUTEV_Db_1(s0out);
+		s2out=SLOTOUTEV_Db_2(s0out);
+		s3out=SLOTOUTEV_Db_3(s0out);
 		return ((s1out+s2out+s3out)*state.volume/UNSCALED_MAX);
 	case 6:
-		s0out=SLOTOUTEV_Db_0(0,    timeInMS);
+		s0out=SLOTOUTEV_Db_0(0);
 		lastSlot0Out=s0out;
-		s1out=SLOTOUTEV_Db_1(s0out,timeInMS);
-		s2out=SLOTOUTEV_Db_2(0    ,timeInMS);
-		s3out=SLOTOUTEV_Db_3(0    ,timeInMS);
+		s1out=SLOTOUTEV_Db_1(s0out);
+		s2out=SLOTOUTEV_Db_2(0    );
+		s3out=SLOTOUTEV_Db_3(0    );
 		return ((s1out+s2out+s3out)*state.volume/UNSCALED_MAX);
 	case 7:
-		s0out=SLOTOUTEV_Db_0(0,timeInMS);
+		s0out=SLOTOUTEV_Db_0(0);
 		lastSlot0Out=s0out;
-		s1out=SLOTOUTEV_Db_1(0,timeInMS);
-		s2out=SLOTOUTEV_Db_2(0,timeInMS);
-		s3out=SLOTOUTEV_Db_3(0,timeInMS);
+		s1out=SLOTOUTEV_Db_1(0);
+		s2out=SLOTOUTEV_Db_2(0);
+		s3out=SLOTOUTEV_Db_3(0);
 		return ((s0out+s1out+s2out+s3out)*state.volume/UNSCALED_MAX);
 	}
 }

@@ -52,6 +52,8 @@ public:
 		UNSCALED_MAX=2048,
 		SLOTOUT_TO_NPI=8,         // 1.0 output from an upstream slot is 8PI.
 
+		SLOTFLAGS_ALL=0x0F,
+
 		TONE_CHOPOFF_MILLISEC=4000,
 
 		WAVE_SAMPLING_RATE=44100,
@@ -99,6 +101,9 @@ public:
 		unsigned int SSG_EG;
 
 		// Cache for wave-generation >>
+		unsigned long long int microsecS12;      // Microsec from start of a tone by (microsec12>>12)
+		mutable unsigned long long int nextMicrosecS12; // Cached in MakeWave.
+		unsigned long long int toneDurationMillisecS12;  // In (microsec<<12).
 		unsigned int phase12;      // 5-bit phase=((phase>>12)&0x1F)
 		unsigned int phase12Step;  // Increment of phase12 per time step.
 		mutable unsigned int nextPhase12; // Cached in MakeWave
@@ -125,9 +130,9 @@ public:
 		inline int EnvelopedOutputLn(int phase,int phaseShift,unsigned int timeInMS) const;
 		// DB scale: 0 to 9600
 		inline int InterpolateEnvelope(unsigned int timeInMS) const;
-	};
 
-	int initialFeedbackUpdateCycle=1;
+		int DetuneContributionToPhaseStepS12(unsigned int BLOCK,unsigned int NOTE) const;
+	};
 
 	class Channel
 	{
@@ -138,21 +143,14 @@ public:
 		unsigned int usingSlot;
 		Slot slots[NUM_SLOTS];
 
-		// Observation suggests that the output from SLOT0 with FB=6 and 7 depends on
-		// the frequency in which the lastSlot0Out is updated.
-		int feedbackUpdateCycle=2;
-
 		// Cache for wave-generation >>
 		unsigned int playState;
-		unsigned long long int toneDuration12;  // In (microsec<<12).
-		unsigned long long int microsec12;      // Microsec from start of a tone by (microsec12>>12)
-		int lastSlot0Out;
-		mutable unsigned long long int nextMicrosec12; // Cached in MakeWave.
-		mutable int lastSlot0OutForNextWave;           // For calculating feedback.
-		mutable int nextFeedbackUpdateCycle;
+		int lastSlot0Out[2];
+		mutable int lastSlot0OutForNextWave[2];           // For calculating feedback.
 		// Cache for wave-generation <<
 
 		void Clear();
+		unsigned int Note(void) const;
 	};
 
 	class State
@@ -236,11 +234,11 @@ public:
 
 	/*! Cache parameters for calculating wave.
 	*/
-	void KeyOn(unsigned int ch);
+	void KeyOn(unsigned int ch,unsigned int slotFlags=SLOTFLAGS_ALL);
 
 	/*! Update phase update (times 2^12) per step for slot.
 	*/
-	void UpdatePhase12StepSlot(Slot &slot,const unsigned int hertzX16);
+	void UpdatePhase12StepSlot(Slot &slot,const unsigned int hertzX16,int detuneContribution);
 
 	/*! Update phase update (times 2^12) per step for channel.
 	*/
@@ -265,13 +263,9 @@ private:
 	template <class LFO>
 	long long int MakeWaveForNSamplesTemplate(unsigned char wavBuf[],unsigned int nPlayingCh,unsigned int playingCh[],unsigned long long int numSamplesRequested) const;
 
-	/*! Returns the longest duration of the tone in milliseconds if no key off.
-	*/
-	unsigned int CalculateToneDurationMilliseconds(unsigned int chNum) const;
-
 	/*! lastSlot0Out is input/output.  Needed for calculating feedback.
 	*/
-	int CalculateAmplitude(int chNum,unsigned int timeInMS,const unsigned int slotPhase[4],const int AMS4096[4],int &lastSlot0Out) const;
+	int CalculateAmplitude(int chNum,const uint64_t timeInMicrosecS12[NUM_SLOTS],const unsigned int slotPhase[4],const int AMS4096[4],int &lastSlot0Out) const;
 
 
 public:
@@ -285,7 +279,7 @@ public:
 
 	/*! Change channel state to RELEASE.
 	*/
-	void KeyOff(unsigned int ch);
+	void KeyOff(unsigned int ch,unsigned int slotFlags=SLOTFLAGS_ALL);
 
 
 	/*! Check if the tone is done, and update playingCh and playing state.
