@@ -36,7 +36,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 /*
 Tsugaru libretro port : muad
-date : 20201209
+date : 20201218
 
 Port Status 
 
@@ -1324,7 +1324,7 @@ RETRO_API unsigned retro_api_version(void) { return RETRO_API_VERSION; }
 RETRO_API void retro_get_system_info(struct retro_system_info *info)
 {
 	info->library_name = "Tsugaru";
-	info->library_version = "v.20201209";
+	info->library_version = "v.20201218";
 	info->valid_extensions = "iso|cue";
 	info->need_fullpath = true;
 	info->block_extract = false;
