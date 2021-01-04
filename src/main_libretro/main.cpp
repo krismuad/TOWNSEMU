@@ -76,6 +76,7 @@ keyboard : ok ( qwerty - no shift - capslock  )
 ToDo:
 Handle the need of hdd
 Split main.cpp
+SaveStates
 
 Notes :
 At least for MS Visual Studio, add #include <algorithm>	if compile error for std::min
@@ -1546,10 +1547,6 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 	sprintf_s(szCD, "%s", game->path);
 
 	// Find UserDisk 
-	//auto withoutExt=cpputil::RemoveExtension(fName.c_str());
-
-
-	//ça marche ça ?!
 	char* szUserDiskTemplate[] = {	"[UserDisk].hdm",	"[UserDisk].bin" ,	"[UserDisk].D88", "[UserDisk].xdf", " (User disk).hdm",
 									"[BootDisk].hdm",	"[BootDisk].bin",	"[BootDisk].D88", " (Boot disk).hdm",
 									"[SystemDisk].hdm", "[SystemDisk].bin", "[SystemDisk].D88", " (System disk).hdm",
@@ -1623,11 +1620,8 @@ RETRO_API bool retro_load_game(const struct retro_game_info *game)
 	}
 
 
-
-
 	int ac = 18;
 	char *av[] = { "","./system", "-SCALE" , "100" , "-GAMEPORT0",  szGamePad0, "-GAMEPORT1",  szGamePad1, "-APP", szAppSpecific, "-KEYBOARD",szKeyboard,  "-CD" , szCD ,"-FD0", szUserDisk ,"-FD1", szSaveDisk };
-
 
 
 	
