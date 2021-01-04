@@ -275,7 +275,7 @@ public:
 	virtual void CDDAResume(void);
 	virtual bool CDDAIsPlaying(void);
 	virtual DiscImage::MinSecFrm CDDACurrentPosition(void);
-
+	/*
 	YsSoundPlayer::SoundData PCMChannel;
 	virtual void PCMPlay(std::vector <unsigned char > &wave);
 	virtual void PCMPlayStop(void);
@@ -285,11 +285,17 @@ public:
 	virtual void FMPlay(std::vector <unsigned char> &wave);
 	virtual void FMPlayStop(void);
 	virtual bool FMChannelPlaying(void);
+	*/
+	YsSoundPlayer::SoundData FMPCMChannel;
+	virtual void FMPCMPlay(std::vector <unsigned char > &wave);
+	virtual void FMPCMPlayStop(void);
+	virtual bool FMPCMChannelPlaying(void);
 
 
 	virtual void BeepPlay(int samplingRate, std::vector<unsigned char>& wave) ;
 	virtual void BeepPlayStop() ;
 	virtual bool BeepChannelPlaying() const;
+	virtual void Render(const TownsRender::Image &img, const class FMTowns &towns) ;
 
 
 	void processMouseH( float mouse_speed);	// muad : why H ? why not.
@@ -817,16 +823,16 @@ void FsRetroArchConnection::PollGamePads(void) {  }
 	msf.FromHSG(posInDisc);
 	return msf;
 }
-
-/* virtual */ void FsRetroArchConnection::PCMPlay(std::vector <unsigned char > &wave)
+/*
+ void FsRetroArchConnection::PCMPlay(std::vector <unsigned char > &wave)
 {
 	PCMChannel.CreateFromSigned16bitStereo(RF5C68::FREQ, wave);
 	soundPlayer.PlayOneShot(PCMChannel);
 }
-/* virtual */ void FsRetroArchConnection::PCMPlayStop(void) {	soundPlayer.Stop(PCMChannel);}
-/* virtual */ bool FsRetroArchConnection::PCMChannelPlaying(void){	return YSTRUE == soundPlayer.IsPlaying(PCMChannel);}
+void FsRetroArchConnection::PCMPlayStop(void) {	soundPlayer.Stop(PCMChannel);}
+bool FsRetroArchConnection::PCMChannelPlaying(void){	return YSTRUE == soundPlayer.IsPlaying(PCMChannel);}
 
-/* virtual */ void FsRetroArchConnection::FMPlay(std::vector <unsigned char> &wave)
+ void FsRetroArchConnection::FMPlay(std::vector <unsigned char> &wave)
 {
 	FMChannel.CreateFromSigned16bitStereo(YM2612::WAVE_SAMPLING_RATE, wave);
 
@@ -839,13 +845,40 @@ void FsRetroArchConnection::PollGamePads(void) {  }
 
 	soundPlayer.PlayOneShot(FMChannel);
 }
-/* virtual */ void FsRetroArchConnection::FMPlayStop(void) { }
-/* virtual */ bool FsRetroArchConnection::FMChannelPlaying(void) {	return YSTRUE == soundPlayer.IsPlaying(FMChannel); }
+void FsRetroArchConnection::FMPlayStop(void) { }
+bool FsRetroArchConnection::FMChannelPlaying(void) {	return YSTRUE == soundPlayer.IsPlaying(FMChannel); }
+*/
+
+/* virtual */ void FsRetroArchConnection::FMPCMPlay(std::vector <unsigned char> &wave)
+{
+	FMPCMChannel.CreateFromSigned16bitStereo(YM2612::WAVE_SAMPLING_RATE, wave);
+
+	// std::string fName;
+	// fName="tone";
+	// fName+=cpputil::Itoa(ch);
+	// fName+=".wav";
+	// auto waveFile=FMChannel[ch].MakeWavByteData();
+	// cpputil::WriteBinaryFile(fName,waveFile.size(),waveFile.data());
+
+	soundPlayer.PlayOneShot(FMPCMChannel);
+}
+/* virtual */ void FsRetroArchConnection::FMPCMPlayStop(void)
+{
+}
+/* virtual */ bool FsRetroArchConnection::FMPCMChannelPlaying(void)
+{
+	return YSTRUE == soundPlayer.IsPlaying(FMPCMChannel);
+}
 
 
 /*virtual*/ void FsRetroArchConnection::BeepPlay(int samplingRate, std::vector<unsigned char>& wave){ }
 /*virtual*/ void FsRetroArchConnection::BeepPlayStop() { }
 /*virtual*/ bool FsRetroArchConnection::BeepChannelPlaying() const  { return 0; }
+
+void FsRetroArchConnection::Render(const TownsRender::Image &img, const class FMTowns &towns) {
+// compatibilty sake.
+	
+}
 
 
 
