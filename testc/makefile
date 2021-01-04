@@ -285,6 +285,27 @@ build\ymtone.exp : build\ymtone.OBJ build\io.OBJ
 	386link build\ymtone.obj -exe build\ymtone.exp @LIBS.LN -stack 16384
 
 
+build\ymwave.obj : ymwave.c
+	hcd386 ymwave.c -obj build\ymwave.OBJ
+
+build\ymwave.exp : build\ymwave.OBJ build\io.OBJ
+	386link build\ymwave.obj -exe build\ymwave.exp @LIBS.LN -stack 16384
+
+
+build\ymwaverr.obj : ymwaverr.c
+	hcd386 ymwaverr.c -obj build\ymwaverr.OBJ
+
+build\ymwaverr.exp : build\ymwaverr.OBJ build\io.OBJ
+	386link build\ymwaverr.obj -exe build\ymwaverr.exp @LIBS.LN -stack 16384
+
+
+build\ymwaverp.obj : ymwaverp.c
+	hcd386 ymwaverp.c -obj build\ymwaverp.OBJ
+
+build\ymwaverp.exp : build\ymwaverp.OBJ build\io.OBJ
+	386link build\ymwaverp.obj -exe build\ymwaverp.exp @LIBS.LN -stack 16384
+
+
 
 build\repeat.obj : cdrom\repeat.asm
 	MASM cdrom\repeat.ASM build\repeat.OBJ build\repeat.LST NUL

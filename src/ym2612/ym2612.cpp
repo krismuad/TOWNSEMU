@@ -115,7 +115,7 @@ void YM2612::State::Reset(void)
 	{
 		for(auto &slot : ch.slots)
 		{
-			slot.lastDb100Cache=0;
+			slot.lastDbX100Cache=0;
 		}
 	}
 	playingCh=0;
@@ -134,6 +134,7 @@ YM2612::YM2612()
 	MakeSLtoDB100();
 	MakeDB100to4095Scale();
 	MakeLinearScaleTable();
+	MakeAttackProfileTable();
 	PowerOn();
 }
 YM2612::~YM2612()
@@ -209,6 +210,42 @@ void YM2612::MakeLinearScaleTable(void)
 	for(unsigned int i=0; i<=9600; ++i)
 	{
 		linear9600to4096[i]=i*4096/9600;
+	}
+}
+
+void YM2612::MakeAttackProfileTable(void)
+{
+	// YM2612 manual tells that the output level increases during the attack phase is exponential,
+	// which can open up a lot of interpretations.  Is it like dB(t)=C*k^t  ?
+	// By looking at fmgen by Cisc, it seems to be the difference from the peak output decreases
+	// exponentially.
+	//
+	// If the level difference from the maximum level is diff(i),
+	//     diff(i+1)=diff(i)*k   {0<t<1}
+	// Then,
+	//     diff(i)=diff(0)*(k^i) {0<t<1}
+	// Let's say the maximum is 4096.  I want to say diff reaches 0 at t=4096, but well it won't be zero.
+	// So, let's say diff reaches 1 at t=409t instead.  The initial difference is 4096.  Then,
+	// 
+	//     1=4096*t^4095, 
+	// 
+	// From there, I can calculate t.  And then values for the table.
+
+	const double lastErr=0.014;
+	const double t=pow(lastErr,1.0/4096.0);
+	for(int i=0; i<4096; ++i)
+	{
+		double y=(1.0-pow(t,(double)i))/(1.0-lastErr);
+		attackExp[i]=(int)(y*4096);
+	}
+
+	int j=0;
+	for(int i=0; i<4096; ++i)
+	{
+		for(; j<=attackExp[i+1]; ++j)
+		{
+			attackExpInverse[j]=i;
+		}
 	}
 }
 
@@ -309,17 +346,20 @@ unsigned int YM2612::WriteRegister(unsigned int channelBase,unsigned int reg,uns
 		{
 			unsigned int slotFlag=((value>>4)&0x0F);
 
+			unsigned int onSlots=(~state.channels[ch].usingSlot)&slotFlag;
+			unsigned int offSlots=(state.channels[ch].usingSlot&(~slotFlag))&0x0F;
+
 			// Prob, this is the trigger to start playing.
 			// F-BASIC386 first writes SLOT=0 then SLOT=0x0F.
-			if(0==state.channels[ch].usingSlot && 0!=slotFlag)
+			if(0!=onSlots)
 			{
 				// Play a tone
-				KeyOn(ch,0x0F);
+				KeyOn(ch,onSlots);
 				chStartPlaying=ch;
 			}
-			else if(0!=state.channels[ch].usingSlot && 0==slotFlag)
+			if(0!=offSlots)
 			{
-				KeyOff(ch,0x0F);
+				KeyOff(ch,offSlots);
 			}
 
 			state.channels[ch].usingSlot=slotFlag;
@@ -379,7 +419,33 @@ unsigned int YM2612::WriteRegister(unsigned int channelBase,unsigned int reg,uns
 				state.channels[ch].slots[slot].MULTI=(value&15);
 				break;
 			case 0x40: // TL
-				state.channels[ch].slots[slot].TL=(value&0x7F);
+				{
+					auto prevTL=state.channels[ch].slots[slot].TL;
+					state.channels[ch].slots[slot].TL=(value&0x7F);
+					if(0!=(state.channels[ch].usingSlot&(1<<slot)))
+					{
+						auto prevLevel=127-prevTL;
+						auto newLevel=127-state.channels[ch].slots[slot].TL;
+						UpdateSlotEnvelope(state.channels[ch],state.channels[ch].slots[slot]);
+						if(0!=prevLevel)
+						{
+							// Must be linear in dB scale.  To prepare for subsequent release phase.
+							state.channels[ch].slots[slot].lastDbX100Cache*=newLevel;
+							state.channels[ch].slots[slot].lastDbX100Cache/=prevLevel;
+						}
+					}
+					else if(true==state.channels[ch].slots[slot].InReleasePhase)
+					{
+						auto prevLevel=127-prevTL;
+						auto newLevel=127-state.channels[ch].slots[slot].TL;
+						if(0!=prevLevel)
+						{
+							// Must be linear in dB scale.  lastDbX100Cache shouldn't matter already.
+							state.channels[ch].slots[slot].ReleaseStartDbX100*=newLevel;
+							state.channels[ch].slots[slot].ReleaseStartDbX100/=prevLevel;
+						}
+					}
+				}
 				break;
 			case 0x50: // KS,AR
 				state.channels[ch].slots[slot].KS=((value>>6)&3);
@@ -395,6 +461,14 @@ unsigned int YM2612::WriteRegister(unsigned int channelBase,unsigned int reg,uns
 			case 0x80: // SL,RR
 				state.channels[ch].slots[slot].SL=((value>>4)&0x0F);
 				state.channels[ch].slots[slot].RR=(value&0x0F);
+				if(0!=(state.channels[ch].usingSlot&(1<<slot)))
+				{
+					UpdateSlotEnvelope(state.channels[ch],state.channels[ch].slots[slot]);
+				}
+				else if(true==state.channels[ch].slots[slot].InReleasePhase)
+				{
+					UpdateRelease(state.channels[ch],state.channels[ch].slots[slot]);
+				}
 				break;
 			case 0x90: // SSG-EG
 				state.channels[ch].slots[slot].SSG_EG=(value&0x0F);

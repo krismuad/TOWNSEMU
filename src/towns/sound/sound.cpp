@@ -68,6 +68,7 @@ void TownsSound::PCMStopPlay(unsigned char chStopPlay)
 /* virtual */ void TownsSound::Reset(void)
 {
 	state.Reset();
+	nextFMPCMWave.clear();
 }
 /* virtual */ void TownsSound::IOWriteByte(unsigned int ioport,unsigned int data)
 {
@@ -226,46 +227,55 @@ std::vector <std::string> TownsSound::GetStatusText(void) const
 
 void TownsSound::ProcessSound(void)
 {
-	if(0!=state.ym2612.state.playingCh)
+	if((0!=state.ym2612.state.playingCh || true==state.rf5c68.IsPlaying()) && nullptr!=outside_world)
 	{
-		if(0!=state.ym2612.state.playingCh && true!=outside_world->FMChannelPlaying())
+		if(true==nextFMPCMWave.empty())
 		{
-			state.ym2612.NextWaveAllChannels();
-			auto wav=state.ym2612.MakeWaveAllChannels(FM_MILLISEC_PER_WAVE);
+			if(0!=state.ym2612.state.playingCh)
+			{
+				nextFMPCMWave=state.ym2612.MakeWaveAllChannels(FM_PCM_MILLISEC_PER_WAVE);
+			}
+			if(true==state.rf5c68.IsPlaying())
+			{
+				const unsigned int WAVE_OUT_SAMPLING_RATE=YM2612::WAVE_SAMPLING_RATE; // Align with YM2612.
+				unsigned int numSamples=0;
+				if(true==nextFMPCMWave.empty()) // YM2612 not playing.
+				{
+					numSamples=FM_PCM_MILLISEC_PER_WAVE*WAVE_OUT_SAMPLING_RATE/1000;
+					nextFMPCMWave.resize(numSamples*4);
+					std::memset(nextFMPCMWave.data(),0,numSamples*4);
+				}
+				else
+				{
+					numSamples=(unsigned int)(nextFMPCMWave.size()/4);
+				}
+
+				state.rf5c68.AddWaveForNumSamples(nextFMPCMWave.data(),numSamples,WAVE_OUT_SAMPLING_RATE);
+
+				for(unsigned int chNum=0; chNum<RF5C68::NUM_CHANNELS; ++chNum)
+				{
+					auto &ch=state.rf5c68.state.ch[chNum];
+					if(true==ch.IRQAfterThisPlayBack)
+					{
+						state.rf5c68.SetIRQBank(ch.IRQBank);
+						ch.IRQAfterThisPlayBack=false;
+					}
+				}
+			}
+		}
+
+		if(true!=outside_world->FMPCMChannelPlaying() && true!=nextFMPCMWave.empty())
+		{
 			if(true==recordFMandPCM)
 			{
-				FMrecording.insert(FMrecording.end(),wav.begin(),wav.end());
+				FMPCMrecording.insert(FMPCMrecording.end(),nextFMPCMWave.begin(),nextFMPCMWave.end());
 			}
-			outside_world->FMPlay(wav);
+			outside_world->FMPCMPlay(nextFMPCMWave);
+			nextFMPCMWave.clear(); // It was supposed to be cleared in FMPlay.  Just in case.
 			state.ym2612.CheckToneDoneAllChannels();
 		}
 	}
-	if(state.rf5c68.state.playing && nullptr!=outside_world)
-	{
-		if(true!=outside_world->PCMChannelPlaying())
-		{
-			std::vector <unsigned char> wave;
-			const unsigned int numSamples=PCM_MILLISEC_PER_WAVE*RF5C68::SAMPLING_RATE/1000;
-			wave.resize(numSamples*4);
 
-			for(unsigned int chNum=0; chNum<RF5C68::NUM_CHANNELS; ++chNum)
-			{
-				auto &ch=state.rf5c68.state.ch[chNum];
-				if(true==ch.IRQAfterThisPlayBack)
-				{
-					state.rf5c68.SetIRQBank(ch.IRQBank);
-					ch.IRQAfterThisPlayBack=false;
-				}
-			}
-
-			state.rf5c68.MakeWaveForNumSamples(wave.data(),numSamples);
-			if(true==recordFMandPCM)
-			{
-				FMrecording.insert(PCMrecording.end(),wave.begin(),wave.end());
-			}
-			outside_world->PCMPlay(wave);
-		}
-	}
 	if (townsPtr->timer.IsBuzzerPlaying()) {
 		if (!outside_world->BeepChannelPlaying()) {
 			auto r = townsPtr->timer.MakeBuzzerWave(BEEP_MILLISEC_PER_WAVE);
@@ -277,26 +287,17 @@ void TownsSound::ProcessSound(void)
 void TownsSound::StartRecording(void)
 {
 	recordFMandPCM=true;
-	FMrecording.clear();
-	PCMrecording.clear();
+	FMPCMrecording.clear();
 }
 void TownsSound::EndRecording(void)
 {
 	recordFMandPCM=false;
 }
 #include "yssimplesound.h"
-void TownsSound::SaveFMRecording(std::string fName) const
+void TownsSound::SaveRecording(std::string fName) const
 {
 	YsSoundPlayer::SoundData data;
-	auto dataCopy=FMrecording;
-	data.CreateFromSigned16bitStereo(44100,dataCopy);
-	auto wavFile=data.MakeWavByteData();
-	cpputil::WriteBinaryFile(fName,wavFile.size(),wavFile.data());
-}
-void TownsSound::SavePCMRecording(std::string fName) const
-{
-	YsSoundPlayer::SoundData data;
-	auto dataCopy=PCMrecording;
+	auto dataCopy=FMPCMrecording;
 	data.CreateFromSigned16bitStereo(44100,dataCopy);
 	auto wavFile=data.MakeWavByteData();
 	cpputil::WriteBinaryFile(fName,wavFile.size(),wavFile.data());

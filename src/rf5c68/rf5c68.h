@@ -65,6 +65,7 @@ public:
 		unsigned short Bank;   // Bank x000H
 		unsigned char CB;      // Channel
 		unsigned char chOnOff; // I/O 04F8H
+		int timeBalance;       // For WAV generation.
 
 		inline bool IRQ() const
 		{
@@ -131,7 +132,13 @@ public:
 	    Returns actual number of samples filled in the buffer.  Number of bytes will be return-value*4.
 	    Buffer must be long enough for numSamples*4.
 	*/
-	unsigned int MakeWaveForNumSamples(unsigned char waveBuf[],unsigned int numSamples);
+	unsigned int MakeWaveForNumSamples(unsigned char waveBuf[],unsigned int numSamples,int outSamplingRate);
+
+	unsigned int AddWaveForNumSamples(unsigned char waveBuf[],unsigned int numSamples,int outSamplingRate);
+
+	/*! Returns true if playing.
+	*/
+	bool IsPlaying(void) const;
 
 	/*! Notified from the controller that the play has stopped.
 	*/

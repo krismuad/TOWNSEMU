@@ -101,19 +101,16 @@ public:
 		unsigned int SSG_EG;
 
 		// Cache for wave-generation >>
-		unsigned long long int microsecS12;      // Microsec from start of a tone by (microsec12>>12)
-		mutable unsigned long long int nextMicrosecS12; // Cached in MakeWave.
-		unsigned long long int toneDurationMillisecS12;  // In (microsec<<12).
-		unsigned int phase12;      // 5-bit phase=((phase>>12)&0x1F)
-		unsigned int phase12Step;  // Increment of phase12 per time step.
-		mutable unsigned int nextPhase12; // Cached in MakeWave
-		unsigned int env[6];       // Envelope: Db100 scale.  0 to 9600.
-		unsigned int envDurationCache; // in milliseconds
-		unsigned int RRCache;      // Calibrated Release Rate
+		mutable unsigned long long int microsecS12;  // Microsec from start of a tone by (microsec12>>12)
+		uint64_t toneDurationMicrosecS12;   // In (microsec<<12).
+		mutable unsigned int phaseS12;      // 5-bit phase=((phaseS12>>12)&0x1F)
+		unsigned int phaseS12Step;  // Increment of phase12 per time step.
+		unsigned int env[6];       // Envelope is in Db100 scale.  0 to 9600.  Time is (microsec>>10) (=microsecS12>>22)
+		unsigned int envDurationCache; // in (microsec>>10)
 		bool InReleasePhase;
 		unsigned int ReleaseStartTime,ReleaseEndTime;
-		unsigned int ReleaseStartDb100;
-		mutable unsigned int lastDb100Cache;  // 0 to 9600 scale.
+		unsigned int ReleaseStartDbX100;
+		mutable unsigned int lastDbX100Cache;  // 0 to 9600 scale.
 		// Cache for wave-generation <<
 
 		void Clear(void);
@@ -122,12 +119,11 @@ public:
 		// phaseShift is input from the upstream slot.
 		inline int UnscaledOutput(int phase,int phaseShift) const;
 		inline int UnscaledOutput(int phase,int phaseShift,unsigned int FB,int lastSlot0Out) const;
-		// Apply Envelope as Db.  Output is amplitude 4096 scale.
-		inline int EnvelopedOutputDb(int phase,int phaseShift,unsigned int timeInMS,unsigned int FB,int lastSlot0Out) const;
-		inline int EnvelopedOutputDb(int phase,int phaseShift,unsigned int timeInMS) const;
-		// Apply Envelope as Linear (9600 as 1.0).  Output is amplitude 4096 scale.
-		inline int EnvelopedOutputLn(int phase,int phaseShift,unsigned int timeInMS,unsigned int FB,int lastSlot0Out) const;
-		inline int EnvelopedOutputLn(int phase,int phaseShift,unsigned int timeInMS) const;
+
+		// Interpolate Envelope as Db.  Output is amplitude 4096 scale.
+		// Time input is close to ms, but it is actually (microsec>>10).
+		inline int EnvelopedOutputDbToAmpl(int phase,int phaseShift,unsigned int timeInMS,unsigned int FB,int lastSlot0Out) const;
+		inline int EnvelopedOutputDbToAmpl(int phase,int phaseShift,unsigned int timeInMS) const;
 		// DB scale: 0 to 9600
 		inline int InterpolateEnvelope(unsigned int timeInMS) const;
 
@@ -145,12 +141,12 @@ public:
 
 		// Cache for wave-generation >>
 		unsigned int playState;
-		int lastSlot0Out[2];
-		mutable int lastSlot0OutForNextWave[2];           // For calculating feedback.
+		mutable int lastSlot0Out[2];
 		// Cache for wave-generation <<
 
 		void Clear();
 		unsigned int Note(void) const;
+		unsigned int KC(void) const;
 	};
 
 	class State
@@ -176,6 +172,9 @@ public:
 
 	State state;
 	bool channelMute[NUM_CHANNELS]={false,false,false,false,false,false};
+
+	static unsigned int attackExp[4096];
+	static unsigned int attackExpInverse[4096];
 
 	static int sineTable[PHASE_STEPS];
 	static unsigned int TLtoDB100[128];   // 100 times dB
@@ -213,6 +212,7 @@ private:
 	void MakeSLtoDB100(void);
 	void MakeDB100to4095Scale(void);
 	void MakeLinearScaleTable(void);
+	void MakeAttackProfileTable(void);
 public:
 	void PowerOn(void);
 	void Reset(void);
@@ -265,18 +265,11 @@ private:
 
 	/*! lastSlot0Out is input/output.  Needed for calculating feedback.
 	*/
+	template <class LFOClass>
 	int CalculateAmplitude(int chNum,const uint64_t timeInMicrosecS12[NUM_SLOTS],const unsigned int slotPhase[4],const int AMS4096[4],int &lastSlot0Out) const;
 
 
 public:
-	/*! 
-	*/
-	void NextWave(unsigned int chNum);
-
-	/*!
-	*/
-	void NextWaveAllChannels(void);
-
 	/*! Change channel state to RELEASE.
 	*/
 	void KeyOff(unsigned int ch,unsigned int slotFlags=SLOTFLAGS_ALL);
@@ -292,6 +285,16 @@ public:
 	void CheckToneDoneAllChannels(void);
 
 
+	/*! Updates slot envelope.
+	*/
+	void UpdateSlotEnvelope(const Channel &ch,Slot &slot);
+
+
+	/*!
+	*/
+	void UpdateRelease(const Channel &ch,Slot &slot);
+
+
 	/*! BLOCK_NOTE is as calculated by [2] pp.204.  Isn't it just high-5 bits of BLOCK|F_NUM2?
 	    Return value:
 	       true    Envelope calculated
@@ -303,12 +306,10 @@ public:
 	       env[3]  SL amplitude (0-127)
 	       env[4]  Duration after reaching SL.
 	       env[5]  Zero
-	    Release Rate:
-	       RR
 	*/
-	bool CalculateEnvelope(unsigned int env[6],unsigned int &RR,unsigned int BLOCK_NOTE,const Slot &slot) const;
+	bool CalculateEnvelope(unsigned int env[6],unsigned int BLOCK_NOTE,const Slot &slot) const;
 private:
-	inline bool NoTone(unsigned int env[6],unsigned int &RR) const
+	inline bool NoTone(unsigned int env[6]) const
 	{
 		env[0]=0;
 		env[1]=0;
@@ -316,7 +317,6 @@ private:
 		env[3]=0;
 		env[4]=0;
 		env[5]=0;
-		RR=0;
 		return false;
 	}
 

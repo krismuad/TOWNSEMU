@@ -137,7 +137,7 @@ public:
 	virtual void Stop(void)=0;
 	virtual void DevicePolling(class FMTowns &towns)=0;
 	virtual void UpdateStatusBitmap(class FMTowns &towns)=0;
-	virtual void Render(const TownsRender::Image &img)=0;
+	virtual void Render(const TownsRender::Image &img,const class FMTowns &towns)=0;
 
 	/*! Implementation should return true if the image needs to be flipped before drawn on the window.
 	    The flag is transferred to rendering thread class at the beginning of the TownsThread::Start.
@@ -202,16 +202,11 @@ public:
 
 
 public:
-	virtual void PCMPlay(std::vector <unsigned char > &wave)=0;
-	virtual void PCMPlayStop(void)=0;
-	virtual bool PCMChannelPlaying(void)=0;
+	virtual void FMPCMPlay(std::vector <unsigned char > &wave)=0;
+	virtual void FMPCMPlayStop(void)=0;
+	virtual bool FMPCMChannelPlaying(void)=0;
 
 
-
-public:
-	virtual void FMPlay(std::vector <unsigned char> &wave)=0;
-	virtual void FMPlayStop(void)=0;
-	virtual bool FMChannelPlaying(void)=0;
 
 public:
 	virtual void BeepPlay(int samplingRate, std::vector<unsigned char>& wave) = 0;

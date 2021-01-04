@@ -982,7 +982,7 @@ void FsSimpleWindowConnection::PollGamePads(void)
 	}
 
 }
-/* virtual */ void FsSimpleWindowConnection::Render(const TownsRender::Image &img)
+/* virtual */ void FsSimpleWindowConnection::Render(const TownsRender::Image &img,const class FMTowns &towns)
 {
 	int winWid,winHei;
 	FsGetWindowSize(winWid,winHei);
@@ -1028,6 +1028,27 @@ void FsSimpleWindowConnection::PollGamePads(void)
 	glPixelZoom((float)scaling/100.0f,(float)scaling/100.0f);
 	glRasterPos2i(this->dx,(img.hei*scaling/100)+dy-1);
 	glDrawPixels(img.wid,img.hei,GL_RGBA,GL_UNSIGNED_BYTE,img.rgba);
+
+	if(TOWNS_APPSPECIFIC_STRIKECOMMANDER==towns.state.appSpecificSetting)
+	{
+		int x;
+		glColor3ub(128,128,255);
+		glBegin(GL_LINES);
+
+		x=this->dx+160*2*scaling/100;
+		glVertex2i(x,winHei-1);
+		glVertex2i(x,winHei-STATUS_HEI+1);
+
+		x=this->dx+224*2*scaling/100;
+		glVertex2i(x,winHei-1);
+		glVertex2i(x,winHei-STATUS_HEI+1);
+
+		x=this->dx+278*2*scaling/100;
+		glVertex2i(x,winHei-1);
+		glVertex2i(x,winHei-STATUS_HEI+1);
+
+		glEnd();
+	}
 
 	glRasterPos2i(0,winHei-1);
 	glPixelZoom(1,1);
@@ -1229,23 +1250,9 @@ void FsSimpleWindowConnection::PollGamePads(void)
 	return msf;
 }
 
-/* virtual */ void FsSimpleWindowConnection::PCMPlay(std::vector <unsigned char > &wave)
+/* virtual */ void FsSimpleWindowConnection::FMPCMPlay(std::vector <unsigned char> &wave)
 {
-	PCMChannel.CreateFromSigned16bitStereo(RF5C68::FREQ,wave);
-	soundPlayer.PlayOneShot(PCMChannel);
-}
-/* virtual */ void FsSimpleWindowConnection::PCMPlayStop(void)
-{
-	soundPlayer.Stop(PCMChannel);
-}
-/* virtual */ bool FsSimpleWindowConnection::PCMChannelPlaying(void)
-{
-	return YSTRUE==soundPlayer.IsPlaying(PCMChannel);
-}
-
-/* virtual */ void FsSimpleWindowConnection::FMPlay(std::vector <unsigned char> &wave)
-{
-	FMChannel.CreateFromSigned16bitStereo(YM2612::WAVE_SAMPLING_RATE,wave);
+	FMPCMChannel.CreateFromSigned16bitStereo(YM2612::WAVE_SAMPLING_RATE,wave);
 
 	// std::string fName;
 	// fName="tone";
@@ -1254,14 +1261,14 @@ void FsSimpleWindowConnection::PollGamePads(void)
 	// auto waveFile=FMChannel[ch].MakeWavByteData();
 	// cpputil::WriteBinaryFile(fName,waveFile.size(),waveFile.data());
 
-	soundPlayer.PlayOneShot(FMChannel);
+	soundPlayer.PlayOneShot(FMPCMChannel);
 }
-/* virtual */ void FsSimpleWindowConnection::FMPlayStop(void)
+/* virtual */ void FsSimpleWindowConnection::FMPCMPlayStop(void)
 {
 }
-/* virtual */ bool FsSimpleWindowConnection::FMChannelPlaying(void)
+/* virtual */ bool FsSimpleWindowConnection::FMPCMChannelPlaying(void)
 {
-	return YSTRUE==soundPlayer.IsPlaying(FMChannel);
+	return YSTRUE==soundPlayer.IsPlaying(FMPCMChannel);
 }
 
 /* virtual */ void FsSimpleWindowConnection::BeepPlay(int samplingRate, std::vector<unsigned char> &wave) {
