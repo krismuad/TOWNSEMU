@@ -20,6 +20,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 #include "eventlog.h"
 #include "cpputil.h"
+#include "townsdef.h"
 
 
 
@@ -43,8 +44,15 @@ void TownsEventLog::BeginRecording(long long int townsTime)
 void TownsEventLog::BeginPlayback(void)
 {
 	mode=MODE_PLAYBACK;
+	t0=std::chrono::system_clock::now();
 	playbackPtr=events.begin();
 }
+
+void TownsEventLog::StopPlayBack(void)
+{
+	mode=MODE_NONE;
+}
+
 /* static */ std::string TownsEventLog::EventTypeToString(int evtType)
 {
 	switch(evtType)
@@ -71,6 +79,12 @@ void TownsEventLog::BeginPlayback(void)
 		return "PAD0ADOWN";
 	case EVT_PAD0_A_UP:
 		return "PAD0AUP";
+	case EVT_KEYPRESS:
+		return "KEYPRESS";
+	case EVT_KEYRELEASE:
+		return "KEYRELEASE";
+	case EVT_REPEAT:
+		return "REPEAT";
 	};
 	return "?";
 }
@@ -104,7 +118,7 @@ void TownsEventLog::LogMouseStart(long long int townsTime)
 	if(MODE_RECORDING==mode)
 	{
 		events.push_back(Event());
-		events.back().t=std::chrono::system_clock::now();
+		events.back().t=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()-t0);
 		events.back().townsTime=townsTime;
 		events.back().eventType=eventType;
 	}
@@ -119,7 +133,7 @@ void TownsEventLog::LogMouseEnd(long long int townsTime)
 	if(MODE_RECORDING==mode)
 	{
 		events.push_back(Event());
-		events.back().t=std::chrono::system_clock::now();
+		events.back().t=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()-t0);
 		events.back().townsTime=townsTime;
 		events.back().eventType=eventType;
 	}
@@ -134,7 +148,7 @@ void TownsEventLog::LogLeftButtonDown(long long int townsTime,int mx,int my)
 	if(MODE_RECORDING==mode)
 	{
 		events.push_back(Event());
-		events.back().t=std::chrono::system_clock::now();
+		events.back().t=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()-t0);
 		events.back().townsTime=townsTime;
 		events.back().eventType=eventType;
 		events.back().mos[0]=mx;
@@ -147,7 +161,7 @@ void TownsEventLog::LogLeftButtonUp(long long int townsTime,int mx,int my)
 	if(MODE_RECORDING==mode)
 	{
 		events.push_back(Event());
-		events.back().t=std::chrono::system_clock::now();
+		events.back().t=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()-t0);
 		events.back().townsTime=townsTime;
 		events.back().eventType=eventType;
 		events.back().mos[0]=mx;
@@ -160,7 +174,7 @@ void TownsEventLog::LogRightButtonDown(long long int townsTime,int mx,int my)
 	if(MODE_RECORDING==mode)
 	{
 		events.push_back(Event());
-		events.back().t=std::chrono::system_clock::now();
+		events.back().t=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()-t0);
 		events.back().townsTime=townsTime;
 		events.back().eventType=eventType;
 		events.back().mos[0]=mx;
@@ -173,7 +187,7 @@ void TownsEventLog::LogRightButtonUp(long long int townsTime,int mx,int my)
 	if(MODE_RECORDING==mode)
 	{
 		events.push_back(Event());
-		events.back().t=std::chrono::system_clock::now();
+		events.back().t=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()-t0);
 		events.back().townsTime=townsTime;
 		events.back().eventType=eventType;
 		events.back().mos[0]=mx;
@@ -186,7 +200,7 @@ void TownsEventLog::LogFileOpen(long long int townsTime,std::string fName)
 	if(MODE_RECORDING==mode)
 	{
 		events.push_back(Event());
-		events.back().t=std::chrono::system_clock::now();
+		events.back().t=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()-t0);
 		events.back().townsTime=townsTime;
 		events.back().eventType=eventType;
 		events.back().fName=fName;
@@ -198,7 +212,7 @@ void TownsEventLog::LogFileExec(long long int townsTime,std::string fName)
 	if(MODE_RECORDING==mode)
 	{
 		events.push_back(Event());
-		events.back().t=std::chrono::system_clock::now();
+		events.back().t=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()-t0);
 		events.back().townsTime=townsTime;
 		events.back().eventType=eventType;
 		events.back().fName=fName;
@@ -210,7 +224,7 @@ void TownsEventLog::LogKeyCode(long long int townsTime,unsigned char keyCode1,un
 	if(MODE_RECORDING==mode)
 	{
 		events.push_back(Event());
-		events.back().t=std::chrono::system_clock::now();
+		events.back().t=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now()-t0);
 		events.back().townsTime=townsTime;
 		events.back().eventType=eventType;
 		events.back().keyCode[0]=keyCode1;
@@ -227,7 +241,7 @@ std::vector <std::string> TownsEventLog::GetText(void) const
 		text.back()+=EventTypeToString(e.eventType);
 
 		text.push_back("T ");
-		text.back()+=cpputil::Uitoa((int)(std::chrono::duration_cast <std::chrono::milliseconds>(e.t-t0).count()));
+		text.back()+=cpputil::Uitoa((int)(std::chrono::duration_cast <std::chrono::milliseconds>(e.t).count()));
 		text.back()+="ms";
 
 		text.push_back("TWT ");
@@ -258,6 +272,11 @@ std::vector <std::string> TownsEventLog::GetText(void) const
 			text.back()+=cpputil::Ubtox(e.keyCode[0]);
 			text.back()+=" ";
 			text.back()+=cpputil::Ubtox(e.keyCode[1]);
+			break;
+		case EVT_KEYPRESS:
+		case EVT_KEYRELEASE:
+			text.push_back("KEY ");
+			text.back()+=TownsKeyCodeToStr(e.keyCode[0]);
 			break;
 		}
 	}
@@ -304,8 +323,18 @@ bool TownsEventLog::LoadEventLog(std::string fName)
 				{
 					if(2<=argv.size())
 					{
+						std::chrono::milliseconds  t;
+						if(0==events.size())
+						{
+							t=std::chrono::milliseconds(0);
+						}
+						else
+						{
+							t=events.back().t;
+						}
 						events.push_back(Event());
 						events.back().eventType=strToEventType[argv[1]];
+						events.back().t=t; // Tentative.
 					}
 					else
 					{
@@ -318,7 +347,7 @@ bool TownsEventLog::LoadEventLog(std::string fName)
 				{
 					if(2<=argv.size())
 					{
-						events.back().t=t0+std::chrono::milliseconds(cpputil::Atoi(argv[1].c_str()));
+						events.back().t=std::chrono::milliseconds(cpputil::Atoi(argv[1].c_str()));
 					}
 					else
 					{
@@ -382,6 +411,13 @@ bool TownsEventLog::LoadEventLog(std::string fName)
 						return false;
 					}
 				}
+				else if("KEY"==argv[0])
+				{
+					if(2<=argv.size())
+					{
+						events.back().keyCode[0]=TownsStrToKeyCode(argv[1]);
+					}
+				}
 			}
 		}
 
@@ -412,11 +448,11 @@ void TownsEventLog::Playback(class FMTowns &towns)
 		}
 		else
 		{
-			decltype(playbackPtr->tPlayed) baseT;
-			decltype(playbackPtr->t-t0) dt;
+			std::chrono::time_point <std::chrono::system_clock> baseT;
+			std::chrono::milliseconds dt;
 			if(events.begin()==playbackPtr)
 			{
-				dt=playbackPtr->t-t0;
+				dt=playbackPtr->t;
 				baseT=t0;
 			}
 			else
@@ -427,7 +463,7 @@ void TownsEventLog::Playback(class FMTowns &towns)
 				baseT=prev->tPlayed;
 			}
 			auto now=std::chrono::system_clock::now();
-			auto tPassed=now-baseT;
+			auto tPassed=std::chrono::duration_cast<std::chrono::milliseconds>(now-baseT);
 
 			switch(playbackPtr->eventType)
 			{
@@ -535,6 +571,40 @@ void TownsEventLog::Playback(class FMTowns &towns)
 					towns.keyboard.PushFifo(playbackPtr->keyCode[0],playbackPtr->keyCode[1]);
 					playbackPtr->tPlayed=now;
 					++playbackPtr;
+				}
+				break;
+
+			case EVT_KEYPRESS:
+				if(dt<=tPassed)
+				{
+					unsigned char byteData=0;
+					// byteData|=(0!=FsGetKeyState(FSKEY_CTRL) ? TOWNS_KEYFLAG_CTRL : 0);
+					// byteData|=(0!=FsGetKeyState(FSKEY_SHIFT) ? TOWNS_KEYFLAG_SHIFT : 0);
+					byteData|=TOWNS_KEYFLAG_JIS_PRESS;
+
+					towns.keyboard.PushFifo(byteData,playbackPtr->keyCode[0]);
+					playbackPtr->tPlayed=now;
+					++playbackPtr;
+				}
+				break;
+			case EVT_KEYRELEASE:
+				if(dt<=tPassed)
+				{
+					unsigned char byteData=0;
+					// byteData|=(0!=FsGetKeyState(FSKEY_CTRL) ? TOWNS_KEYFLAG_CTRL : 0);
+					// byteData|=(0!=FsGetKeyState(FSKEY_SHIFT) ? TOWNS_KEYFLAG_SHIFT : 0);
+					byteData|=TOWNS_KEYFLAG_JIS_RELEASE;
+
+					towns.keyboard.PushFifo(byteData,playbackPtr->keyCode[0]);
+					playbackPtr->tPlayed=now;
+					++playbackPtr;
+				}
+				break;
+			case EVT_REPEAT:
+				if(dt<=tPassed)
+				{
+					playbackPtr=events.begin();
+					t0=now;
 				}
 				break;
 			}
