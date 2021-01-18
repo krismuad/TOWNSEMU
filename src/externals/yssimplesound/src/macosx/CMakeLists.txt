@@ -19,7 +19,11 @@ set(WIN_SUBSYSTEM CONSOLE)
 set(EXE_TYPE "")            # Can be "" or MACOSX_BUNDLE
 set(REALLY_NEED_CPP11 1)    # Setting 1 will enable use of C++11 libraries, but lose compatibility with OSX 10.6.
 
-
+if(APPLE)
+	find_library(AVFOUNDATION_LIB AVFoundation)
+	mark_as_advanced(AVFOUNDATION_LIB)
+	set(LIB_DEPENDENCY ${AVFOUNDATION_LIB})
+endif()
 
 #YSBEGIN "CMake Header" Ver 20170110
 # YS CMakeLists Template
@@ -48,12 +52,6 @@ set(REALLY_NEED_CPP11 1)    # Setting 1 will enable use of C++11 libraries, but 
 # OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 cmake_minimum_required(VERSION 3.0.0)
-if("${CMAKE_CURRENT_SOURCE_DIR}" MATCHES "^${CMAKE_SOURCE_DIR}" AND
-   "${CMAKE_BINARY_DIR}" MATCHES "^${CMAKE_SOURCE_DIR}")
-	message(FATAL_ERROR "In-source build prohibited.\nClear cache and Start cmake from somewhere else.")
-	# First condition is to allow inclusion of the project from outside CMake project with
-	# explicit binary-directory specification.   eg. add_subdirectory from Android CMakeLists.txt
-endif()
 
 if(MSVC)
 	if(NOT WIN_SUBSYSTEM)

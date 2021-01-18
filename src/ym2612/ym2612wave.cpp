@@ -22,6 +22,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 inline void WordOp_Set(unsigned char *ptr,short value)
 {
+#ifdef YS_LITTLE_ENDIAN
 	if(value<-32767)
 	{
 		*((short *)ptr)=-32767;
@@ -34,9 +35,17 @@ inline void WordOp_Set(unsigned char *ptr,short value)
 	{
 		*((short *)ptr)=value;
 	}
-
-#ifndef YS_LITTLE_ENDIAN
-	std::swap(ptr[0],ptr[1]);
+#else
+	if(value<-32767)
+	{
+		value=-32767;
+	}
+	else if(32767<value)
+	{
+		value=32767;
+	}
+	ptr[0]=value&255;
+	ptr[1]=(value>>8)&255;
 #endif
 }
 
@@ -1029,6 +1038,20 @@ long long int YM2612::MakeWaveForNSamplesTemplate(unsigned char wave[],unsigned 
 // std::cout << phase12[3] << "," << (phase12[3]>>12)/PHASE_STEPS << "cycles" << std::endl;
 
 	return i;
+}
+
+long long int YM2612::MakeWaveForNSamples(unsigned char wavBuf[],unsigned long long int numSamplesRequested) const
+{
+	unsigned int nPlayingCh=0;
+	unsigned int playingCh[NUM_CHANNELS];
+	for(unsigned int chNum=0; chNum<NUM_CHANNELS; ++chNum)
+	{
+		if(0!=(state.playingCh&(1<<chNum)))
+		{
+			playingCh[nPlayingCh++]=chNum;
+		}
+	}
+	return MakeWaveForNSamples(wavBuf,nPlayingCh,playingCh,numSamplesRequested);
 }
 
 long long int YM2612::MakeWaveForNSamples(unsigned char wave[],unsigned int nPlayingCh,unsigned int playingCh[],unsigned long long int numSamples) const
