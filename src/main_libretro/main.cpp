@@ -36,9 +36,10 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 /*
 Tsugaru libretro port : muad
-date : 20210108
+date : 20210118
 
-Port Status 
+
+I. Port Status 
 
 Support iso and bin/cue file ( no zip, no chd, no mdf/mds )
 The libretro port try to find associated [BootDisk] ( or [SystemDisk]  or [UserDisk]) ans insert it in FD0
@@ -47,9 +48,34 @@ Generate a save disk per game called "gamename]SaveDisk[.hdm" and inserted in FD
 if the mouse isn't working, try the fix in "Application Settings" menu option.
 After change in a game setting, you have to reset the emulator. 
 
+Emulation: ok
+Video : ok
+Sound :  ok ( sound will desync if the emulator is paused )
+Gamepad : ok ( second gamepad isn't working )
+Mouse : ok ( hit F11 to hide host cursor )
+keyboard : ok ( qwerty - no shift - capslock  )
 
 
-Retroarch config:
+II. Compilation help ( reminder )
+
+cd TOWNSEMU-master
+mkdir build
+cd build
+cmake ../src -DCMAKE_GENERATOR_PLATFORM=x64
+
+Open Tsugaru.sln with MS Visual Studio ( I use MS VS 2017 )
+
+Select Tsugaru_CUI project
+for both : release and debug
+Project->Settings->
+General : Extension : ".exe" -> ".dll"
+General : Type : "Application .exe" -> "Dynamic link Library .dll"
+General : Target Name : "libretro_tsugaru.dll"
+
+
+
+III. Retroarch config:
+
 Settings->Input->Hotkeys->Hotkey Enable : ( i use 'tilde' but you can choose what you want )
  with this settings, you have to hit 'tilde' + F1 to access menu while emulation
  and you can send all keystrock to the emulator
@@ -64,22 +90,18 @@ Emulator default setting :
 
 
 
-Emulation: ok
-Video : ok
-Sound :  ok ( sound will desync if the emulator is paused ) 
-Gamepad : ok ( second gamepad isn't working )
-Mouse : ok ( hit F11 to hide host cursor )
-keyboard : ok ( qwerty - no shift - capslock  )
-
-
-
-ToDo:
+IV. TODO 
 Handle the need of hdd
 Split main.cpp
 SaveStates
 
-Notes :
+
+V. Notes :
+
 At least for MS Visual Studio, add #include <algorithm>	if compile error for std::min
+
+
+VI. Bonus File
 
 File RetroArch\info\tsugaru_libretro.info
 
@@ -1358,7 +1380,7 @@ RETRO_API unsigned retro_api_version(void) { return RETRO_API_VERSION; }
 RETRO_API void retro_get_system_info(struct retro_system_info *info)
 {
 	info->library_name = "Tsugaru";
-	info->library_version = "v.20210108";
+	info->library_version = "v.20210118";
 	info->valid_extensions = "iso|cue";
 	info->need_fullpath = true;
 	info->block_extract = false;
