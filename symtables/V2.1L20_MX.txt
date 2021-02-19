@@ -2980,6 +2980,36 @@ M 0
 /end
 /begin0
 T 1
+* 00001679:00000ADD
+# 
+R 
+L 1679:00005382
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00000DED
+# 
+R 
+L Probably a Jump Table
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00000DEF
+# 
+R 
+L Jump Table for INT 21H functions
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
 * 00001679:00001116
 # 
 R 
@@ -3509,6 +3539,706 @@ P
 M 0
 /end
 /begin0
+T 0
+* 00001679:00001F11
+# CS:[1A7H] prob CARPOS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F1D
+# Prob Ctrl+C Check Counter
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001F2A
+# Skip Ctrl+C Check
+R 
+L Skip Ctrl+C Check 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F2F
+# 36F606AC02FF
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F3A
+# 1=STDOUT
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F42
+# SF_ENTRY+5=SF_DEVFLAGS, 8000h=REDIRECTED
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F47
+# 8000h=REDIRECTED"
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F4B
+# 080h=NOT_BLOCK
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F51
+# 4=STDPRN
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F59
+# 0800H=Named Pipe
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001F66
+# 
+R 
+L POP SI,DS,BX, then RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001F69
+# 
+R 
+L Do Spooler(?), POP SI,DS,BX, then RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001F6C
+# 
+R 
+L Control Code
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F6E
+# Enter
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F70
+# Back Space
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F78
+# 1A7H=CARPOS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F8C
+# Print ' ' until X=8*N
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001F9C
+# CARPOS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001FA4
+# 
+R 
+L Write one letter.  If ctrl code, do ^.
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001FE9
+# 
+R 
+L Do Spooler(?), POP SI,DS,BX, then RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001FEC
+# 
+R 
+L POP SI,DS,BX, then RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000034CE
+# ES:DI<-TEMPORARY_SF_TABLE_PTR
+R 
+L Really Close
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000034D2
+# SF_ATTR
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000034D6
+# Redirected?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000034DF
+# Must be CLOSE call.
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:000034E2
+# 
+R 
+L Not Redirected Device, BX=SF_ATTR, ES:DI=SF_TABLE
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00003575
+# Ref Count?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:0000357D
+# 
+R 
+L DEC REFCOUNT If RefC becomes 0, make it FFFF.  AX will be previous RefCount
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000357E
+# REFCOUNT
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00003591
+# SF_DIR_ENT_SECTOR
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000035AA
+# What's CS:0574H?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000035C3
+# C3
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000035C4
+# TEMPORARY_SF_TABLE_PTR
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000035EB
+# RET if BLOCK or CHAR_NOT_EOF
+R 
+L Update SF_DATE and SF_TIME
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000035EF
+# RET
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000035F1
+# RET if Unknown Dev flag (4000h)
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000035F5
+# RET
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000035FC
+# SF_DATE
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00003600
+# SF_TIME
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000037CF
+# 
+R 
+L SWAPBACK ([0303h=CONSWAP]<=0)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00003AAC
+# 2<BX -> Regular File
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00003AAF
+# 0303h=CONSWAP
+R 
+L Get SF_ENTRY from BX->DS:SI
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00003AC9
+# 
+R 
+L CONSWAP is ON
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00003ACE
+# PROB 0578H=SF_ENTRY for CONOUT Redirection
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:0000459B
+# 
+R 
+L Prob: Translate CP/M call 02->Write(08), 03->Status(0A)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045A0
+# DEVREQ+0EH Data Buffer?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045A7
+# DEVREQ+12H Data Length?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045B2
+# Check NOT REDIRECTED, NOT BLOCK
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045C9
+# DX=Incoming_DS, DS=ES=CS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045CD
+# DEVREQ+3=REQ_STATUS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045D1
+# DEVREQ+0Dh=Media-Descriptor Byte
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045D7
+# CS:1002 16 0E 16 0D 0F
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045DD
+# CS:1007 86 04 86 05 87 08 87 0A 86 07
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045E1
+# 0324H=REQHDR
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045E4
+# [DEVREQ+0]=REQ_SIZE  02->16H, 03->0DH
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000045E8
+# [DEVREQ+2]=REQ_CMD_CODE  02->08H 03->0AH
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004600
+# Non-Destructive Read Command
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004617
+# If non-destructive read, AL will be char.  If not AX restored.
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:0000461E
+# 
+R 
+L Error bit set
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000046CA
+# 080h=SF_DEVFLAG_BLOCK_NOT_BLOCK
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000046D0
+# ES:DI is now device-driver info (SF_DRIVER_POINTER) or DPB
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000046DB
+# AH=UNIT  If CS:[02B1h]==0 and ES:DI is DPB
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000046DF
+# CL=DRIVE
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000046E2
+# ES:DI=device-driver info (DPB_PTR_TO_DRIVER equivalent SF_DRIVER_POINTER)
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000046E6
+# (DI.SYSDEV_ATTR&0800H)==0 Open/Close/Removable media calls supported
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000046F4
+# 306H=DEVCALL (Command Buffer for Calling Strategy and Interrupt)
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000046FA
+# REQLEN=0dh
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000046FD
+# AH=Unit, AL=Command
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00004731
+# 
+R 
+L Re-POP AX,BX,CX,DX,SI,DI,BP,DS,ES then RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00004735
+# 
+R 
+L CALL STRATEGY & INTERRUPT FROM DS:SI+07H
+P 
+% 0
+M 0
+/end
+/begin0
 T 1
 * 00001679:00004738
 # 
@@ -3532,6 +4262,26 @@ M 0
 T 0
 * 00001679:0000474C
 # Must be Jump Vector for INTERRUPT
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004784
+# IncomingCX=Length (Popped AX and CX reverse order)
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004786
+# IncomingDX=StartingSector
 R 
 L 
 P 
@@ -3564,6 +4314,56 @@ T 1
 # 
 R 
 L INT 00H Handler
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005011
+# CONSOLE Error Handling?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000050BA
+# ERROR MODE
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005382
+# Pointer to Drive-Parameter Block
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:0000540C
+# 
+R 
+L Media Check, ES:BP=Drive Parameter Block
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005417
+# 1679:00005417
+R 
+L 
 P 
 % 0
 M 0
@@ -3604,6 +4404,76 @@ T 0
 # 
 R 
 L DOS:GET_DRIVE_NUMBER_FROM_FILE_NAME_IN_AL
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006604
+# 536H,538h=TEMPORARY_SF_TABLE_PTR
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000660C
+# ES:[DI]=Reference Count
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006612
+# MODE
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006618
+# I think I saw (AL&F0h)==7 somewhere
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000661F
+# Write unused to SFN at JFN in PDB
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006779
+# DS:[DI+2F]? SF_MACHINE_NUMBER?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006780
+# Error 06H=DOSERR_INVALID_HANDLE
+R 
+L 
 P 
 % 0
 M 0
