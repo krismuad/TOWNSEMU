@@ -5489,6 +5489,36 @@ P
 M 0
 /end
 /begin0
+T 1
+* 00001679:0000417B
+# Called from 4397, InputBX=Cluster of the DIRENT
+R 
+L Called from 4397, InputBX=Cluster of the DIRENT
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004187
+# ClusterMask+1=SectorPerCluster+1
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000041AA
+# 
+R 
+L [512h]=DPB_FIRST_DIR_SECTOR-DPB_FIRST_DATA_SECTOR,[556h]=DPB_FIRST_DIR_SECTOR, [558h]=[50Eh]=0
+P 
+% 0
+M 0
+/end
+/begin0
 T 0
 * 00001679:00003C32
 # DPB_BYTES_PER_SECTOR
@@ -5524,6 +5554,16 @@ T 0
 # Nth SECTOR IN FILE
 R 
 L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000041C9
+# 
+R 
+L Called from 3707 in Proc 36EF, 31DE in Proc 31A2, CF=1 DIR_NOT_FOUND, NE=ACCESS_DENIED
 P 
 % 0
 M 0
@@ -5580,8 +5620,8 @@ M 0
 /end
 /begin0
 T 0
-* 00001679:00003C5D
-# 2DAH=DMABufferAddress
+* 00001679:000041ED
+# CS:360h doesn't have '?:\' and is not a CHARDEV
 R 
 L 
 P 
@@ -5590,8 +5630,8 @@ M 0
 /end
 /begin0
 T 0
-* 00001679:00003C61
-# Jump if EndOffset+1 is before 64KB boundary
+* 00001679:000041FF
+# Pointer to the qualified file name (Prob CS:360h)
 R 
 L 
 P 
@@ -5600,8 +5640,8 @@ M 0
 /end
 /begin0
 T 0
-* 00001679:00003C66
-# AX=-DMA_Offset (FFF1-0000)
+* 00001679:00004208
+# Transfer within CS segment (4E6h to 360h)
 R 
 L 
 P 
@@ -5610,8 +5650,78 @@ M 0
 /end
 /begin0
 T 0
-* 00001679:00003C6A
-# If zero, make it FFFF
+* 00001679:00004214
+# Terminate C-String
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:0000421D
+# 
+R 
+L INFINITY
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:0000421F
+# Was initialized to -1 at the beginning of MakeFullPathName
+R 
+L Not a CHARDEV
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004228
+# Path after '?:\', if CS:[54Eh]=ffffh
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004230
+# Current CDS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004237
+# BX=CurrentDIR Cluster
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004241
+# If [54Eh]=0ffffh, SI=DestinationString after '?:\'
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004245
+# Jump if CurrentDIR is not empty
 R 
 L 
 P 
@@ -5624,6 +5734,16 @@ T 0
 # In the end, AX=EndOfDMABufferAfterRead
 R 
 L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00004265
+# 
+R 
+L Make 11-byte file name from CS:[4E6h] also check against CHARDEV if 0==(CS:[0506h&08h]), CF=1 if not CHARDEV
 P 
 % 0
 M 0
@@ -5669,9 +5789,19 @@ P
 M 0
 /end
 /begin0
-T 1
-* 00001679:00003CE4
-# SF_FILE_SIZE_LOW
+T 2
+* 00001679:000042E4
+# 
+R 
+L FileNameLoop
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000042EE
+# '.'
 R 
 L Fread from BLOCK device
 P 
@@ -5699,11 +5829,11 @@ P
 M 0
 /end
 /begin0
-T 0
-* 00001679:00003D00
-# CX is maximum bytes that can be read.
+T 2
+* 00001679:00004304
+# Start of extension part
 R 
-L 
+L ExtensionLoop
 P 
 % 0
 M 0
@@ -5792,6 +5922,296 @@ M 0
 T 0
 * 00001679:00004408
 # Saved SF_ATTR
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00004414
+# 
+R 
+L Search CHARDEV if 0==(CS:[0506h]&08h) CS:[0532H], BH=(DEVFLAG|C0h&DFh) -> STC Not Found.
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004418
+# [04E6h]=11-byte File Name (without directories)
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000442F
+# DEVHEAD (First SYSDEV)
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00004432
+# DEVFLAG_IS_CHARDEV
+R 
+L Search CHARDEV Loop
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004437
+# Skip if not CHARDEV
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000443B
+# SI=SYSDEV_NAME
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000444A
+# Next SYSDEV
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00004451
+# 
+R 
+L Return CF=1
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:0000445F
+# 
+R 
+L Found SYSDEV. Copy ptr to CS:[0534h], BH=(DEVFLAGS|0C0h&0DFh), CLC, RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00004474
+# Make Temporary DIRENT for SYSDEV->AL=0,BX=OFFSET DIRENT,SI=DRIVER PTR
+R 
+L (Prob)Making Temporary DIRENT
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000447A
+# 3-byte spaces as extension.
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000447C
+# Attrib 40H undefined.
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004484
+# 10-byte zeros
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000044A2
+# 
+R 
+L ?Proc referring to [2F8h]() CS:DI=DIRECTORY (excluding last \file name)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000044AB
+# Current CDS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000044C0
+# Jump if REDIRECTED Drive
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:000044C3
+# 
+R 
+L Not a REDIRECTED drive
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000044C5
+# DL=[2F8h], [2F8h]=0
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000044CC
+# Copy CWD to CS:360h
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000044D9
+# Put back DL to [2F8h], but it doesn't seem to be used.
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000044EC
+# CurrentDIR Cluster Unavailable
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:000044F2
+# 
+R 
+L Media Changed or New
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000044FE
+# Incoming_DI
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:0000453E
+# 
+R 
+L Restore ES:DI, Store it to CurrentCDS Pointer, Return CF=0
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:0000454C
+# 
+R 
+L Restore ES:DI from [BP-06H] and RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00004556
+# 
+R 
+L Find CHARDEV if 0==(CS:[0508h]&08h) CS:[0532H], BH=(DEVFLAG|C0h&DFh) -> STC If Found.()
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004563
+# Uncapitalize two letter
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004566
+# 'de'
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000456E
+# 'v'
 R 
 L 
 P 
