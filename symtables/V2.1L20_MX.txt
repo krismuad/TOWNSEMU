@@ -3029,6 +3029,16 @@ P
 M 0
 /end
 /begin0
+T 2
+* 00001679:00001185
+# 
+R 
+L AL=0, IRET
+P 
+% 0
+M 0
+/end
+/begin0
 T 1
 * 00001679:00001187
 # 
@@ -3054,6 +3064,16 @@ T 0
 # 
 R 
 L DOS:LDS_SI,CS:[051EH]
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000012E0
+# INT 21H AH=F8H Set OEM INT 21H Handler
+R 
+L 
 P 
 % 0
 M 0
@@ -3134,6 +3154,96 @@ T 1
 # 
 R 
 L INT 2FH Handler
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001487
+# 
+R 
+L INT 21H AH=64h RETF 0002h (Questionable)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000014C3
+# By default jump to 1679:1B60
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000014C7
+# 
+R 
+L INT 21H AH=2Ah Get Date(Out>CX=Year DH=Month DL=Day AL=Day of week(0=Sunday))
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000014E4
+# 
+R 
+L INT 21H AH=2Bh Set Date(In>CX=Year DH=Month DL=Day)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001504
+# 
+R 
+L INT 21H AH=2Ch Get Time(Out>CH=Hour CL=Min DH=Sec DL=1/100sec)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001515
+# 
+R 
+L INT 21H AH=2Dh Set Time(In>CH=Hour CL=Min DH=Sec DL=1/100sec)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:0000155C
+# procedure DATE16 in TIME.ASM of DOS2.0 Source
+R 
+L Read CLock. AX - YYYYYYYMMMMDDDDD, DX - HHHHHMMMMMMSSSSS (SSSSS=seconds/2)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001564
+# Minutes to left part of byte
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001568
+# Push hours and minutes to left end
+R 
+L 
 P 
 % 0
 M 0
@@ -3519,6 +3629,16 @@ P
 M 0
 /end
 /begin0
+T 0
+* 00001679:00001AA0
+# [BP]BX [BP+2]BP [BP+4]IP [BP+6]AX [BP+8]cs:1133h [BP+A]cs:1135h
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
 T 1
 * 00001679:00001ADD
 # 
@@ -3593,7 +3713,387 @@ T 1
 * 00001679:00001B04
 # 
 R 
-L INT 2AH AH=84H
+L INT 21H AH=08h Direct CONIN without Echo(Out:AL=chr)
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001B18
+# 
+R 
+L RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001B19
+# 
+R 
+L INT 21H AH=09h PUTS(In>DS:DX=$-terminated string)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001B25
+# STD_CON_STRING_INPUT of MS-DOS V2.0 Source
+R 
+L INT 21H AH=0Ah Buffered Input(In>DS:DX=buffer)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B29
+# DS:SI is the input buffer
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B2D
+# AL=Max num chars, AH=Num chars recall
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B30
+# IF zero, RET
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B34
+# This part is essentially MOVZX BX,AH
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B38
+# JMP if max chars <= num recall
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B3A
+# If num recall < max chars, cmp buf[2+numrecall],CR (LODSW made SI=buf+2)
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B3D
+# JMP if end of last input is CR (Correct Input Buffer)
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B3F
+# If end of last input is not CR, BX=0, otherwise BX=length of last input
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B43
+# DX=buffer length-1
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B44
+# [CARPOS]
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B48
+# [STARTPOS]
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B4D
+# INBUF
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B50
+# [INSMODE]=0 Insert Mode Off
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B57
+# Truncating the string to zero regardless of the recall count?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B5E
+# Probably if 0Ah, skip subsequent 0Dh
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001B60
+# 
+R 
+L GETCH_LOOP
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B65
+# Ctrl+F?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B67
+# [ESCCHAR]
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B71
+# C_DEL
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B75
+# c_BS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B79
+# Ctrl+Y?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B80
+# Ctrl+W?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001B8B
+# c_LF
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001BA5
+# Got a char
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001BE6
+# 
+R 
+L BACKSPJ
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001BE9
+# 
+R 
+L BUFFUL
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001BF1
+# 
+R 
+L ESC
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001BF4
+# 
+R 
+L ENDLIN
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001C0A
+# 
+R 
+L PHYCRLF
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001E67
+# 
+R 
+L Print \n
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001E71
+# 
+R 
+L INT 21H AH=06h Direct CONIN/OUT In>DL=chr(In>DL=0FFh Out:AL=chr)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001E9D
+# 
+R 
+L INT 21H AH=07h Direct CONIN without Echo(Out:AL=chr)
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00001EB9
+# 
+R 
+L One Char Out
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001EBA
+# 0001h=STDOUT
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00001ED0
+# SF_DRIVER_POINTER
+R 
+L 
 P 
 % 0
 M 0
@@ -3793,7 +4293,7 @@ T 1
 * 00001679:00001FA4
 # 
 R 
-L Write one letter.  If ctrl code, do ^.
+L BUFOUT Write one letter.  If ctrl code, do ^.
 P 
 % 0
 M 0
@@ -3814,6 +4314,576 @@ T 2
 # 
 R 
 L POP SI,DS,BX, then RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001FF0
+# 
+R 
+L INT 21H AH=0Bh Get STDIN Stat(Out>AL=0 No Char avail. FFh Char Available)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00001FFA
+# 
+R 
+L INT 21H AH=0Ch Flush Buffer and Read STDIN(In>STDIN function after flushing)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00002027
+# 
+R 
+L INT 21H AH=24h Set Random Record Num FCB(In>DS:DX=Opened FCB)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:0000203F
+# 
+R 
+L INT 21H AH=13h Delete FCB(In>DS:DX Unopened FCB Wildcard accepted)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00002053
+# 
+R 
+L INT 21H AH=23h Get File Size FCB(In>DS:DX=Unopened FCB Out>AL=Stat)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000020A2
+# 
+R 
+L INT 21H AH=10h Close File FCB(In>DS:DX FCB Out>AL=0 OK AL=FFH ERR)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00002108
+# 
+R 
+L INT 21H AH=17h Rename FCB(In>DS:DX Unopened FCB)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000026EA
+# 
+R 
+L INT 21H AH=0Fh Open File FCB(In>DS:DX Unopened FCB Out>AL=0 OK AL=FFH ERR)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000027BB
+# 
+R 
+L INT 21H AH=16h FCRAETE FCB(In>DS:DX Unopened FCB)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000027CB
+# 
+R 
+L INT 21H AH=28h Random Block Write FCB(In>CX=#Records DS:DX=opened FCB Out>AL=Status)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000027D0
+# 
+R 
+L INT 21H AH=27h Random Block Read FCB(In>CX=#Records DS:DX=opened FCB Out>AL=Status)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000027D5
+# 
+R 
+L INT 21H AH=14h FREAD FCB(In>DS:DX FCB AL=Status)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000027DA
+# 
+R 
+L INT 21H AH=15h FWRITE FCB(In>DS:DX FCB AL=Status)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000027DF
+# 
+R 
+L INT 21H AH=21h Read Random Record FCB(In>DS:DX Out>AL=Stat)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000027E4
+# 
+R 
+L INT 21H AH=22h Write Random Record FCB(In>DS:DX opened FCB, DTA Area=Data)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000027E9
+# 
+R 
+L INT 21H AH=11h FindFirst FCB(In>DS:DX Unopened FCB Out>AL=0 OK AL=FFH ERR)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:0000288A
+# 
+R 
+L INT 21H AH=12h FindNext FCB(In>DS:DX Unopened FCB Out>AL=0 OK AL=FFH ERR)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000028FD
+# 
+R 
+L INT 21H AH=4Eh FindFirst(In>AL=APPEND flag? CX=AttribMask DS:DX CStr File Spec Out>CF=0 DTA with Find Struc)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002940
+# SI=0475H (+15H from SDB), DI=DMApp+15H
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002941
+# 15H+0BH=20H from 460h
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002945
+# SI becomes 48Bh (+2Bh from SDB), DI=DMApp+16H
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000294B
+# SI becomes 491h (+31h from SDB), DI=DMApp+1Ah
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00002955
+# 
+R 
+L INT 21H AH=4Fh FindNext(In>DTA from last FindFirst or FindNext)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00002987
+# 
+R 
+L 11-byte filename+ext to plain file name.ext
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000029A6
+# '.'
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000029BC
+# 
+R 
+L INT 21H AH=47h GETCWD(In>DL=Drive 0=Curr 1=A: DS:SI=64-byte CStr buffer  CF=0 AX=0100h CF=1 AX=ErrCode)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000029F0
+# Length of Drive-Letter Part
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000029F6
+# '\'
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:000029FB
+# Skip first backslash
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00002A36
+# 
+R 
+L INT 21H AH=3Ah RMDIR(In>DS:DX=Cstr Pathname)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00002A75
+# 
+R 
+L INT 21H AH=3Bh SETCWD(In>DS:DX=Cstr Pathname)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002A7F
+# DOSERR_DIR_NOT_FOUND
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00002AF1
+# 
+R 
+L INT 21H AH=39h MKDIR(In>DS:DX=CStr Pathname)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002B00
+# DOSERR_DIR_NOT_FOUND
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00002B29
+# 
+R 
+L INT 21H AH=44h IOCTL In>AL=0 Get Dev Info AL=1 Set Dev Info AL=2 Read CHARDEV BX=Handle
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002B36
+# DOSERR_INVALID_HANDLE
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00002B38
+# 
+R 
+L Error End
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00002B3B
+# 
+R 
+L ES:DI is SF_ENTRY
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002B41
+# SF_DEVFLAGS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00002B47
+# 
+R 
+L Incoming_AL=1 Set Dev Info DX=DEV Info
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002B4B
+# DOSERR_INVALID_DATA
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002B5E
+# Overwrite SF_DEVFLAGS LoByte Only.
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00002B62
+# 
+R 
+L Return SYS_RET_OK
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00002B65
+# 
+R 
+L Incoming_AL=0
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002B75
+# Is CHARDEV.  ES:DI<-SYSDEV
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002B79
+# HiByte of SYSDEV_DEVFLAGS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00002B87
+# SF_DEVFLAGS, SF_FLAG_IS_CHARDEV
+R 
+L Incoming_AL=2
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002B94
+# It's CHARDEV.  ES:DI=SYSDEV
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00002BEA
+# DOSERR_INVALID_FUNC
+R 
+L Return DOSERR_INVALID_FUNC
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00002CB1
+# SYSDEV_DEVFLAG_IOCTL_SUPPORTED
+R 
+L Shoot IOCTL Read or Write command.
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002CB9
+# AL is still incoming AX=4401h or 4402h
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002CBF
+# Command 0Ch=IOCTL Write
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002CC6
+# Command 03h=IOCTL Read
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002CCB
+# Length
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002CCD
+# BL=0 if JMPed from 1679:00002B9A
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00002CF2
+# Byte Count Transferred
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00002D27
+# 
+R 
+L AH=41H DELETE Main
 P 
 % 0
 M 0
@@ -7230,6 +8300,306 @@ M 0
 /end
 /begin0
 T 1
+* 00001679:00004E44
+# 2CFH=INDOS
+R 
+L (Prob)Check Ctrl+C from BCON device.
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004E56
+# RequestCode 05=Non-Destructive Read
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004E60
+# Clear Return Status
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004E69
+# [0032H]=BCON Console Device
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004E6D
+# Call Device at DS:[SI], Request Header=ES:[BX]
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004E70
+# Busy-Bit Check.  Set means no key is ready.
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00004E81
+# Returned Character
+R 
+L Busy Bit is Zero.  Really Read.
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004E85
+# 03=Ctrl+C
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004E87
+# Return
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004E89
+# RequestCode 04=Read
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004E95
+# CONSDEV_REQ_CHAR
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00004EC3
+# 
+R 
+L INT 28H (Spooler) and RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004EC4
+# IDLEINT
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004ECC
+# ERRORMODE
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00004EE1
+# 
+R 
+L RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00004EE2
+# 
+R 
+L (Prob)Ctrl+C Check and Return DS:SI=SF_ENTRY for File Handle 0
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00004F6C
+# CNTCHAND in CTRLC.ASM
+R 
+L (Prob)Process Ctrl+C
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004F76
+# CONSWAP still meaning unknown.
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004F81
+# Probably User_SS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004F85
+# Probably User_SP
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004F8C
+# INDOS=0
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004F92
+# 2CEH=ERRORMODE
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004F9E
+# Fire INT 23H (Ctrl+C Handler)
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004FA1
+# Save previous AX?  Original Command Code?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004FA6
+# AX=FLAGS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004FA7
+# What does it mean SP different from saved value?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004FAE
+# Retry is possible because SS:SP is from User_SS:SP, and restoreWorld
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00004FB2
+# 
+R 
+L Jump to INT 21H, then IRET from there.
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004FB8
+# CF
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00004FBD
+# AH=4C -> Exit Process
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
 * 00001679:00004FC8
 # 
 R 
@@ -7691,7 +9061,7 @@ M 0
 /begin0
 T 0
 * 00001679:0000540E
-# Command=CHECK REMOVABLE MEDIA
+# Command Length=0Fh
 R 
 L 
 P 
@@ -7711,7 +9081,7 @@ M 0
 /begin0
 T 0
 * 00001679:00005417
-# 1679:00005417
+# Command=CHECK REMOVABLE MEDIA
 R 
 L 
 P 
@@ -8600,6 +9970,1046 @@ M 0
 /end
 /begin0
 T 0
+* 00001679:00005C7B
+# PSP_INT22H, PSP_INT23H, PSP_INT24H
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005C7E
+# Int 22H Handler
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005C81
+# Update Int 22h
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005C83
+# Update Int 23h
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005C85
+# Update Int 24h
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005C8A
+# 
+R 
+L Free MCBs of PSP=BX
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005CAD
+# 
+R 
+L Arena_Next: Move to the next and Check_Signature
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005CAF
+# MCB_NEXT
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005CB4
+# 
+R 
+L Check_Signature:ES=AX and STC if First-Byte of MCB is not 4Dh not 5Ah
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005CC4
+# 
+R 
+L COALESCE: Combine subsequent SYSTEM arenas
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005CE6
+# 
+R 
+L INT 21H AH=48h MALLOC(In>BX=#Paragraphs Out>CF=0 AX=Segment CF=1 AX=ErrCode BX=Max available block)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005CED
+# First Arena
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005CF1
+# Best Arena
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005CF5
+# Last Arena
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005D03
+# 
+R 
+L ALLOC_SCAN
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D05
+# Is the MCB owned by DOS (PID=0000h)?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005D0B
+# Is this the last MCB?
+R 
+L ALLOC_NEXT
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005D15
+# 
+R 
+L ALLOC_ERR
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D30
+# NOT ENOUGH MEMORY
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005D34
+# add following free block to current
+R 
+L ALLOC_FOUND_FREE
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005D44
+# 
+R 
+L ALLOC_TEST
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D49
+# FirstArena
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D51
+# FirstArena
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005D56
+# BestArena
+R 
+L ALLOC_BEST
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D5F
+# BestArena
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D64
+# Arena Size
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D6C
+# BestArena
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D71
+# LastArena
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005D78
+# LastArena
+R 
+L ALLOC_DO_SPLIT_HIGH
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D7D
+# Arena_Size
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D85
+# sizes are equal. no split
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D87
+# point to next block
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D89
+# no decrement!
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D8C
+# bx has size of lower block
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D8E
+# cx has upper (requested) size
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005D91
+# 
+R 
+L ALLOC_DO_SPLIT
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005D99
+# FirstArena
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005DA0
+# BestArena
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005DA5
+# ArenaSize
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005DB7
+# arena_size
+R 
+L ALLOC_SET_SIZES
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005DBB
+# arena_size
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005DC7
+# arena_owner
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005DCC
+# 
+R 
+L ALLOC_SET_OWNER
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005DCE
+# CurrentPDB
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005DD2
+# arena_owner
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005DDF
+# 
+R 
+L INT 21H AH=4Ah MRESIZE(In>BX=New size ES=Seg to Resize Out>CF=0 AX=Segment CF=1 AX=ErrCode BX=Max available block)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005E03
+# 
+R 
+L INT 21H AH=49h FREE(In>ES=Segment to free Out>CF=0 NoErr CF=1 AX=ErrCode)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005E23
+# 
+R 
+L INT 21H AH=58h Get/Set MALLOC Strategy(In>AL=0 Get AL=1 Set AX=Current Strategy BX=new Strategy)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005E42
+# 
+R 
+L INT 21H AH=5Dh 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005E48
+# JMP if AL=7,8, or 9
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005E4A
+# Reaches here if AL<7 or 9<A
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005F75
+# CurrentPDB
+R 
+L get_jfn_pointer (prob)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005F7A
+# PSP_FILE_TABLE_SIZE
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005F81
+# <- Error Code 06 is what?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005F83
+# 
+R 
+L STC and RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005F85
+# PSP_FILE_TABLE_POINTER
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005F8D
+# 
+R 
+L RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005F8E
+# 
+R 
+L get_sf_from_jfn DS=CS,BX=JFN -> ES:DI=SF_ENTRY()
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005FA8
+# 002A=FIRST FCB PTR (sftable)
+R 
+L get_sf_from_sfn BX=SFN -> ES:DI=SF_ENTRY
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005FAD
+# DI.SFT_COUNT
+R 
+L Traverse SFT Loop
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005FB7
+# Next SFT
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00005FC2
+# 
+R 
+L Found SFT
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005FC6
+# AX=(SIZE sf_entry)*Index_In_This_SFT
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005FCB
+# Bytes for SFT_LINK(DD),SFT_COUNT(DW),SFT_TABLE(DW)
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005FD0
+# 
+R 
+L Find Available JFN -> BX=JFN,ES:[DI]=JFN Pointer or DOSERR_TOO_MANY_OPEN_FILES
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00005FE3
+# 
+R 
+L Find Available SF_ENTRY -> ES:DI=SF_ENTRY, BX=SFN
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005FEC
+# DOSERR_TOO_MANY_OPEN_FILES
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005FF1
+# REFCOUNT=0?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00005FF7
+# REFCOUNT=0ffffh?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006003
+# SF_MACHINE_NUMBER
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000600E
+# SF_PSP_OWNER
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00006014
+# 
+R 
+L Try Next SF_ENTRY (POP BX)
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00006015
+# 
+R 
+L Try Next SF_ENTRY
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00006018
+# 
+R 
+L Found a SF_ENTRY
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006028
+# Not CurrentPDB.  What is it?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00006033
+# 
+R 
+L INT 21H AH=5Fh 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00006042
+# First DPB
+R 
+L Find DPB in DS:SI for Drive AL. (ADrive is 0)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00006058
+# ':'
+R 
+L Initialize Current CDS. Input AL=Drive Letter(char)
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000605B
+# @
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000605D
+# NUM DPB
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006063
+# Current CDS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006068
+# CDS_DRIVE_TYPE
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006074
+# '\ '
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006082
+# Root Directory Name Length
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006088
+# CurrentDir=Root
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000608E
+# Unused?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006097
+# Subtract 'A' to make it 0-based Drive Number
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000609E
+# DPB
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:000060A9
+# 
+R 
+L RET
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:000060AA
+# 
+R 
+L INT 21H AH=5Eh 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00006100
+# 
+R 
+L Set Up CurrentCDS, and STC if JOINed drive.
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000610C
+# JOINED Drive?
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00006117
+# 
+R 
+L Set Up Current CDS  AL 1=ADrv, 0=CurDrv  CurrentCDSPtr->CS:[053AH], Use Temporary CDS CS:[0495h] if not set.
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000611B
+# Current Drive
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000613C
+# 'A'
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:0000614E
+# 
+R 
+L SetDir (NoSetDir=0)
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:0000615A
+# 
+R 
+L Error End
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:0000615B
+# 
+R 
+L ret
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:0000615E
+# NUM_CDS
+R 
+L Set CurrentCDS to ALth
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006163
+# Jump if AL is below NUM_CDS
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00006167
+# 
+R 
+L Set Current CDS to ALth
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:00006169
+# CDS_PTR
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 0
+* 00001679:0000616E
+# CDS sizs=51h bytes
+R 
+L 
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:00006207
+# 
+R 
+L ret
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
 * 00001679:00006208
 # 
 R 
@@ -8834,6 +11244,46 @@ T 1
 # 37EBH is Really Fread
 R 
 L INT 21H AH=3FH FREAD BX=JFN CX=Bytes DS:DX=ReadBuffer
+P 
+% 0
+M 0
+/end
+/begin0
+T 2
+* 00001679:000066FF
+# 
+R 
+L Get/Set Time Stamp
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00006740
+# 
+R 
+L INT 21H AH=45h DUPLICATE FILE HANDLE (In>BX=Handle Out>CF=0 AX=New Handle CF=1 AX=ErrCode)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:00006760
+# 
+R 
+L INT 21H AH=46h FORCE DUPLICATE FILE HANDLE (In>BX=Handle CX=DuplicatedFileHandle Out>CF=0 NoErr CF=1 AX=ErrCode)
+P 
+% 0
+M 0
+/end
+/begin0
+T 1
+* 00001679:0000676E
+# 
+R 
+L SF_ENTRY from SFN, verify MACHINE_NUMBER, or DOSERR_INVALID_HANDLE
 P 
 % 0
 M 0
