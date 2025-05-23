@@ -49,6 +49,7 @@ public:
 	{
 	public:
 		uint32_t flags;
+		uint64_t passCountUntilBreak;
 		inline void Clear(void)
 		{
 			flags=0;

@@ -1363,12 +1363,12 @@ void TownsCommandInterpreter::Execute_AddBreakPointWithPassCount(FMTowns &towns,
 	auto addrAndSym=towns.debugger.GetSymTable().FindSymbolFromLabel(cmd.argv[1]);
 	if(addrAndSym.second.label==cmd.argv[1])
 	{
-		towns.debugger.AddBreakPoint(addrAndSym.first,info);
+		towns.debugger.AddBreakPoint(addrAndSym.first,info.flags);
 	}
 	else
 	{
 		auto farPtr=towns.cpu.TranslateFarPointer(cmdutil::MakeFarPointer(cmd.argv[1],towns.cpu));
-		towns.debugger.AddBreakPoint(farPtr,info);
+		towns.debugger.AddBreakPoint(farPtr,info.flags);
 	}
 }
 
