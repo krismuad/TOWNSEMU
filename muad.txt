@@ -17,7 +17,7 @@ git cherry-pick --continue
 **
 mkdir build
 cd build
-
+cmake ../src -DCMAKE_GENERATOR_PLATFORM=x64
 **
 
 c1a860b6 Sangokushi 2 test.

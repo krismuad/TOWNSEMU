@@ -2033,7 +2033,7 @@ void TownsCommandInterpreter::Execute_Dump_DOSInfo(FMTowns &towns,Command &cmd)
 		}
 		else if("FNP"==ARGV2)
 		{
-			std::cout << "File Name Table at " << cpputil::Ustox(DOSSEG) << ":0360h" << std::endl;
+			std::cout << "File Name Table at " << cpputil::Ustox(TOWNS_DOS_SEG) << ":0360h" << std::endl;
 			for(int i=0; i<128; ++i)
 			{
 				char c=(char)towns.mem.FetchByte(DOSADDR+0x360+i);
