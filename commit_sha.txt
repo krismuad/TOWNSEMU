@@ -1,0 +1,1748 @@
+c1a860b6 Sangokushi 2 test.
+548ff19d Added Vail of Darkness Opening Movie test.
+2082ea61 Added Kyukyoku Tiger test.
+4a60a327 Added -SCANLINE15K explanation in HELP.
+7af00f46 Libble Rabble Game Pad in GUI.
+385414be Support Libble Rabble game pad with physical game pad analog axes.
+58456502 Adding support for Libble Rabble game pad.
+ca8d404f Adding support for Libble Rabble game pad.
+21312e68 Fixed TEST386 test.
+8bb01101 Added -ZEROCMOS option to AFTERBURNER2_AUTODEMO test.
+b0c467b6 Added CAMELTRY_BOOT test.
+41490e83 Corrected the behavior of DMAC's TC bit of floppy disks.
+f37ce0be Rocket-Ranger current country indication with -APP ROCKET.
+f98375ad Adding Rocket Ranger position (current country) info.
+a9e430ab BRKON MEMR / MON MEMR can take segment:offset, still internally it sets memory-access break point on physical address.  Therefore if page table changes, it won't track it any more.
+22e8b76b Monitor memory read/write
+71ffa551 Adding monitor on memory read/write
+2d5931f6 Adding monitor on memory read/write
+a30695e6 Adding monitor on memory read/write
+13899560 Merge pull request #149 from bcc2528/master
+4d40d0d9 Optimize 16 and 256 colors render.
+d7bcb710 Merge pull request #148 from bcc2528/master
+4922446e Enable the (CPU)ID bit in POPF.
+9a077bb2 Convert CMOSFname to system encoding (GUI)
+0cab4957 Added YM2612 status output.
+1b6f5e42 YM2612 requires F_NUM2 set before F_NUM1.
+caf96eac Fixing Linux and macOS builds.
+9cb7908c -APP DRAKKEN
+0ac116ae Fixing Shift-JIS file name problem.
+e88b7b70 Merge pull request #146 from bcc2528/master
+87ffe18f Added 6 Buttons Pad settings in GUI.
+2c1df90b Support Fujitsu 6-button pad.
+30e563bd Support 6-button game pad.
+6c91a337 Adding support for 6-button game pad.
+205275a7 Can print TGDRV shared directories by PRI TGDRV.
+ca5fd284 De-cluttering debug output.
+3a2038c1 ENA/DIS TGDRVMON.
+4bea7f3e Disable TGDRV debug output by default.  Adding ENA TGDRVMON for enable them.
+d4a12cdb -TGDRV option.  Same as -SHAREDDIR.
+47db00ea Merge branch 'master' of C:\d\git\TOWNSEMU
+33b19219 De-cluttering debug output.
+fc06db8a Re-enabled PAUSE (default Scroll Lock) key.
+8d6b4ce5 Hope I am handling close-button correctly in macOS.
+2db03c61 Handling window-close button correctly.
+ed0200c8 fclose(stdin) to stop std::getline in Unix-based systems.
+ecb72bd3 Added a tip.
+5a123cef Added CCD extension in the GUI file dialog.
+cbabb63d Added CCD Disc Image Format support.
+707e1ae6 Align .CUE interpreter with output from ImgBurn.  Apparently Alcohol 52% is inconsistent.
+1100572c Added CD-image consideration in README.MD
+f4472be4 Align .CUE interpreter with output from Alcohol 52%.
+be3f4cbe Added a link to the releases in README.MD
+5c606b82 FPU_Instructions (0D9H) handles exceptions.
+d222bf2a FPU_Instructions (0DDH) handles exceptions.
+a9e3dcbe XLAT handles exception if any.  Undefined instruction prints message and shoots INT 6 instead of aborting the VM.
+b1cc87cb Merge branch 'master' of C:\d\git\TOWNSEMU
+95e00d84 EMMS instruction shoots INT 6 (MMX instruction not supported in 486).
+9f849e1c ArrangeDialog() before FitWindowToGUI().
+d9e11074 Fit window size to GUI.
+09c315ff Force quit CUI when VM is powered-off.
+3a24d0d6 Fixed build.
+cc6f8330 Connect audio out to AD-converter I/O (4E7h).
+758b5482 Working on fixing .CUE interpretation.
+3b1213ed Adding Disc Image TOC tester.
+0398c07f Merge https://github.com/captainys/TOWNSEMU
+19152f63 Merge pull request #144 from bcc2528/master
+add99e88 Convert file name from UTF8 to system encoding.
+964c6a75 Add include cstring.
+6f334e09 just a few optimize in Put16x16.
+0387d3d9 Added a new test program CDTOCIO.C
+cfc80b8e Change track and data registers for all drives together.  When I implemented FDC, I did not know FDC was not aware of multiple drives and asumed one FDC could handle four drives, but one FDC can handle one drive at a time, and drive-selection is done outside of the FDC.  This difference was not causing any known problem until now.  But, you can break it in Dragon Slayer Legend of Heroes 1 Chapter 1 by saving data in the castle before the boss-battle, close Tsugaru, open again, and continue from the saved data.
+57ce1efa Enable FAST-SCSI from GUI.
+81eef7b7 CPU refers to IDT in the real mode.  Experiment on a real FM TOWNS 2MX confirmed that 80486 looks at IDT even in the real mode.  Return I/O 208H bit 1 FREADY=0 if motor is off to align with the observation from a real FM TOWNS 2MX.
+b01aac96 Changed audio state version to 2 to accommodate earlier-version state file.  Changed FAST_SCSI_INTERVAL from 1us to 5us.
+5a0ecdec Merge pull request #143 from bcc2528/master
+9b96e403 Enable audio frag (I/O 0x04EC).
+ca69510e Fix CPUID instruction.
+fb3e9794 Fix CPUID instruction.
+c4ba51f8 SLDT, STR, LLDT, LTR, VERR, and VERW instruction shoots INT 6 in the Real Mode in the High-Fidelity mode.
+c3e49d9b Renamed First1msOfVerticalPeriod -> AvoidFirst1msOfVerticalPeriod.
+98f80903 Merge pull request #139 from bcc2528/master
+cebeba8a Fix command bar flicker in Lemmings 2.
+2305c0a2 Fix frame drop.
+c6b1ed6b Fix scanline brightness.
+7cd0b28b CPUID with EAX=0 returns Roughly80486.
+8fc38f3d Merge branch 'captainys:master' into master
+f69b9fbd Removed libasound2 from installation list for continuous integration.
+a8bce69b At lease CPUID instruction does not crash.
+fa45a29c Merge branch 'master' of C:\d\git\TOWNSEMU
+d5390f28 Adding support for XADD.
+b5215dbe Fix build.
+2923e6be Map OSROM to physical 600000h to 67ffffh if machine type is Marty.  Thanks aochan for finding it!
+187132ff FD I/O motor bit controls all four drives together.  Disabled SCSI if Marty.
+c968897f Removed 8000000H and later memory mapping for 386SX CPU.  Still 0xFFFC0000 to 0xFFFFFFFF, and 0x81000000 to 0x8101FFFF are left regardless of the CPU type.  It is because even if the CPU ID returns 386SX, Towns OS V2.1 tries to create R drive if CMOS setting is consistent with the CPU ID.  If I want to use the same CMOS to test 386SX environment, I need sprite ram mapped to 0x81000000.
+aead2e08 Save scanline 15khz settings.
+83fbaa24 fix.
+02e40e6c fix tips.
+f79ae799 Scanline in 15khz screen mode.
+4b89281d Merge https://github.com/captainys/TOWNSEMU
+6ce2713a Merge pull request #138 from bcc2528/master
+71430c48 Show ASCII char of RS232C output.
+9b9a343e Support MIDI exclusive message.
+2d6b13ac Added FM TOWNS Technical Databook Errata.
+5a243d67 Fix.
+3f69f0f7 Merge branch 'master' of \\192.168.1.155\git\TOWNSEMU
+9dd4f1f2 Only show up to 200 call stack.
+a098b3f6 Fixed: Debugger was not able to detect memory write between D0000h to EFFFFh, after the memory access was turned off.
+6cace80c Adding permissions: write-all did not help.  Still cannot make a release from workflow.
+ce452055 I cannot make releases any longer.
+33441e92 Added permission tags.
+c54a80b0 Failure of create-release doesn't seem to have anything to do with create-release deprecation.  I keep getting Resource not accessible by integration error.  But, search did not give me a solution.
+fabd2e84 Trying to fix github workflow go make a new release.  I am losing hope.
+6765085b Trying to fix github workflow go make a new release.  I am losing hope.
+67a8419b I'll keep pushing until I am able to make a release.
+510a3568 I'll keep pushing until I am able to make a release.
+e3b785d9 Looks like actions/create-release is no longer available.  WTF.
+c239b734 Updated workflow.
+d45d9a9d Added Shadow of the Beast 2 test.
+b323c6d3 Supported write to I/O 4E8h.  Also changed the return value from microphone sampling from 0x80 to 0x01.  Shadow of the Beast 2 expects it.
+12f6fefa Added FM TOWNS Technical Databook Errata.
+f2c676d1 Merge https://github.com/captainys/TOWNSEMU
+ed760f61 Merge pull request #137 from bcc2528/master
+fe669fb4 Fix Linear interpolation function.
+f498f049 Fix Linear interpolation function.
+3b435b31 Added PCM Linear interpolation.
+deb2b2d4 Capture TL command.
+7d68c3c4 Updated FM TOWNS Technical Databook Errata
+08bc957e VMIF command for capturing YM2612 F_NUM and BLOCK.
+aa9f938a Fixed CRTC Reg Capture.
+996386dc CRTC Capture writes Video-Out Control registers.
+d8938533 Added I/O EA and EB for quick debug-break and print state.
+3ee2a036 Make disk drive ready as soon as power on.
+a1b7ca6d FDC Sector Read command does not send IRQ if sector-read command is issued while drive not ready.
+979235b4 Fixed a wrong state in which KBINT was false, but KEYBOARD IRR was true.
+0c01a9fe Updated workflow to address security advisory.
+f5d294bd Increased dB drop for SL=15.
+23c6d981 Stop sprite on reset.
+6ebb25d6 Merge pull request #131 from bcc2528/master
+4e548744 Supported Word access of KANJI_PTN, VRAMACCESSCTRL
+ce28962c Prevent sprite flickering in Death Blade.
+8be09f6f Fixed sprite state save.  Save firstSpriteIndexCapture.
+4d1178c6 Added TownsSprite::State::firstSpriteIndexCapture.  Samurai Spirits changes CONTROL0 and CONTROL1 before it clears SPEN.  Tsugaru renders sprites all at once rather than incrementally.  The number of sprites drawn is taken when either at the end of the sprite-busy cycle, or SPEN is cleared.  The number of sprits (first sprite index) was cleared when SPEN was cleared, and therefore more sprites than correct number were drawn, and the screen corrupted.  To fix this issue, the number of sprites drawn is captured at the beginning of the sprite-busy cycle.
+b6cbfbbb Exposed free aspect ratio mode in GUI.
+a1a2e4d0 Free Aspect Ratio mode.
+dd18a06e Changed macos version for github workflow from 11 to latest
+59571575 Corrected typos.
+e2bd4474 Updated tips.
+1766032a Fixed typo.
+d36728a0 Show a Tip on Tsugaru_GUI start up.
+d122d7cc Adding tips.
+86514a81 Adding tips.
+6a124546 Support CMPXCHG
+30737b44 Minor reduction of computational steps in SetPageFlags.
+5bd41d62 Removed some null-checks in Store*** and Fetch***.
+0604f8cb Removed one null-check in FetchInstruction.
+d538f46c Changed the way memory-window checks if linear address is in range.  Before:  if(addr-baseAddr<0x1000) which must be compiled as SUB a,b / CMP a,MEMORY_WINDOW_SIZE, JGE not_within.  After:  if((addr&~0xFFF))==baseAddr) which must be compiled as AND a,~0FFFh / CMP a,b / JNE not_within.  Must not change the performance.
+78a3ce53 Replaced EvaluateOperand8 with EvaluateOperandRegOrMem8
+f1a9984b Replacing EvaluateOperand8 with EvaluateOperandRegOrMem8
+590279b9 Replacing EvaluateOperand8 with EvaluateOperandRegOrMem8
+05c02503 Replacing EvaluateOperand8 with EvaluateOperandRegOrMem8
+ebc91956 Replacing EvaluateOperand8 with EvaluateOperandRegOrMem8
+2b82e837 Replacing EvaluateOperand8 with EvaluateOperandRegOrMem8
+ad09389f Replacing EvaluateOperand8 with EvaluateOperandRegOrMem8
+9392212d Added cpputil::LowByte
+0d391109 Removed unreachable code.
+141b6d1a Rewrite EvaluateOperand8 and StoreOperandValue8
+ba8a2190 Update TGMOUSE.EXE (Win3.1/95 app for mouse integration).
+d4f02d22 Updated TGMOUSE.EXE
+7053c265 Minor optimization.
+bf380d43 Removed redundant address-size mask.  Was doing it twice for each memory-fetch.
+26ee1060 In high-fidelity mode, SetPageFlags does nothing if the flags are already set.
+65f8f122 BurstModeFetchInstructionFunction does not update ptr.length because it is not used once CPU decided to do burst-mode fetch.
+2389715e Updated event-log file for test.
+35d64379 Updated event logs for tests.
+7f2326cb Added a workaround for a very rare situation in which the compiler ignores SetFLAGSorEFLAGS in IRET.  I am 93% sure it is a bug of clang on Linux.  But, there always is a possibility that I am overlooking something.
+03aa0244 Corrected EASTRAY event-log file for tst.
+2f83b49e Corrected Alltynex event-log file for test.
+254f2623 Merge branch 'master' of \\192.168.1.155\git\TOWNSEMU
+f636e5f6 Corrected PolyRacer event-log for test.
+13ea127a Updated event-log files for test.
+a77912ad Merge branch 'master' of \\192.168.1.155\git\TOWNSEMU
+d37b835b Changed the location of PolyRacer.d77
+e793ba8f Corrected capitalization.
+433f5269 Added FM TOWNS II DEMO 1993 WINTER test.
+b51ab22d JMPF to TSS sets CS before other segment selectors so that the selectors are loaded from the correct CPL.
+197edc47 LoadSegmentRegister function sets the segment-attribute if used in the real-mode.
+7ba18695 Corrected the message.
+bd8a64aa Word and Dword memory filter.
+c9d60038 Merge pull request #124 from bcc2528/master
+bc1dd390 Reducing operandSize and addressSize checks.
+b48bed19 Reducing operandSize and addressSize checks.
+e5864810 Removed operandSizeMask.
+66f802ce Getting rid of operandSizeMask.
+0766ae0c Getting rid of operandSizeMask.
+bf3b7b8e Made number-of-event check for DELTAT a warning.
+2ae684f0 Permit 0 DeltaT for the first event.
+a77dd721 Added MOSTOL command in the event log.
+e82f74ab Adding Windows 95 final-setup test.
+e45a2271 Adding Windows 95 final-setup test.
+5f9c6510 Improving efficiency of IRET
+eec2a7a4 Improving efficiency of IRET
+16cdac41 Improving efficiency of i486DXFidelityLayer <FIDELITY>::Interrupt
+b1e96a02 Improving efficiency of i486DXFidelityLayer <FIDELITY>::Interrupt
+441f40a0 Improving i486DXFidelityLayer <FIDELITY>::Interrupt
+22912b9e Merge pull request #10 from bcc2528/bcc2528-Asuka120%
+16c818d2 Add the Application-Specific for Asuka 120%
+4bad000c Improving i486DXFidelityLayer <FIDELITY>::Interrupt
+b56d6eec Minor improvements.
+5901862c Minor improvements.
+c2a11715 Reducing operandSize and addressSize checks.
+30c4d4a3 Reducing operandSize and addressSize checks.
+6aa25bc2 Removed unused parameters from REPEorNECheck.
+e00de5ec Reducing addressSize checks.
+3cea930b Reducing addressSize checks.
+cb2148cb Reducing operandSize checks.
+5393a296 Updated Linux CD-boot test.
+3b11bda0 More symbols.
+9d3daf16 Linux+JE4 CD Boot symbols
+55c189b0 Reducing operandSize checks.
+692c6f36 More efficient implementation of LEA instruction.
+1b7733f6 Reducing operandSize and addressSize checks.
+88407af9 Reducing operandSize and addressSize checks.
+08d8e39f Reducing operandSize and addressSize checks.
+bf2e72a9 Reducing operandSize and addressSize checks.
+1cf7cc95 Reducing operandSize checks.
+bb17bea7 Reducing operandSize checks.
+474cb5f9 Reducing operandSize checks.
+48778a7c Reducing operandSize checks.
+03860bcc Added GetOperandPointer16, GetOperandPointer32, GetOperandPointer16or32, and GetOperandPointerMem.
+40f4a44d Added i486DXFidelityLayer<>::GetOperandPointer8.
+4196d8aa Corrected Keyboard Controller data interval.
+18a9c6ca DOS Stdout Capture
+d7f809ce Fix build.
+a2f4cb57 Added MIDI test.
+1352d4fc Added comment.
+38e6ac57 Added ChaseHQ Game-Start test.
+ff237e4d TownsCDROM does not set IRR for status if enableSIRQ flag is off.  (For fixing ChaseHQ)
+c7f80cf2 CRTC handles FO==LO differently to render GENOCIDE2 opening correctly.
+5c96190a Fix: Forgot writing destructor for TownsMIDI::MIDICard.
+2780df89 Corrected MIDI serial IRQ.
+936277f9 Added a message in the Profile Dialog.
+299d9ea1 Exposed memory state save/load in the GUI.
+6441d6be I think I am now handling MIDI ports and MIDI message buffers correctly.
+4b80e2fa MIDI state save.  It does not save settings.  Saving and loading in the middle of the music may cause play back wrong instruments, volume, etc.  At least it will not crash.
+3051a858 Save MIDI state.
+0772775c Separated Device and DeviceUtil
+1dfd085e Exposed MIDI option in GUI.
+8cfb8f0a -MIDI command option.
+8ff4313b Fix GUI build.
+c4d70138 One more missing file.
+faf93b7a Forgot git-adding midi directory.
+341bbbaf MIDI
+fd8ba3b9 Trying to enable MIDI.  Still something is wrong.
+939bcef1 Trying to enable MIDI.  Still something is wrong.
+7f8bd75c MIDI Interval Timer working ok.
+ae32c569 Added MIDI Timer Interrupt.  Still timing is way off.
+a1075b19 Implementing MIDI interval timer.
+529ae368 Implementing MIDI interval timer.
+be2425c9 Implementing MIDI interval timer.
+d74d8943 At least TOWNS OS EUP Player does not freeze, but still do not know what to do with MIDI's interval timer.
+4a4c7d71 Implementing MIDI I/O
+1381d3fa Implementing MIDI I/O
+0000efa4 Implementing MIDI I/O
+549690be Implementing MIDI I/O.
+6e615b7b Rocket Ranger take-off assist.  Press and hold RUN button to accelerate for you.  Rocket Ranger take-off scene was one of my traumatic experience.  I was so much looking forward to this game, and I could successfully take off once in more than 10 attempts.  To me, take-off in Rocket Ranger for FM TOWNS was absurdly difficult.  I was so disappointed and gave up.  This feature is my revenge....
+2357c410 Take-Off Speed Indicator
+6f08541d Added Rocket Ranger Opening Demo test.
+4c46acff Looks like I should reset the play pointer when a value is written to ST as well after all.
+b357d6d3 PCM play pointer is updated when channel is enabled instead of a value is written to ST register.
+2a16d3db Fixed 24-bit mode crash.
+290004a9 TownsCDROM does not clear the status queue when a command has been received.  Doing so broke Poly Racer test (CD-ROM BIOS CDDA Stop does not come back.)
+9c56770e TownsCDROM does not clear status queue before pushing data ready status to support Linux.
+499da696 Linux CD-ROM driver was expecting to receive 00 00 00 00 status then 22 00 00 00 status.  However, the driver was waiting for the status without IF cleared.  So, if another interrupt comes in before 00 00 00 00 is read by the VM, 22 00 00 00 could have overwritten 00 00 00 00.  Solution is do not clear the status queue before pushing 22 00 00 00.
+f098239e CD-ROM clears status queue when a new command is received.
+f87a38af Added comments.
+ba5bd712 Fix: DMAC I/O 00AFh was not returning DMA mask flags.
+b56bc78b Added comments.
+d94f3df3 FD multi-sector read/write command will emit LOST DATA if DMA count is FFFFFFFF when the sector is ready to read/write.  Linux 1.3.30 accesses FD correctly.
+31e4f194 Add FDC Monitor output.
+390b44b4 Fix: Multi-sector write was making FDC ready in the middle of the command.
+2775ea8e FDC Track and Sector register returns correct values.
+b3d82a6a FDC 0xD8 command really fires an IRQ.
+edffb315 Fixed High-Resolution CRTC 800x600 32K mode.
+8a711bc3 Allow DWORD write to hardware mouse register.  (I really messed up the code.  I need to clean up eventually.)
+13866969 Fixing Linux and macOS build.
+85c68150 Fixing single-page high-resolution mode.
+8c73fe5e Fixing single-page high-resolution mode.
+03c478a9 Fix macOS build.
+a10768b5 Can type Ctrl+C in the translation mode.
+04be3807 Fixing keyboard translation mode.
+a9305cf1 Added Linux JE4 1995/12 boot test.
+347621af IMUL(6Bh, 69h, 0FAFh) handles an exception in the high-fidelity mode.
+a2ff18d4 Disabled Task-Return check.  None of Towns OS, Windows 3.1, Windows 95, and Linux seem to be using it anyway.  Corrected single-page high-res VRAM access.
+814d4077 Marty Machine ID confirmed to be 4AH by aochan.
+5345a22b Preliminary support for hardware task switching.
+b4a9c067 Check task return in the high-fidelity mode.
+12070e7b Added more comprehensive FPU test.
+4759ca59 Supported FISUBR_m16int / FSUBR STi,ST.
+b6b38e8d Supported a few more FPU instructions.
+c584d521 Support FDIV STi,ST / FDIVR m16int / FDIVR ST,STi / FDIVR STi,ST
+12f06ea9 More place holders.
+8be45bfe Cleaned up FPU_DC
+575d69bc Inserted missing 'else'.  FNENI and FNDISI fetches one-byte operand.  Added placeholder for FDIVR STi,ST
+390ad4dc Added a placeholder for FDIVR ST,STi
+19583ff5 Looks like SCSI Phase needs to transit Busfree->Arbitration->Status->Busfree (No MessageIn phase after Status phase) if tried to select SCSI ID that does not exist in the chain.
+91e45350 IO Read 60H (Timer Interrupt Reason) calls TimerPolling.  To address Linux timer polling problem.
+d571bf09 Fixed RTC.  Do not annotate INT unless software interrupt.
+23207185 Added boot-key option in the RESET command.
+07e1f834 Support FISUBR(m32int)
+babc279e Merge branch 'master' of \\192.168.1.155\git\TOWNSEMU
+932954bf -ICMUP option.  Limit memory size to 10MB if CPU type is 386SX.
+ff26ad9d Merge branch 'master' of C:\d\git\TOWNSEMU
+ed144623 Change sprite transfer time for slow (compatible) mode.
+69428b63 More use of ClocksForHandlingException().
+254be4d2 More use of ClocksForHandlingException().
+fa196f8b Removed HANDLE_EXCEPTION_IF_ANY_CLOCK macro.
+9a2b6b38 REP CMPSB and REP CMPS won't abort due to clocksPassed not set if an exception happens for the first comparison.
+f6f74b96 In Windows 95 testing, EXIT_VM command may be sent to the Tsugaru I/O while TGMOUSE is reporting the last-known mouse coordinate.  If TGMOUSE pushed the mouse coordinate after the test program pushes the return code before EXIT_VM is sent due to task switching, ctest will receive a fake error code.  EXIT_VM command takes the last pushed parameter than the first parameter to make it less likely.  There still is a potential problem that task-switching takes place between the test program pushes the return code and send EXIT_VM command, but it is far less likely.
+45e29413 Fixed SegmentProperty::GetType.  Deal with Expand-Down Read-Only segment correctly.
+d5c53f00 Enable High-Res PCM by default.
+562e099b Added IO defs and iomaps.
+d93967e6 Merge pull request #121 from bcc2528/master
+957b2e91 Removed debug output.
+2644c231 Added macOS key mappings.
+f34c3945 Added IO labels
+62d2cbd7 Show GDT physical location correctly when paging is off.
+d99efeb4 Added STARTUP.EXE for Windows 95 boot test.
+727c7bbc TGMOUSE opens a window at top-right corner.
+12113da8 Clears state.tbiosVersion on MOS_end().
+09ff03a9 Win3.1 standard-mode boot test program.
+795696c1 Added FPU test for Windows 3.1
+2062c79a Some FPU instructions may raise exception.
+a824e771 Fixed an error
+444156cf Floating Point Test for Windows 3.1 compiled by Visual C++ 1.5
+780a9c64 Added Windows 95 Floating-Point test (Compiled with Visual C++2.0).
+8a313db3 Support FISUB_m32int, FIADD_m32int, FLD64 handles exception.
+afcea825 FNSTCW, FNINIT, and FNSTSW shoot INT 7 if TS or EM flag of CR0 is set.
+07d25014 Added Windows 95 test
+c0745aaa SCASB handles exception better.  BTR, DIV, and IDIV handles exception.
+69ba2941 CPU shows opCode in the error message when abort.
+071ba54a Mask all DMA channels on DMAC reset to prevent SCSI failure when -FASTSCSI is specified.
+139acc62 Push16 and Push32 functions checks exception before writing to memory.  It was writing to memory even if the page fault occured if the linear address was within the SSESPWindow cache, and was crashing MS-DOS prompt in Windows 95 once every 30 to 40 times.  Also HandleException function clears the exception flag before firing Interrupt so that Push16 and Push32 functions can push necessary values to the stack while handling an exception.
+a1d6c713 Adjustment of electronic volume and High-res PCM.
+2aad3016 Optimized Render16Bit
+1b3a2892 SAVESTATEMAT command.
+92885f53 PRI SAVESTATEM command.
+2164c0d6 SAVESTATEM <number> command.
+7fe7e46f Adding state save to memory.
+8c114427 TGDRV drives show a correct volume label in Windows 95.
+e500f743 IORead 0x0022 returns zero.
+3e7ba31e Fixed potential error in ENTER instruction implemetation.  Added -INITCMD option.
+efb4c0df Instruction C1h handles exception.  Namco History Vol.1 runs on Windows 95.
+7612c085 CPU checks GP exception then ND exception when loading a segment register.  Windows 95 Explorer does not crash with null-segment read check.
+32cebd96 Added debugger function to capture Windows 3.1/95 16-bit API Entry Points.
+1a812867 Added min max to PRI GDT/LDT/IDT
+352105f4 Re-enabled BRKON LBUTTONUP/LBUTTONDOWN
+04d235ce Supported CDC CMD 1F|03 00 00 00 00 00 00 00 based on the sample from real FM TOWNS IIMX.
+e19972a3 CDROM TOC READ command correctly shoot SIRQ.
+6cc69cae For the time being, do not take exception from null-regment read.
+d815a0c3 CDROM command 9Fh responds to command from Windows 95.
+69ed6b66 Added Null-Selector check in the high-fidelity mode.
+360716b4 Support (at least does not stop) SCSI MODE SELECT command.  It does nothing.  I have no idea what I'm supposed to do with this SCSI command.
+b4e5960b Playing with SCSI Mode Sense command.  (In the previous commit)Fixed crash when start track = 0 in Read TOC.
+3d16e585 Supported SCSI command 1A (Mode Sense).
+ee0f76da Undocumented I/O read (481H) returns 0xFF.  Supported SCSI command 1A (Mode Sense).
+25eef8a4 CPU handles exception on CMPS(A7H), BTR(0FBAH).  Support SCSI Command Play Audio LBA (45H).
+cdb071fc BRKON INT xx CSEIP=xxxx:xxxxxxxx/EIP=xxxxxxxx
+bcf8ab80 FPU instructions except the ones used for FPU installation check shoots INT 7 instead of aborting the VM.  Unimplemented FPU instructions still aborts to see which instructions are needed.
+a2241392 I/O AAh returns value.  Windows 95 can start with -NOHIGHRES option!
+61de7a54 Delay setting SCSI INT flag.  If INT flag is already set when IMSK is set, PIC is notified.
+36febda3 Enhanced BRKON SCSICMD.
+a46e6014 High-Res CRTC DWORD write.
+0eb4d6cc Handle indirect JMPF exception.  Print warning message when RETF to outer level.
+f998b184 Corrected Call-Gate implementation.
+25f90f8f Print warning if Call Gate uses parameter count.  Call-Gate Parameter Size is not supported yet.
+cdf1bec2 Fix macOS build.
+784a550d Fix macOS build.
+d6cb4674 Allow loading segment selector 0000 to 0003 to DS,ES,FS, and GS in the high-fidelity mode.  It was only allowying 0000.  FREECELL Help can start.
+d1eb8847 forWrite parameter for GetOperandPointer.
+036dc65a CMP (39H) handles exception in 32-bit & high-fidelity mode.
+742c9489 Support INVPLG instruction.
+42df1904 Added break on FD read sector and FD read address.
+6d34ba88 Let diskPtr->ForceWriteTrack take care of disk resizing.
+9daeef67 Show FMRVRAM Offset correctly.
+f92eb6b8 Support DMA word-transfer mode.
+ca1000a2 Merge pull request #118 from bcc2528/bcc2528-Fix-EASTRAY-1
+4d41334c Merge pull request #116 from ryoon/readme-typo
+89c7342f Merge pull request #114 from tnibert/fix-arch-linux-build
+092ac4a5 Merge pull request #111 from tnibert/fix-window-title
+91d39d68 Enabled aliases in CUI.
+cbeac540 Disabled PCM register scheduling.
+d2b7fcaa CMAKE_CXX_STANDARD 11 -> 17
+a3bed13b Fixed image preview window in EASTRAY.
+003abcde LoadSegmentRegister class ignores high 16-bits of the given selector.
+c5715a7a readme.md: Fix typo in Japanese part
+b9c9397a SAHF does not change flags b1,b3,b5.  POPF does not change b1,b3,b5, and above b18.
+1f2bb808 TGDRV supports Hankaku Kana.
+e0b2f116 Hankaku Kana for TGDRV in Linux and macOS.
+dc3cf951 Support Japanese file name in Linux and macOS (assuming UTF8 system encoding)
+1b42fc57 Adding support for Japanese characters in TGDRV on Linux/macOS.
+91da989a Added ShiftJIS <-> UTF8 converter.
+5c9d0d9d Support Japanese file name in TGDRV in Windows.
+2caefb6c TGDRV always returns file names all capital.
+eccc3999 Fixed: RF5C68 was ignoring mute flag.
+012a7331 Don't save High-Res PCM status unless enabled.
+70da61bc Save/Load High-Res PCM state.
+62be4c74 Fixed broken CDROM state save when status queue is not empty.
+10acb3af High-Res CRTC takes Reg11Bh=0xFF00FF as 8-bit color.
+b954f5ed Write CRTC2 log to debug-log file.
+72eb4f2b Smoothed resampling of HighResPCM.  Increased HighResPCM buffer size from 1K to 8K (real number not disclosed.)
+1b863a74 Merge branch 'HighResPCM'
+a5eaebc5 Corrected the interpretation of BASE flag of DMAC.
+8a4bbee0 High Res PCM looks to be working.
+bdb92c2e High Res PCM looks to be working.
+c27034fd Revising DMA implementation.
+7e054e9e High-Res PCM status print.
+8fbe55b3 HighResPCM plays, but the program still cannot catch end of playback.
+7be694d4 Implementing High-Res PCM
+23c84cbc Implementing High-Res PCM
+9a2db8a9 Implementing High-Res PCM
+be7eeeba Implementing High-Res PCM
+b0384e1a Supported High-Res PCM I/O read.
+61765627 Merge branch 'master' into HighResPCM
+800542d4 Support ROM file created by the Rescue IPL directly.  Save ROM image transferred by the Resecue IPL using XMODEL as FMT_ALL.ROM.  Tsugaru will look for this file in the ROM directory, and if exists, it reads all ROMs from it.  Conventional ROM files works with no change.
+7da6aee0 -HIGHRESPCN option.
+ea9c3262 Adding HighResPCM class
+1bdb0549 Adding HighResPCM class
+7e898b3a Changed the RTC 24-hour bit ON by default.
+73a1bae2 Fixing RTC.
+91054b91 Figured what was flickering the cursor.  ShowCursor(TRUE);auto ctr=ShowCursor(FALSE); was the culprit.
+0c2caa77 Made sure to show cursor when coming back to GUI.
+1a21e255 Re-enabled Shift+ScrlLock to toggle mouse cursor.
+7be4eac8 Added Resume VM button in GUI.
+20f0ba1e Merge pull request #109 from bcc2528/bcc2528-Opt-GetAs
+b79e9869 Removed sectorDataSize which was redundant.
+1ad4feda Merge branch 'master' into D77LibRename
+0dc3375e Deal with a D77 file made by my old buggy D77 generator.
+d9d9c502 Renaming D77 library members.
+5223c905 Renaming D77 library members.
+0533304e Renaming D77 library members.
+cf836e24 FDC distinguishes CRC error and Record Not Found error.
+91059c11 Tsugaru SCSI is aware of command 1BH START STOP UNIT.
+70e7b1ea Changed stable-byte id from 4 same bytes in a row to 18 same bytes in a row.
+05f7168d Copy N byte to sector without masking with 3.
+a952d68c Ensure correct title is shown on window creation.
+766e320a Add support for setting window title on X11.
+73dd9000 Sync D77 lib.
+21f8146a FDC returns ID CRC error correctly.
+049e1573 Fixed build on Arch Linux.
+ea3ac67d Updated TGDRV.COM.  It does nothing if executed on real TOWNS.
+3c4d7e37 Optimize GetAsDword, and GetAsByte.
+6d8ae05c Merge branch 'captainys:master' into master
+388f261b Change in .RDD spec.  Size of unstable-byte flags is offset +E and +F of the tag.  It was initially +1 and +2, but there is not supposed to be any .RDD with 10H tag at the time of change.  Hopefully it doesn't matter.  In fact Idon't know if anyone is using .RDD.
+e3467e7c Fast Floppy-disk and Fast SCSI mode is available from command parameters.
+50bfe9db Adding fast SCSI mode.
+986cd619 Merge pull request #101 from bcc2528/bcc2528-GoGo-FPU
+5101889c YsSoundPlayer::StreamPlayerReadyToAcceptNextSegment returns error if the given segment is longer than the half of the requested ring-buffer length.
+c541c39e U(Unassemble) command writes to debug log file.
+55ecbb3a Updated D77 library.
+fe917ad2 DiskDrive::DiskImage::ReadAddress uses sampled IDMark if available.  Needed for replicating copy protection of Fire Crystal.
+12ffd0bf Synched sound library.
+a606ca61 Synched sound library.
+ec778c76 Missing file.
+f05584a4 Added test for YsSimpleSound.
+93e18771 Merge branch 'ALSAIntervalTimer'
+e4a12e3b Disable interval timer by default.  Can be enabled by macro ALSA_USE_INTERVAL_TIMER.
+691ae495 Merge branch 'master' of \\192.168.1.155\git\TOWNSEMU
+b1c923cd Merge branch 'master' into ALSAIntervalTimer
+a300d1c7 Fixed test on Linux.
+f693f252 Trying to flush SIGALRM when YsSoundPlayer is ended.
+c6a71211 Fixed a careless mistake.
+20337b4a I think I finally solved the ALSA problem.
+5b1e04c9 Another attempt to unnecessitate KeepPlaying.
+d1d8ad8a Trying Interval Timer
+d0bdebc0 Fully utilize FM/PCM register scheduling.
+4aea2fae PCM register scheduling.
+412afb30 PCM register scheduling.
+05fddee5 PCM register scheduling.
+0897c317 ALSA playback changed number of output channels from 1 to 2.
+b2eb2a8d Fixed wrong data type in yssimplesound for ALSA.
+9a110292 Merge branch 'master' of \\192.168.1.155\git\TOWNSEMU
+9f95fff4 FsPollDevice does not crash if called before opening a window.
+ed93a33d Fixed: Status bar was hidden when initial state is loaded on startup from GUI.
+607a70d5 snd_pcm_avail_update -> snd_pcm_avail.  Hope it fixes occasional sound corruption.
+d4823625 Utilizing lambda.
+6267c39c Merge branch 'master' of \\192.168.1.155\git\TOWNSEMU
+686931f5 Update in GUI.
+7d448507 Fixed Linux tests
+ca5d07cf Adjustment in sound emulation timing.
+79156771 Changed default file-dialog directory for selecting ROM directory to home directory if the text box is empty.
+5ae5961a Exposed Maximum Sound Double Buffering in GUI.
+0131709c Exposing max sound double buffering option in GUI.
+7746830b -MAXSNDDBLBUF option for CUI.
+b36db9c3 Added maximum double buffering option for sound emulation.
+8ae049e3 Fixed Linux game controller issue.
+8ec7468d Fixed YsSimpleSound::GetCurrentPosition.
+84d98f54 Support boot keys T (FAST mode) and N (SLOW mode)
+243c42a8 Exposed WAV capture in GUI.
+52dfbaf6 Fixed build.
+2923d076 Added YM2203C volume adjustment.
+d3cc241f VGM recorder for Mutsu.
+d9b535f2 Missing files.
+75b5a81b Merge pull request #4 from bcc2528/bcc2528-GoGo-FPU
+f45a0485 Add FPU Instruction for GoGo no Coda
+a5478a38 Isolating chip-dependent part.
+6d7a7baf Isolating chip-dependent part.
+51f2ddb6 VGM tag editor command.
+b1474427 GD3 edit functions.
+1e545cc7 Command parameter info for VGMTag.
+8d1d896f Adding VGM tag util.
+df81b4bc Adding VGM tag util.
+b1614d07 Adding VGM tag util.
+42e111c1 Added GD3 tag.
+92ebc8d0 Added GD3 tag.
+4799cb54 Adding GD3 tag.
+b0a59efc VGM trimming.
+15b3e14d VGM trimming.
+f3227785 VGM trimming.
+0d6b3f74 Made VGM recording available from GUI.
+99d6f95a Adding VGM functionalities to GUI.
+6d86787f VGM recorder captures PCM wave RAM writes.
+700d7ac6 VGM RF5C68 Capture almost done.
+6fb5aa11 Working on capturing RF5C68.
+fc576e2b VGM recorder adds END command at the end of the stream.
+1760c22c First success.
+db4729d8 Writing VGM Recorder.
+33c97afb Writing VGM Recorder.
+767bd0ed Merge pull request #99 from bcc2528/bcc2528-FST_FSUBR_FDIV-1
+8c525a42 Fixed a possibility that TownsCDROM::AsyncWaveReader may still be reading when the VM is closed.
+18546537 Cleaning Up the mess
+738ff97a Cleaning Up the mess
+25cefac6 Cleaning Up the mess
+1b5ebf2b Cleaning Up the mess
+8779a874 Cleaning up the mess.
+fe29e087 Added newImageRendered flag.
+f8f7b106 Removed VMClosedLock
+a712507d Fixed wrong locking.
+6211f7fb Updated comments.
+6cf53f80 Updated comments.
+b99d089f Reduced one rendering lock.
+6d3d4f78 Fixed updating status-bar.
+09c116b0 Trying timeBeginPeriod.
+79983dda Merge branch 'OrganizingOutsideWorld'
+51c0bad8 Fix for Linux.
+999c96e5 Removed TownsThread class.
+3ed49e30 Combined window thread and rendering thread.
+d309f222 Re-enabled strike-commander special.
+8e3ed05d Fixed GUI build.
+f8462fc9 Asynchronous CD wave generation.
+97a25b85 Asynchronous CD wave generation.
+5f593f39 CDDA correctly reports playing position.
+306a52b2 Enabled CDDA electric volume.
+3f39059f Cleaned up some parameters that became unnecessary.
+817190d9 CDDA is played from the same streaming channel as FM and PCM.  CDDA from SCSI CD drive is still from the old separate CDDA channel, but it is mainly just for debugging purpose, and therefore I leave it this way for the time being.
+472eade3 Transitioning to CDDA by streaming.
+91901d77 Transitioning to CDDA by streaming.
+bc545102 Fixed macOS build.
+0cde50d1 Fixed rendering when paused.
+c4b374d3 Fixed GUI.
+8f1735ce Working on Multi Threading for GUI module.
+87d2f03d Fixed game-pad handlig.
+ef329c33 Correctly set up initial window configuration.
+a595b946 Command User Interface version multi-threading working.
+645fb3a4 Working on multi-threading.
+02052568 Working on multi-threading.
+9b075085 Fixed GUI build.
+2eea0791 Transferred game-pad readings to WindowInterface.
+738d92b7 Working on WindowInterface class.
+c7266b5b Adding Outside_World::WindowInterface class.
+6a856caf Fixed GUI.
+8be03755 Separated Sound functions from Outside_World class.
+d47f76c9 In the middle (build temporary broken).
+4cbee3f6 Making Sound child class.
+1331e7bf Keep CD zero seek time, and 5ms sector-read time unless CD speed is specified.  (Keep it fast unless CD speed really matters.)
+d0b6c8a7 Official spec tells CD-ROM seek time is 3 seconds.  Put seek-time calculation back in.
+94ab989d Removed seek-time calculation for CD sector read until we know how to correctly compute.  Added Application Specific Setting for ORGEL.
+14afe876 Build serversample from GUI build.
+e4d043f9 Fixed Linux build.
+8c3a5134 Exposed RS232C to TCP/IP forwarding in GUI.
+622817cf Exposing RS232C to TCP/IP in GUI.
+87c385ad Command option for RS232C to TCP/IP forwading.
+52b7e934 RS232C to TCP Forwarding.
+9611c292 Added server sample.
+261b05f7 Working on serial to TCP/IP forward.
+69b8a1e5 Working on serial to TCP/IP forward.
+ab3cdd10 Working on serial to TCP/IP forward.
+a66e9903 Emulate CD-ROM Controller behavior that freezes the whole system when DTS is set but DMA direction is not set as I/O to MEM.  This behavior was confirmed in real FM TOWNS 2MX.  Presumably DMA locks up the memory bus, and CPU cannot read the next instruction.
+37e9f700 Emulate CD-ROM seek time.
+58104d20 Support FST STi, FSUBR ST STi, and FDIV ST STi
+a6908d47 Merge pull request #3 from bcc2528/bcc2528-FST_FSUBR_FDIV
+d7324574 Support FST STi, FSUBR ST STi, and FDIV ST STi
+ac19237d Added comment.
+38cb6905 Updated the behavior of i8253 Programmable Timer.
+a45967ab Special treatment for Lemmings2 flickering problem (with -APP LEMMINGS2)
+929a95e1 CDDA state was not put back to PLAYING after RESUME command.
+5e1bd414 Merge pull request #91 from fuzz6001/fix-cue-analysis
+70c49ff1 Calculate the offset considering the pregap
+1a442831 Maximum screen height of low-res CRTC to 512.
+132fc1b6 TGDRV INT 2FH AX=1113H Delete returns correct error code if not wildcard and file not found.  Was returning INVALID_ACCESS, but if the file does not exist returns FILE_NOT_FOUND.  LHA.EXE try-deletes LHTMP)1(.LZH and either suceeds or receive FILE_NOT_FOUND.  This discrepancy was preventing LHA.EXE from running in the shared directory.  Now it runs with no error.
+40ea8c11 Support FYL2XP1
+08dbf124 TGMOUSE uses WM_TIMER instead of constant polling.
+fea8979e Use macos-11 virtual machine in the github workflows.
+0df9cf24 Merge pull request #86 from bcc2528/bcc2528-patch-2
+81a8746b Optimize and, modify REP clocks and SLOWMODE FREQ.
+17787a01 Supported FDIV(m32int)
+5c4ee58d Supported FIST(m16int)
+3d0d9b4f Daikoukaijidai 2 shortcut.
+9ee05f22 Github workflow for macOS changed version 10.15 -> 11.
+503fec02 Merge pull request #85 from pinterior/fpu-instructions-for-mirb
+402f5603 Fixing macOS and Linux build.
+9f562e63 Edit Memory command.
+c4b01b38 Byte-by-byte VM to Host Data Transfer.
+b898ec3c Byte-by-byte VM to Host Data Transfer.
+e27f20f8 fix FIADD clocks
+32e6c3f2 fix some messages
+41affa88 FUCOM, FUCOMP, FUCOMPP, FIST m32int and FISUB m16int
+93b04e64 Daikoukaijidai2 mapXY returns block coordinate instead of pixel coordinate.
+b00008cb Implementing FUCOM_STi
+33c29c32 Implementing FUCOM_STi
+083ea385 Daikoukai2 specific augmentation.
+109f4685 Daikoukai2 specific augmentation.
+19566bdb Added streaming safety buffer.
+19ec0998 Daikoukai2 specific augmentation.
+c87697c1 Auto Quick Save.
+b35efc96 Testing auto QSS.
+cc2f0545 Testing auto QSS.
+4c89e104 Testing auto QSS.
+77147a43 Removed debug output.
+092b5211 Application Specific Augmentation for Daikoukai Jidai 2
+bee2a04c Application Specific Augmentation for Daikoukai Jidai 2
+f79d15b3 Application Specific Augmentation for Daikoukai Jidai 2
+25f14462 Application Specific Augmentation for Daikoukai Jidai 2
+969b8f5c Application Specific Augmentation for Daikoukai Jidai 2
+0dfda3de tbiosid.h was missing in CMakeLists.txt.
+fe0b8231 Application Specific Augmentation for Daikoukai Jidai 2
+4d001311 Added ICON from BCC.  Thanks!
+112e1613 Application Specific Augmentation for Daikoukai Jidai 2
+fa1495cb Application Specific Augmentation for Daikoukai Jidai 2
+b731ffca Application Specific Augmentation for Daikoukai Jidai 2
+8d3faccf I think 80386 Programmer's Reference Manual 1986 tells when the segment-limit is crossed, GP fault with the error code=segment selector should be raised.  However, TEST386 expects the error code to be zero.  WTF!?
+3c674f39 Fixed segment-level exception limit check.
+34de2d79 Fix segment-read/write exception error code.
+ad119881 CMPSB handles exception.  RETF, RETF_i16, IRET clears upper 16 bits of EIP if returning to 16-bit segment.
+00f5cc7a High-Fidelity mode supports Expand-Down segment.
+77558ffd Test for Expand-Down segment.
+dadf5fbd Fixed Expand-Down segment test.
+24a8df03 Working on expand-down segment test.
+4243138b Expand-Down Segment test.
+50bc7fc9 Fixed RETF_I16
+092cf951 Deleted unused variable.
+bcf8c1e1 Added constants for High-Res PCM.
+8427646c Added ENA/DIS CRTC2MON.  Turned off CRTC2 Monitor by default.
+c4fde672 Added Windows 3.1 mouse integrator.
+192bb5a9 Support FNENI and FNDISI.  Legacy instruction from 8087, and NOP in 80386 and later.
+b49d7c40 Support BSWAP reg.
+59210e82 Fix Linux and macOS build.
+32d0a1d1 Fixed TGDRV
+f3324d87 Fixed TGDRV.
+97a07db5 Fixing TGDRV.
+ee6f59f2 Fixing TGDRV.
+1f9732fa Removed duplicate lines.
+d93a1f2b Removed duplicate lines.
+8c1c556c Supported FRSTOR.
+9eff6fbb Supported FSAVE
+824f787b VxD debug.  Fixed CALLF.  BRKON CST n for breaking when call-stack is deeper than n.  Reduced TGDRV output.
+79c1b2cd Added Break On Call-Stack depth to hunt down infinite-recursion.
+7f81bd17 Merge branch 'master' of \\flamingo\git\TOWNSEMU
+46a19c7f Fix TGDRV.
+95afde8c Support CD-ROM CPU Data Transfer.
+54fc194b Fix Linux build.
+e80aaad4 Build instruction for Windows.
+4b46933d Fixed TGDRV.  FOpen was always trying to open in RW mode.
+f2af8150 BRKON FOPEN checks INT 30H (Windows 3.1 redirect to DOS INT 21H).
+8701c2ac Exposed LOADWAV command in GUI.
+1160c01f PCM sampling.
+b434dd2b Renamed variables.
+1fc7fa91 Play recording audio.
+00180ff3 LOADWAV (alias SENDWAV) command.
+05d11559 Implementing PCM sampling I/O.
+f1bbd4c9 Added I/O macros for sampling and connected to TownsSOUND.
+7053ae23 RETF_I16 instruction handles exceptions in the high-fidelity mode.
+eb7fe2c0 Fixed High-Res CRTC.  Turned out the hardware mouse cursor uses register 0x200 and up.
+ed77ef5b Fixing High-Res CRTC.
+e43d012f Fixing High-Res CRTC.
+0b56279c Fixing High-Res CRTC.
+a4fdb23a Fixed exception handlings of INC_mem, DEC_mem, XCHG_mem_reg.  High Res CRTC Reg4 b0 seems to be independent from High-Res Enabled flag.  It should mostly in sync, but Windows 3.1 writes 2 to Reg 4 and expects Reg4 reads zero although High Res CRTC is still enabled.
+7b8ffc3a Fixed exception handling in ENTER instruction.
+b0457516 INC_mem and DEC_mem handles exception in high-fidelity mode.
+7794572d Added Windows 3.1 start tests.
+45d7c303 Fixing Linux build.
+c8b32d84 Keyword WINGCOMMANDER and WC is accepted as WINGCOMMANDER1 when specifying application.
+ba1d1385 Fixed PIC for supporting Windows 3.1 in the STANDARD mode.
+af9e12d5 Changed the order of tests.
+50d120ad Exposed High-Fidelity Mode in the GUI.
+62781d2d Adding High-Fidelity mode in GUI.
+895a08c6 Adding High-Fidelity mode in GUI.
+25f6a748 Added dependency from Tsugaru_GUI to townsparam.  It was failing to recognize dependency chain.  I hope it fixes the issue.
+56c90281 Replaced all i486DX with i486DXCommon.
+be493d85 -HIGHFIDELITY option.
+222f25e8 Fidelity level in TownsStartParameters.
+0393513c Templated FMTowns class.
+ae09c146 Morphing FMTowns class.
+9aa50e46 TownsCommand uses FMTownsCommon.
+a4ab3c20 TownsPhysicalMemory does not cache CPU pointer.
+d9edb831 townsapp_ab2.cpp uses i486DXCommon
+b52b2553 Renamed FMTowns class to FMTownsCommon class.
+b82f9ac2 TownsPhysicalMemory uses i486DXCommon.
+b36a1da3 Transition from i486DX to i486DXCommon.
+1c7f64f2 PIC, TBIOS ID, TOWNS VM Interface use i486DXCommon.
+9af4d327 miscutil, cdrom, dmac, scsi, and vndrv use i486DXCommon.
+4e27be2f TGDRV uses i486DXCommon.
+7acedbdd Added redirect function from base class to sub-class.  Made i486DXCommon uncopy-able.
+92e6a297 Added explanation on the fidelity layer.
+4adae907 Integrating test386 in the main tests.
+bdd99f2e Integrating test386 in the main tests.
+427b1f56 Two fidelity levels in the same executable.
+a68322f1 Two fidelity levels in the same executable.
+78587c03 Two fidelity levels in the same executable.
+c64c0592 Renamed classes.
+1b01e305 Fixed macOS build.
+4c60f094 Fixing macOS build.
+736b89a9 All necessary functions are really in the fidelity layer.
+67b06af9 Fixed build.
+9f40f05e All necessary functions are in the fidelity layer.
+29260e5b Moved LinearAddressToPhysicalAddressRead and Fetch functions to Fidelity layer.
+9fc44aff Moved i486DXCommon::LoadSegmentRegister and depending functions to i486DXFidelityLayer.
+1ba35287 Moved i486DXCommon::Interrupt to i486DXFidelityLayer.
+32c7c987 Added i486DXFidelityLayer.
+f604aa39 Added i486DXFidelityLayer.
+f53e3544 Support FIDIVR m32int
+abe3eaef Support FIADD m16int
+1b6a5610 Support FIMUL m32int
+ac5f49cf Support FISTP m16int
+b7549ac6 Supported FNSTENV.
+e15b8a5a I/O FF94H and memory-mapped I/O CFF94H disregards bit7.  Windows 3.1 writes JIS code with b7 set, but the bit needs to be ignored.
+94191103 Working on FNSTENV.
+5b21b88a Support FIMUL_m16int.  Working on FNSTENV.
+c01cbeca Support FILD_m16int
+6b25dc16 Fixed exception handling in XCHG.
+5e129b4c Fixed exception handling in LDS,LES,LFS,LGS,LSS.
+89459967 Fixed exception-handling of POP reg.
+b7f3e76a More debug support in the high-fidelity mode.
+6c7bb4c7 High-Fidelity Mode Debugger checks register change before handling exception.
+5678bcfa i8251 clears RxRDY and TxRDY on reset.
+da6545a7 Added disassembly for FILD(m16int)
+0fa609c0 CD-ROM raises SIRQ flag on read time out.
+34b176a2 Debugger distinguishies memory write from CPU and DMA.
+4095819f Support FSETPM instruction.  It does nothing in 80386 and newer.
+ac1b4ec6 Fixed SCSI access-thread synchronization.
+b312c9b3 SCASB/SCAS handles exception in the high-fidelity mode.
+9d074931 Added a defensive test in debugger to check incorrect ESP on handling exception.
+602899c3 Fixed exception handling of CALL/CALLF.  It needs to be HANDLE_EXCEPTION_PUSH_POP instead of HANDLE_EXCEPTION_IF_ANY because it does push.
+497cb4eb RET, RETF handles exception in the High-Fidelity mode.  POPA handles exception correctly.
+91d873a1 Fixed some exception handlings.  Removed i486DX::Move.
+6bba04b2 Status shows the instruction that hit the break condition.
+4d87b358 Debugger enhancement
+32fc284f BCW command (clear wildcard breakpoints)
+491aec39 Take bit7 of PCM I/O 04F7H as Pause/Resume instead of Start/Stop.
+2b49e5e0 Hardware mouse fix.
+247f662f Restore ESP if exception is handled during PUSH/POP instructions.
+46d23030 Fixing exception handling for PUSH/POP instructions.
+b740dc49 More exception handling in the high-fidelity mode.
+c46745de More exception handling in the high-fidelity mode.
+f41ae54c More exception handling in the high-fidelity mode.
+f9fb7b81 Fix macOS and Linux build.
+15050a4f Windows 3.1 successfully installed in the high-fidelity mode.
+aaa4482d Corrected RETF to outer privilege.
+6147f900 Working on RETF to outer-privilege level.
+26f3a962 Working on RETF to outer-privilege level.
+a2a277c8 Support 80386 INT Gate.
+0fd3b9fc Support 80286 16-bit TSS.
+0267f764 Support FIDIV(m16int).
+d3a76ce9 SCSI Command COPY and COPY_AND_VERIFY at least does not crash.  Currently just returning error.
+bb4d1c96 File name alias.
+b85ef36d JMPF/CALLF indirect checks exception in the high-fidelity mode.
+75df4914 JMPF/CALLF indirect checks exception in the high-fidelity mode.
+854de108 In POP mem, if exception occurs while storing the operand value, don't move ESP.
+54f3afe1 More exception handling in high-fidelity mode.
+3d6ce09c More exception handling (in the high-fidelity mode).
+422bbacd PUSH REG handles exception in the high-fidelity mode.
+3a78b407 Check PF after FetchInstruction in High-Fidelity mode.
+365ddfea Fixed Windows 3.1 mouse integration.
+920ef772 Mouse integration for Windows 3.1
+d2c9290b Hardware mouse cursor of MX's high-res CRTC.
+e584592c STI takes IOPL exception when IOPL<CPL regardless of VM flag.
+8e7b4e2e Updated readme
+c053ee29 High-Fidelity mode CPU preserves IF if CPL<DPL.  Windows 3.1 starts.
+27e73d2d More log output.
+d208989c PIC break condition
+a70cb2e4 POPF and IRET take IOPL exception in VM86 mode IOPL<3, POPF preserves IF if IOPL<CPL in high-fidelity mode.
+7e1ad4c3 MPSF (monitor point short format) command.
+580d0934 SAVESTATEAT command.
+037fd5fd IN/OUT shoots GP exception in protected mode && IOPL<CPL in high-fidelity mode.  Windows 3.1 is getting even closer.
+5c2ac506 Moved TakeIORead/WriteException from i486DX to i486DXFidelity
+b6985712 Re-enabled IOPL Exception Check for STI and POPF in high-fidelity mode.
+b42cf393 LDS, LES, LFS, LGS, LSS checks for exception in the high-fidelity mode.
+f426424e SCSI status show sense key and status.  CRTC2 auto-increment palette latch when Word write to D2 or Dword write to D0.
+7352a42c SCSI controller goes to STATUS phase with CHECK CONDITION if disconnected SCSI ID is selected.
+11db442d Merge branch 'master' of \\flamingo\git\TOWNSEMU
+144b9948 Commented out IOPL exception check on INT instruction.
+a7fe33fa Took some IOPL exception specific to VM86 mode, but still INT 93H AX=FABxH hangs.
+0bce7fac Working on VM86 IOPL Exception handling.
+e7f24c34 Added a test program for checking SCSI-controller behavior on real FM TOWNS.
+d3e1aa1f Fixing Linux build.
+022e3ea2 BINARYOP_RM8_FROM_I8 handles exception in the high-fidelity mode.  Windows 3.1 is apparently stopping in DOS IOCTL (AH=44H).
+89af4e3d JMPF/CALLF handles code-segment exception.  Now Windows 3.1 writes to CRTC and switches from 640x400 to 640x480 screen mode.
+bb3cd087 Added i486DX::GetSegmentDescriptor
+db30847d Instruction 0FFFH shoots INT 6.  Windows 3.1 intentionally use this instruction to test INT 6.  Windows 3.1 boot process goes deeper and now it clears the screen before crash if compiled in the high-fidelity mode.
+946dce1a Matched LAR and LSL behavior with sample from real 80486 in FM TOWNS II MX.
+4dc6a5ae Working on LAR and LSL tests.
+20b5112d Resampled with corrected code.
+034358ab DPL and RPL were flipped in the LAR LSL test program.
+8d8de6e4 Sampled LSL and LAR results from real 80486 on FM TOWNS 2MX
+d2e15181 Working on LAR and LSL tests.
+e5aa82a1 Working on LAR and LSL tests.
+7107b884 Working on LAR and LSL tests.
+b389942f Correctly show CALL rel and JMP rel disassembly when 16-bit operand size.
+369b7e25 Fixing LSL
+4ac62488 Cut out i486DX::LoadSegmentRegisterTemplate to i486loadsegreg.h so that it can be used from LSL.
+a156fe20 Debug Output LDT show 5 bits of descriptor type instead of just 4.
+74249cd3 Software INT checks INT-descriptor DPL against CPL and shoots GP exception if CPL is of lower privilege.  Windows 3.1 INT 47H (debugger) passes if compiled in the high-fidelity mode.
+855d54fb DR and TEST register dumps.
+1b1bf18a VxD Monitor
+747e2ca1 Break on Windows 3.1 VxD Call.
+a1cb2a54 Break on protected mode, real mode, and VM86 mode.
+ae78658f File name is correctly printed in the call stack from VM86 mode.
+3c877e19 Fixed help.
+96e4c605 JMPF checks descriptor type.
+3106ca03 CALLF better fidelity.
+c161ee50 Separated JMPF in a function.
+68f960b9 Separated CALLF in a function.
+9c68b4d8 Separated CALLF in a function.
+c1667da8 Interrupt types.
+e91b66d8 Debug logging.
+244e35d0 Debug logging.
+25438d61 Clear call stack on state load.
+9ad3618a Added virtual machine for running TEST386 (https://github.com/barotto/test386.asm).  Added a script for building and running Tsugaru and VM for TEST386.
+0130e680 Earlier change may have disabled state-file saved in the earlier-version Tsugaru.  VERR/VERW type check is skipped in the default-fidelity mode to keep compatibility of the older state files.
+0307cc95 Fixed for Towns OS on DOS6.
+c684eca2 Fixed ENTER instruction.
+a3b9edd2 Fixed VERR,VERW.
+8e3309eb Fix build.
+ee5fc124 Fixed ENTER and VERR.
+326b39ee Fixed ENTER.  (How was it working until now?)
+b211c777 Fixed build, Fixed ZF flag in ARPL.
+f3891a40 LOCK prefix throws UD exception if not allowed.
+f302ae33 Disassembly show LOCK prefix.
+f0560f4d Fixed uninitialized flags in LoadSegmentRegisterFlags.
+ac61a5ff Removed TSUGARU_I486_MORE_EXCEPTION_HANDLING macro.
+052d1548 Removing TSUGARU_I486_MORE_EXCEPTION_HANDLING macro.
+1f50432a Removing TSUGARU_I486_MORE_EXCEPTION_HANDLING macro.
+cacc0b22 Removing TSUGARU_I486_MORE_EXCEPTION_HANDLING macro.
+bef95fc5 Removed TSUGARU_I486_UPDATE_PAGE_DA_FLAGS.  Now i486Fidelity classes takes care of the difference.
+1346fe24 CS RPL must match DPL only in Interrupt in protected mode && VM=0, instead of every time CS is loaded.
+94b0af3f CPL=0 before loading SS on INT from VM86
+2d056f4f INT from V86 mode needs to clear DS,ES,FS,GS.
+f2ff8f2f Added i486fidelity.h in CMakeLists.txt
+95c7a458 IRETD protects IOPL bits.
+bcf78792 Protect IOPL in POPF if not in real mode and not DPL=0
+c08a2788 Do not apply segment-type check in VM86 mode.  EIPIncrement=0 if IOPL exception on CLI or HLT.  No IOPL exception from STI. Sync CS/SS RPL with DPL only in Protected, non-VM86 mode.  Still EMM386 doesn't start.
+623070f7 Working on segmentation violation.
+b7dd1ef7 Working on segmentation violation.
+310e3d4b Working on segmentation violation.
+b92b4242 Working on page-fault handling.
+4ae120d9 Working on page-fault handling.
+fb4bafbf Working on page-fault handling.
+84517de1 Fixing Linux and macOS build.
+7e389c46 Segment Accessed flag is currently not set.
+18272912 Working on page-fault handling.
+9774fce9 Corrected CALLF.
+b83e2703 On interrupt, match CPL with new CS's DPL so that SS can be loaded.
+d8a5d432 On interrupt, match CPL with new CS's DPL so that SS can be loaded.
+18426aab Fixing page-fault handling.
+f13e99a8 Transition from compiler macro to i486DXFidelity class.
+7e26d9d6 Transition from compiler macro to i486DXFidelity class.
+58e26c27 Transition from compiler macro to i486DXFidelity class.
+d1b9bb8f Replacing compiler flags with i486DXFidelity classes.
+eb7d1223 Introducing CPU Fidelity class.
+4b749fda Adding exception handling.
+3359415f Fixed descriptor check.
+e50a655e Handles Stack Fault.
+642a9a80 More exception-handling support.
+887bb781 Fixing CPU implementation.
+926ebcaf Fixing CPU implementation.
+24cddb69 Fixed location for checking segment not present.
+9cda2d59 Check Segment Not Present while loading.
+54b1ce9b Fixing CPU implementation.
+da1d4f08 Fixing CPU implementation.
+f5b3b098 Fixing CPU implementation.
+f3733d03 Fixing CPU implementation.
+1693f461 Added a compiler flag to cause UD exception on MOV CS,r_m.  By default it is ignored.
+8befed21 Minor CPU optimization.
+bfebeaae Minor CPU optimization.
+f0771b0b Minor CPU optimization.
+309a2ea7 Minor CPU optimization.
+5c2f3ab1 Minor CPU optimization.
+4d053c65 Minor CPU optimization.
+0dd184a6 Minor CPU optimization.
+064467ae Minor CPU optimization.
+e5dfc991 Minor CPU optimization.
+bc93f970 Minor CPU optimization.
+771f39c6 Minor CPU optimization.
+3704f1ac Minor CPU optimization.
+482bc061 Fixed build.
+e2ff0c86 Fix build.
+a9af8c9c YM2612 Reg-Write Case Table.
+dbf06ec1 YM2612 Reg-Write Case Table.
+af5491d4 Probably it's faster to simply check for operandType==16 than bit-shifting and taking AND.
+e7cac813 Minor CPU optimization.
+f7eefab6 Minor CPU optimization.
+421a8473 Minor CPU optimization.
+0583c54c Minor CPU optimization.
+05e8bac8 Instruction histogram.
+12a6c0d0 Minor CPU optimization.
+0ddeda45 Minor CPU optimization.
+7ae4bcb4 Added Daikoukai Jidai Opening test.
+8b6bd79b Added Sherlock Holmes Consulting Detective intro movie test.
+1ca0e07a Added pass-count for -POWEROFFAT option.  Added Ms.Detective opening test.
+71a80d66 Testing with GetOperandPointer
+cb867f32 Testing with GetOperandPointer
+8a134cbb Testing with GetOperandPointer
+a539b5ce Testing with GetOperandPointer
+088db9c8 GetOperandPointer returns null if there is a possibility of going beyond segment limit.
+7aa559f4 Testing with GetOperandPointer
+7e6b397c Testing with GetOperandPointer
+6ea5e0bf CPU optimization.
+be01b74d CPU optimization.
+c373cfb5 Fixed out-of-bound array access.
+76005419 Fixing Linux build.
+52d7c17d Minor optimization.
+c86b68f8 Error fix (why did it compile?) and added Vec4ub.
+6dff4b17 Added tests.
+eb94a735 Bug fix.
+daa8f296 Minor optimization.
+af2d44c0 CPU optimization
+b96825e9 CPU optimization
+be690a0d CPU optimization
+2bb0e72a Removed state.cpuTime.  Now only using state.townsTime.
+b8c1a27a Made vmAbort private.
+ef546daa IRR cache.
+11a520b1 More utilization of __assume(0)/__unreachable_code().
+a32705cb __assume(0) in i486::EvaluateOperand and i486::StoreOperandValue.
+0ba06e57 Use __assume(0) for YM2612 library.
+dc63cbd2 Extremely tiny optimization.
+7474f2e9 Reorganize i486::Instruction, hoping less instructions for populating members.
+64736a45 Reorganize i486::Operand, hoping less instructions for populating members.
+f475619f VRAM Single-Page mode is supposed to be just a tiny bit faster.
+2b516ed2 Added a test.
+ab7f73df CDMUTE/CDUNMUTE commands.
+ef231240 cpputil::MakeUnsignedWord, cpputil::MakeUnsignedDword
+7d6f374a Fixed VRAM and spriteRAM sizes.
+b511d286 Fixed parameters.
+c53a7555 Added pretendDriveNotReadyUntil.  This state variable is not saved in the state file, and zero-ed when state-loaded.
+cafbc8c5 Adding pretendDriveNotReadyUntil.
+81768163 Removed redundant line
+0d946834 CDC supports command 01h MODE2READ.
+939869d5 Game port options for CAPCOM CPSF in command help.
+2dc32ab6 Hope it works with .ISO.
+eb402a08 Support CDC Command 63H (RAWREAD)
+6f4c9e00 CDC Monitor (ENA CDCMON)
+5361161b IMMISIO works for PUSH I8/I16/I32
+cb4b1293 Merge branch 'master' of \\flamingo\git\TOWNSEMU
+b64b4ecf Supported CDC RAWREAD command (03H).  Still cannot play videos in Towns Magazine Vol.2
+1399587b Changed disk media type identification threshold.
+acd8b915 Fixed: D77Track::SuspectedLeafInTheForest was checking C,R, and N, where it should be C,H, and R.
+72ba94e6 If media type like 1232KB or 1440KB cannot be identified from the disk size, it takes media type from media-type byte of D77.
+6b494a04 Don't change media-type identification if auto-identify returns unknown.
+bab91647 D77File::SetRawBinary correctly sets media type.
+0350b85d Cap visible width when HST=0x29D and CLKSEL=3 to 640.
+7dd652d8 Silence sound while VM is paused.
+1dd7a7f7 Key-mapping GUI
+9d701bb6 Key mapping usability.
+be67965b Key mapping usability.
+4dc3ecfa Key mapping usability.
+7bc829d0 Fix PCM low-frequency play back.
+167909d1 D7X supports unstable bytes.
+8e83e692 Fix Alshark opening, but I have zero confidence in this CRTC interpretation.  It just takes care of known cases.
+d7ec7571 Fixed macOS build.
+808f4009 Fixed unstable-byte identification.
+70a1e311 Updated unstable-byte identification.
+1580feae Identifying unstable bytes.
+7cd4784f Positively identify known unstable-byte patterns.
+808e939b Working on RDD support.
+d68092e3 GUI supports .RDD format.
+cb5350f4 GUI supports .RDD format.
+2f75b3c6 Adding .RDD support.
+732d154a Working on RDD support.
+a4601414 Merge pull request #61 from pinterior/fix-loop-inst
+a76df7c8 Fixed mac file-dialog issue.
+5c7629f7 Fixed crash.
+f70ce992 Accept .D7X as D77 extension file.
+8924c336 Prevent crash on undefined instruction.
+785c6340 fix j(e)cxz, loop((n)e) prefix
+daa6bda9 Support multi-sampled .D77
+b6eb1a84 Support 2D disk.
+2e696688 Support Track Read command.
+4cdf3a6a Supported CPU-MISC3 (I/O 0024H)
+c7363e69 Emit fake Index-Hole signal.
+0bd14118 Prevent crash when reading ID mark from an unformatted track.
+5d1777e4 Bug fixes
+751d544f Fixed FDC behavior.
+1c285237 Shift+Pause key to toggle host mouse cursor (Windows only at this time.)
+e9a9dcad Use correct byte for CRC error.
+d3cf02b9 D77 library correctly handles unformatted tracks.
+5014a679 Fixing Linux and macOS build.
+315adfce Merge branch 'master' of \\flamingo\git\TOWNSEMU
+57969c5c Merge pull request #56 from bcc2528/master
+3f29b834 Optimize switch with jump table.
+78254c52 Optimize switch with jump table.
+1aef494a Optimize render of each color bits.
+d507c1eb Streaming Fix.
+59692a2f Streaming Fix.
+156b900b Limit ring buffer for FM and PCM streaming for better latency.
+1f9308fc Skip inverting image.  (Thanks BCC for pointing it!)
+082df683 Missing file
+48989b18 Use streaming mode in Windows for FM/PCM audio.
+8c4f070f Calculate timing etc. based on the master clock.
+99b855c3 Got rid of ratio relative to TOWNS.
+64d3ee74 Calculating Frequency from phiM, not from relative to FM TOWNS measurement.
+527568a1 Added Master Clock
+30232e09 Added FM TOWNS Technical Databook Errata.
+7aed3223 Fix incorrect kind of recursion.
+e6bc9463 Better organized member functions of YM2612.
+81ff3c84 Apparently I deleted 'E' before last commit.
+00adf5d2 Use different timer interval for YM2612 and YM2203C.  Maybe I was running YM2612 a bit faster as well, but at this time I don't change YM2612.
+53ebe449 Fixed build.
+a921ea12 Merged master branch.
+ace62258 Auto reload YM2612 Timers A and B.
+cb3d812a Enabled scheduling.
+9920fd04 Added lastWaveGenTime parameter in MakeWave* functions.
+56e57950 Introducing scheduling.
+7da66889 Previous change for CSM mode is not a correct solution.  It simply requires higher time resolution.  By going down to 1ms per wave generation, it got a lot better without the last change.  Therefore, thee last change has been reverted.  Will increase the time resolution to microseconds from milliseconds.
+2a986769 YM2612 core do not reset phase in CSM mode.  The analysis from Silpheed intro suggests that the voice intonation was not well emulated because the phase of the wave is not continuous.  During the CSM playback, CPU was banging OPN every several milliseconds order on IRQ.  Unless I can synchronize wave generation and IRQ, it is virtually impossible to fully replicate the voice.  It does not fully solve the problem, but by not resetting the phase every KeyOn in the CSM mode, it makes wave somewhat continuous, and it does replicate intonation better.
+b6182d79 Added a reference
+21db212e Corrected Key On/Off timing in CSM mode.  Debug output of CH3 BLOCK and F_NUM per slot.  Do not update envelope if TL is set to 3CH in CSM mode.  Do not fast-forward phase if SSG_EG is enabled.
+4bb2f23c Corrected channel 3 special mode.
+0a43eb4c Deleted a line that was doing nothing.
+d320399a Working on YM2612 CSM mode.
+7ccc43d9 Working on YM2612 CSM mode.
+c10b3e8e Fixed 3ch F_NUM and slot correspondencies.
+b879aeb8 Merge pull request #54 from pinterior/fix-neg-af-ub
+6d67a08f Merge pull request #53 from pinterior/quick-memory-count-by-default
+9dd84256 avoid undefined behavior on signed integer overflow and set AF properly
+0020c1ec set cmos `3c1a` to `1` for quick memory count
+57d9877d Exposed screenshot cropping and map XY expressions in GUI.
+6efe9e66 Exposing screenshot cropping and map XY expressions in GUI.
+b9ddcc8f MapX MapY calculation (imported from Mutsu).
+7320e418 Merge branch 'master' of \\flamingo\git\TOWNSEMU
+d56a0877 Merge pull request #52 from pinterior/fix-sprites-sux-suy
+f64d1873 Merge pull request #51 from yas-sim/crc
+c51c44d9 fix SUX, SUY handling
+69c2bc45 Updated memory filter function.
+f41d5910 Screen-shot cropping.
+4db8f180 Updated LineParser class.
+b854ef5b Removed redundant function in LineParser.
+8d3faea5 Support OPN CSM mode and Sound-Effect mode.
+3895fb58 Adding support for Channel 3 CSM mode.
+8760e12b Supported IMMISASC
+3662d067 Working on IMMISASC command.
+a66746f2 Adding immIsASCII flag in symgol.
+f366111d ASC and CHR command.  CALC can include an ASCII code by single-quote.
+6f274c6d Common FDC state save for Tsugaru and Mutsu is up to version 6.  From version 7 and up, Mutsu and Tsugaru saves FDC status differently.
+99259165 Changed the way CDROM issues Data Ready.  To start Shadow of the Beast 2, it was blocking Data Ready until the previous IRR was consumed, but it was blocking Yumimi Mix.  Now CDROM blocks Data Ready if previous IR from DEI has not been consumed.  Yumimi Mix can start.
+dd0e59ab Merge branch 'captainys:master' into crc
+166ae4bc Added sector number into the ID CRC calculation.
+cd5b912a Merge branch 'master' of \\flamingo\git\TOWNSEMU
+761c2f0f Merge pull request #50 from yas-sim/crc
+e26f234b Added CRC generator
+7c18a184 Fixed integer overflow during envelope interpolation.
+614cc1eb Fixed calculation of carry over from the previous tone.
+b1e94981 Envelope time precision to 1/32 millisec.
+e9ac00ed Reverted YM2612 output-balance adjustment for different algorithms.
+ad53a218 Tweaking SSG_EG.
+4f16dc3b Tweaking SSG_EG.
+5d8ab724 Supporting SSG_EG
+fa6b6199 YM2612 saves maximum amplitude from last wave generation.
+deb50243 Fixed DiskDrive state save.
+8a662495 Minor optimization.
+3fd57d49 Handle multi-byte instruction and pre-fixes in FetchOperand.  Eliminated one while-loop per instruction.
+e280a5ad Generate FMPCM wave at 4ms resolution.
+2f595785 DiskDrive class saves added state variables.
+ea2f4350 More FDC overhaul.
+6d2d0b93 More FDC overhaul.
+112235e8 Changes needed for Mutsu.
+bbeb3be0 FDC Overhaul
+0b675212 Merge pull request #43 from einstein95/patch-1
+5de48333 Subprocess::Send in subproc_unix.cpp was not returning a value.
+d2927a85 Does FDC internally have sector number per drive?  Or, just one sector number per FDC?  Looks like one per FDC.
+d77c8ab9 i8251 update to support Mutsu.
+6a294825 FD head position.
+7e6b4300 Nanosec per byte.
+c6bc1d1e D77 extra info structure.
+f7cdb30a Additional parameter for disk images to support Mutsu.
+68a2ee01 lastDRQTime in DiskDrive class.
+d198f536 Fix macOS build.
+7c10f8d0 Fixed Linux build.
+f44c10e5 Missing file
+cecc5d46 Updated yssimplesound library.
+22628bb3 Pre-scaled the tone frequency.
+d39a25b6 Testing with pre-scaler for supporting YM2203C.
+daa4f508 Self memo
+bdfd44b5 FDC update.
+970a10c3 FDC update.
+4a56857a Long forgot turning off JIS code log.
+3f27c2a2 Opition for re-using YM2612 core for Mutsu.
+41356112 YM2203C trying to make it more general.
+c89f5044 Incomplete support for reading a 2D disk.
+b54face6 Cannot figure how Towns Disk IO sets up 2D mode.
+52103afd Added variables for I/O-based data transfer.
+a6aaa89d Fixed GUI build.
+bdc067a4 Merge branch 'master' of //albatross/git/TOWNSEMU
+655be9d3 Separated FDC and DiskDrive libraries.
+080c440b Fixed mouse.
+4776cda2 Fix building wav2snd on linux
+d05dd5a7 Fixing macOS and Linux build.
+5ab9436b CDDA Panning (currently only works in Windows)
+9214e94d Supporting CD electric volume.
+a4c054cc Reverted CDDA by streaming.  Looks like Direct Sound is REALLY not good at streaming (or not good at mixing streaming and non-streaming).
+1e2cddcc Changed default volume from 8192 to 4096.  To prevent Super DAISENRYAKU tone clipping.
+0ab831d3 I tihnk the fix I made before for Galaxy Force II was not correct.  This time I change GetRenderSize function rather than GetPageSizeOnMonitor.
+f53053f3 Fixing CDDA play-time resolution issues.
+e5e535d4 Fixing CDDA play-time resolution issues.
+61d5b9d8 Support 1K packet host<->VM file transfer.
+f797836b Fixed CDDA
+6d7e0743 CDDA always uses streaming.
+25a5ba11 Fixed: Electric volume EN flag for right CD channel was not processed right.
+2dd1f952 Merge branch 'master' of //albatross/git/TOWNSEMU into master
+42c13ce2 CDDA (both internal and SCSI) play in streaming mode.
+0fa65f1d Added TGDRV support for INT 2F AX=1109 with CX=0 (Truncate to current position.)
+cddfdd93 Adding TGDRV support for INT 2F AX=1109 with CX=0 (Truncate to current position.)
+dbb5fd4d CRTC dump
+7296e93a Adding CRTC register dump (I though I already had this function.  I might be writing the same thing again.)
+ffc77c45 -ZEROCMOS, -ICMWP options.
+2d2646a5  missing file
+bb177946 Added Application-Specific Customization for Afterburner II.  Thanks, BCC!
+aedac1f2 Updated RF5C68 output.  Thanks BCC!
+60e55440 Updated YM2612 output.  Thanks BCC!
+9cc37a30 Added RAYXANBER from SCSI CD drive with ICM Boot Test.
+b1f887da Updated IPLs
+3118faf0 -SLOWMODEFREQ option.  Turned out FM TOWNS 2F sets the machine in SLOW mode in just 5 instruction into the boot sequence :-P
+9fe17307 Updated IPLs.  Added IC Memory Card IPLtest.
+08c243c0 Working on IC Memory Card.
+759a6a36 Working on IC Memory Card.
+4feb9fda TownsCRTC::GetPageSizeOnMonitor adds origin on monitor y to height.  Otherwise bottom part of Galaxy Force II is chopped off.
+e02928f8 Support memory-wait I/O.
+1c15b901 Test program for IC memory card.
+ab6b525a Added untracked files.
+fccbbaa1 Adding support for FAST/SLOW modes.
+30a36a14 Added a compiler flag TSUGARU_I486_UPDATE_PAGE_DA_FLAGS.  Defining this macro will let CPU update A and D flags of page table entries.
+98780bf1 Support symbol table of MP-format EXP
+01ba8332 Fixed Interrupt handling.  There are two DPLs.  Gate DPL and DPL of the destination CS.
+71a0ec9c Brandish expects PCM IRQ although it is muted.  Therefore it needs to generate and play silent wave to shoot PCM IRQ at correct interval in that case.
+e18baccb INT 3 fix.  Take DPL from IDT not from next CS.  Added DPL check in VM86 mode.
+3160b095 TGDRV AX=1106h correctly handles SFT reference count.
+b0cd9ceb TGDRVreturns AX=3(DIR NOT FOUND) instead of AX=2(FILE NOT FOUND) upon failure of function 1105h (CHDIR)
+6273a939 Support external floppy disk drives.
+9331727c Respects FM/PCM mute (I/O 4D5h).
+d7437842 Fixed memory-card access from 386SX.
+f7948c58 TGDRV ignores volume-label flag in sAttr if other flags are set.
+7fce5ce5 Make JEIDA4 card accessible from C0000000h
+afc377d4 yssocket library.
+574fc378 CDEJECT command.
+28587c48 Support -BOOTKEY ICM correctly.
+6c1fe9be Tsugaru CUI exits without starting the VM if -HELP option is used.
+9361141e Added Golden Compass (Ougon No Rashinban) support from GUI.
+d0a2be37 Automatically switching mouse game port for Golden Compass.
+ede86f9e Mouse integration for Golden Compass (Ougon No Rashinban)
+c4afcf36 CDDA from SCSI device returns end time at least once after the play-back is over.
+ce4460e7 More readme to prepare for release.
+268607d1 Updated Readme and workflow.
+bb81ff31 I/O 0030H was not returning correct machine ID for Marty.
+bc5f42b7 GUI support for Marty.
+474183f8 Support Marty.
+6c6088a4 Load Marty ROM.
+3dcec31a Added Marty constants.
+c1d16a8c Added Marty constants.
+3cb1c6b5 Not blow up 386SX memory access in SetMainRAMSize.
+a470553a Playing 0-length PCM buffer will crash in macOS.  Added a check to avoid this situation.
+b396b76a Workaround for clang's bug.
+9bc5f650 Fixing tests for macOS
+e0c5af83 Fixing tests for macOS
+7b72e85b Fixing test for EASTRAY.
+36bca36d Fixing tests for macOS
+64c7d939 Updated test data
+943a6362 Merge branch 'master' of //albatross/git/TOWNSEMU
+61f1668c Added missing file.
+9960ffb8 Fixing TGDRV for macOS
+9eb90c6b Fixing TGDRV for macOS
+7b9102b4 Fixing TGDRV test for macOS
+0232b57a Exposed TGDRV in GUI.
+098839ea Exposing TGDRV in the GUI
+f3d55a1c Merge branch 'master' of //albatross/git/TOWNSEMU
+ba84c3a4 First letter was missing in SFT returned from TGDRV.
+0666d97b Correctly return time stamp on open.
+2df9fbbe Fixed some of tests in macOS.
+d5166d50 Added TGDRV test with Comp ROM
+679c07c0 Added more TGDRV tests.  Bug fixes
+d731a020 Added TGDRV Tests
+6734cfa7 Probably INT 2FH AX=1117H is correct now.
+9b327c75 Setting up tests for TGDRV
+871141bd TGDRV.COM
+f4b8d0fa Files for TGDRV tests.
+b5f9e3fa Bug fix.  Can open drive window again.
+6aa173a3 CDS \\P.A. to P:"
+27d339bf Minor bug fix.
+2356fd78 Support delete by wildcard.
+45857c1c Turned out INT 2FH AX=1113H need to support deletion by wildcard.  Will implement soon.
+670e0d85 Support Truncate Open
+c264147c I think I supported INT 2FH AX=112EH Extended Open
+e9ece306 Working on INT 2FH AX=112EH Extended Open.
+10569619 Working on INT 2FH AX=112EH Extended Open.
+2bb132ec Add dummy DPBs if DOS version is 3.x.  Removed /F option.
+44a45035 Preparing to add dummy DPBs
+7f57e275 Added buffer for dummy DPBs.
+6a328e75 Made TGDRV.SYS.  Turned out Towns OS V2.1 L31's IO.SYS wipes all network drives.  Maybe usable from Towns OS V2.1 L51.
+00b9272b Rename
+e69f4899 TGDRV.SYS
+1bd6054f Print installed drives.
+83385469 Other INT 2F functions that may be relevant.
+353a5df7 INT 2F AX=1101H Rmdir
+b3978d22 INT 2F AX=1103H Mkdir
+f051da73 INT 2F AX=1113H Delete
+ae4041d2 INT 2F AX=1111H Rename
+2b9e926a Working on INT 2F AX=1111H Rename
+fb452125 Added Seek.  Can run .COM/.EXE from shared drive.
+feb93e36 tellg -> tellp
+a32287ce INT 2FH AX=1117H fwrite
+f77252fd Recycling find structs.
+63feff2a Memo for potential problem in directory listing.
+1f045ada Multiple Find Contexts.
+324f9e43 Multiple Find Contexts.
+4aae54eb Making multiple find structs.
+0c17ab6f File Handle remembers PSP.
+55d9885b Fixed find struct first byte.
+0fb957b8 Added file-name check.
+09a17cf3 Fixed .. and .
+a9751cf9 Fixed build for macOS
+0abc0021 Fixed GetFileAttribute.
+f4cafc45 INT 2FH AX=1117H Create or Truncate
+23358dff Attribute matching.  Can copy files from shared dir to VM disk with copy command.
+8aab6bd4 Template matching in FindFirst and FindNext
+c8bd7124 Working on AX=1117H Create or Truncate File.
+8c048a58 INT 2FH AX=1105H CHDIR
+5ae2a522 Multiple Find Contexts.
+f8cc2ad9 Multiple Find Contexts.
+55271ca2 Working on INT 2FH AX=1105H CHDIR.
+28b3ecd9 INT 2FH AX=1108H Read
+872f0f88 INT 2FH AX=1116H Open Existing File.
+3e32f2bc TGDRV
+2fbaf308 Can take directory listing of shared directory.
+6d851b84 TGDRV
+419b034f TGDRV
+13ae80a5 TGDRV
+f616ef67 TGDRV
+3db7c8ba Separated TGDRV device.
+510f9e4b Implementing INT 2Fh intercept.
+7be3b353 Added DOS notifications.
+e1659a37 Updated Readme
+12e38fd6 Added FORCEQUIT command.
+102f9ba7 Missing file.
+f56c3285 GUI support for full screen.
+14567019 -FULLSCREEN option.
+f7a3a521 Supporting full-screen mode.
+97fcec84 LS command.
+f11f1c22 Added PWD and CHDIR commands.
+3491270c Adding new commands
+529b6f0b DAIKOUKAIJIDAI Specific Support applies patches for (1) fix corrupted image after the final fleet battle, and (2) the bug that requires you to save, reset, and load to see the ending after the final fleet battle.
+2530fd82 Support FISTP m32int
+8736d856 More IMM-label support.
+cfa98268 EnableDebugger does not enable IO logging.  DisableDebugger does not disable IO logging.
+2f32bdae Daikoukaijidai app-specific shortcut keys.
+4703ed36 Daikoukaijidai app-specific shortcut keys.
+b8399546 Daikoukaijidai app-specific shortcut keys.
+d10acf34 Daikoukaijidai app-specific shortcut keys.
+f268653b Adding keyboard shortcuts for Daikoukaijidai app-specific setting.
+25c94b48 Daikoukai jidai fix patches.
+7046ad4a Support commands for IMM is label and OFFSET is label.
+b9a31426 IMMISLABEL.  Prob should OFFSETISLABEL should be separated.
+ec329ac3 Adding imm label in disassembly.
+754b582a Adding imm label in disassembly.
+8731eb89 Adding imm label in disassembly.
+6ca524f7 Adding imm label in disassembly.
+623ec14d Prevent VM crash due to infinite recursion in exception handling.  Reset memory-access objects after loading a machine state with different RAM size.
+60fe6664 Added .EXP symbol table import.
+9d6644a3 Print symbol table.
+3973109a .EXP symbol viewer.
+33d87cbb Break on memory write with value range.  Clear abort flag on state load.
+675b769d Break on Memory Write with value range.
+8defb872 Added address label
+0da7c467 Add non 16x16 memory dump.
+0756e5ba Single Click Helper (Max Button Hold Time) GUI.
+6326f45d Single Click Helper (Max Button Hold Time).
+c282570b Single Click Helper.
+da8cb25b Added .MDS as extension for GUI file dialog.
+87ab329b Number of sectors of MDF is calculated from the last-track location and binary file size.
+7701aebe Fixed total number of sectors.
+1bea78aa Added missing file.
+c23b4e17 Corrected MDS/MDF audio track.
+64d3267b Support MDS/MDF data track.
+52bd33dc Working on MDS/MDF reader
+11005667 Reset RF5C68 on towns reset.
+9265a106 X window version can detect the Equal key.
+3ac58004 Map XK_grave to FSKEY_TILDA
+2e892254 Updated fssimplewindow library.
+29587657 Added ALLTYNEX test
+600b77aa Added EASTRAY test
+6c1e2ebd Use texture-mapped quads instead of glDrawPixels.
+2421f158 Use INT_LOW_WORD instead of &0xFF for parity check.
+300f15b9 Use SET_INT_LOW_WORD for updating ESI and/or ESI after string op.
+822f63ef Clear SS:ESP and CS:EIP cache on write to CR3.
+43fa73a3 Merge branch 'master' of //albatross/git/TOWNSEMU
+de77b5eb More utilization of SS:ESP cache.  Added tests.
+48ed6c03 Fixing Linux and macOS build.
+dc464b0a Added Power Drive test
+eda91232 Merge branch 'master' into OPER_REGtoOPER_SYSREG
+199e77c5 Added Poly Racer test
+c0eecb81 Removed imm from Operand class.  Already separated long before.
+a509e4ad Removed REG_GDT,REG_LDT,REG_TR,REG_IDTR,OPER_REG.
+9f78109d Removed REG_TESTx.  Added OPER_TESTx.
+6ce918d9 Merge branch 'master' into OPER_REGtoOPER_SYSREG
+c7925471 StoreOperandValue uses SET_INT_LOW_WORD for OPER_REG16.
+4c4da14d Added OPER_DRx.  Removed REG_DRx.  No access to DRx from GetRegisterValue.
+470466fb Removed keywords REG_CRx.  No access to CR registers from GetRegisterValue.
+1f31a2fe OPER_CRx
+11614396 Removed FetchOperandRM.  Replaced with FetchOperandRMandDecode.
+d7610b24 Transition to FetchOperandRMandDecode
+8629775f Transition to FetchOperandRMandDecode
+88f66db9 Transition to FetchOperandRMandDecode
+95fa8e7b Transition to FetchOperandRMandDecode
+14f6a41d Transition to FetchOperandRMandDecode
+b20019cd Fixed numBytes instead of calculating on the fly.
+25dd81d0 Renumbering cases
+b69c172e Renumbering cases
+9c33c3e4 Use SIB INDEX table.
+34fb901c SIB with MOD==2
+8603fedb SIB with MOD==1
+01a79eea SIB with MOD==0
+89c59011 Faster SIB decoding.
+2594d9f4 Extremely minor, but this change reduces one jump instruction per one VM instruction.
+49e80825 Case 2 and case 6 do the same thing.
+6a6a28a8 Made FetchOperandRM faster.
+c8f88ef0 Morphing FetchOperandRM
+14fd390a Set known operand lengths.
+6c830039 Not incrementing offset until necessary.
+0dfceec1 Assume MODR_M is always operand[0], and SIB can be operand[1].
+91f64449 Added Print TimeBalance menu in GUI.
+3b9baae0 Show average of time balance.
+47aa8584 Grouping instruction and operands.
+4772deff Grouping instruction and operands.
+84f34449 Grouping instruction and operands.
+1b3c0716 Grouping instruction and operands.
+05604b30 Grouping instruction and operands.
+06fc1318 Added InstructionAndOperand class
+e94a874e Better format of time balance output.
+9a3be3fc unsigned short -> unsigned char
+62e9b5d1 X_RM,X_RM8,FARPTR,SETX
+05fd2179 IMM,IMM8
+de355059 RM8, RM_X
+9a178ed6 RM_IMM8, RM_IMM
+4ce89c80 I486_NEEDOPERAND_NONE
+17a53286 I486_RENUMBER -> I486_NEEDOPERAND
+f4ff54e7 Added table.
+284b7d1e Cleaning FetchOperand (CMPSB).
+c998c35d Cleaning FetchOperand.
+f4003d28 Clearning FetchOperand.
+70971a7b Clearning FetchOperand.
+1147c64f Added disassembly tests.
+f7e9b8cc Clearning FetchOperand.
+7a79228e Clearning FetchOperand.
+848d1585 Clearning FetchOperand.
+4b2dfdbd Clearning FetchOperand.
+42cdac84 Clearning FetchOperand.
+6c864033 Clearning FetchOperand.
+68a4ba3e Clearning FetchOperand.
+0923e5e7 Minor change in CPU emulation. (JMP rel, CALL rel)
+1dfc1696 Added predicate in cond.wait in TownsRenderingThread::ThreadFunc.
+3856011d Same for event log.
+5ceb5e1d GUI was always using UTF8 encoding to open/save state.  Changed EncodeUTF8 to YsUnicodeToSystemEncoding.
+6a2e2a4a Small speed up.
+58da773d A minor speed up.
+baead4c1 Changed byte-by-byte copy to DWORD/WORD copy in ConstMemoryWindow.  (Thanks, pinterior!)  Changed address-range check assuming 2's complement (assuming CPU uses same SUB instruction for unsigned and signed.)  All CPUs I know do this way.  But, my understanding is C/C++ does not guarantee that unsigned underflows to a big number.  CPUs happens to do so.  If someone in the future comes up with a crazy CPU that uses two different subtraction instruction for signed and unsigned integers, and say unsigned subtraction clamps to zero if you subtract big number from a small number, my assumption will break.  So, I use it only #ifdef YS_TWOS_COMPLEMENT.
+c31302ab FetchInstruction takes one-step shorter than before.
+135cb9bf Reorganized i486DX::Push and i486DX::Pop.
+e1a5af35 Reduced operandSize check in CONDITIONALJUMP16OR32.
+64208462 Reduced operandSize check in BINARYOP_RM_FROM_R.
+7eba2631 Reduced operandSize check in BINARYOP_R_FROM_RM.
+2579850d Very small speed up.
+acea6f39 Small speed up.
+488d40c3 Some more similar optimization.
+61182171 A little bit of speed up.  Believe or not, C/C++ does not assume 2's complement.  If in the future someone comes up with a CPU that uses the highest bit as sign and the rest as absolute value, 0xFFFF may not mean negative one.  I was trying to write in such a way that the code works even if the CPU is not using 2's complement for signed integer, but in practice it is safe to assume so.  I have added YS_TWOS_COMPLEMENT flag for skipping some computations in conversion from VM bytes to signed integer.
+eeb508be Made some more instructions slightly faster.
+bc518e43 Small speed up of the CPU core.
+68774f6e Changed the way to respond to FM-R VRAM Mapping flag.
+44fedd22 Reduced FM and PCM default volume.
+9f03278a Expand 640x400 image vertically to the window size (or shrink window to 640x400 image).
+3c17568d Reinstated the time-deficit payback.
+9ed7d9e3 Change FM-R VRAM, SysROM mappings only when the flag changes.  Turned out Towns OS V2.1 continously banging on 404h and 480h.
+ccf919fd Skip clearing unused operand in FetchOperand.
+b98301b9 Cut down a few calculations in i486DX::Operand::Decode
+52935bcf Added CPU-fetch busrt mode.
+77368603 Break on memory write with byte data.
+443566a1 Working break on memory write with byte data.
+cbc0d5fe Bug Fix.  Probably FSUB ST,STi had been used when it should use FSUBR, FDIV, or FDIVR.
+32445a43 Cleaning up FPU emulation code. (Replacing if-else to switch-case).
+37f3dfa4 Support FCOM m32real, FCOM m64real, and FNOP.
+f3c41e01 Support FLDLN2 for FB386 log command, and FSUB ST,STi for FB386 exp command.
+b96e0aa3 CPU does not stop on FCLEX.  (It does nothing at this time).  F-BASIC386 can start with FPU enabled.
+716ce9a8 Exposed FPU in GUI.
+5beec595 Exposing FPU in GUI.
+9734cb02 Added FPU test.
+04e20ac3 -USEFPU and -DONTUSEFPU command options.
+234ab2e5 Fixed C0,C1,C3 bits after FPREM.  Needs to be based on the absolute value of the quotient.
+e5eec89c Added fpu tests.
+dd392e78 Save FPU state.
+fd1bedbf Fixed FPREM.  FPREM was writing to ST1.  Must be ST.
+8af870bc Fixed FPREM.  It was popping the FPU stack by mistake.
+cc491de9 Working on FPU
+b0357a5a Added place holders for FPU instructions.
+261fb5c7 Working on FPU
+7e16f63a Fixed data type error.
+bdc8a4bf Fixed data type error.
+fa018aa8 Removed unnecessary break.
+7811019f Support FILD m64int
+2c18267b FPREM sets C1,C3,C0 bits based on the quotient.
+d9ae752f Fix Linux and macOS build.
+ffa7360d Support FST m32real.  Working on FILD m64int.
+fb977b6c Merge branch 'master' of //albatross/git/TOWNSEMU
+b2ed4311 Was forgetting exponent&=0x7FFF;.
+144562a4 Better handling INFINITY and nan.  EASTRAY still doesn't work.
+3a89e7a0 More correct treatment of INFINITY.
+4bb00377 Support FSUB m32real/FSUB m64real.
+153fe798 Support FDIV m64real.
+28f13136 Support FSUBP_STi_ST
+cd99be06 Support FMUL ST,STi.
+d8707bba Support FBLD, FSINCOS
+2d8f681f Aligned stack pointer with real CPU.
+43d48223 Support FMUL m32real,FSUBR m32real.
+0f5ef116 Support FADD m32real, FSTP m32real.
+cdf94c2f Support FPATAN, FSUBRP_STi_ST
+c7af951f Support FCOM.  FMUL->FMULP.
+c7fc35eb Added some more disassembly for FPU instructions.  Long way to go.
+fe1e1ce4 Better handling of 1/infinity and infinity in 80-bit to 64-bit conversion.
+55bdd4fc Support F2XM1,FSCALE,FSUB_STi_ST,FTST
+b09cf55c Changed the way to read multi-bin CUE file.
+d6764a18 Working on FSUB STi,ST.
+fcb39ac4 Support FCOMP,FLDPI,FLDL2E.  Working on FYL2X.
+11a9f0f4 Support FSIN,FCOS,FPTAN,FDIVR_m32real
+c5029277 Render sprite at the end of the sprite-busy period, swap buffers at the rising edge of VSYNC, not swapping buffer when SPEN is cleared during the sprite-busy period.
+fb21a205 Support FDIV m32_real
+ae43fdbf Render sprite at the end of sprite-busy cycle.  Also when SPEN is cleared when sprite is busy for Shadow of the Beasts.
+26c9165c Draw Towns screen image over Strike Commander pong-cheat bars.
+4e6b93d3 Draw Towns screen image over status bar.
+bcd60c6d Moved the Towns screen image 1 down by 1 pixel.
+293a1bca Support FPREM
+f27bdc82 Support FABS, FILD_m32int, FSQRT, FXCH
+6d5361a1 Fixed GUI 33MHz CPU speed.
+d273a9e2 Reorganizing FPU code before moving forward.
+08c25a29 Reorganizing FPU code before moving forward.
+58294682 Support FSUBR
+fc161259 Fixed FDIVP STi,ST, FDIVRP STi,ST.  Can printf double.
+0cbea660 FPU experiments
+bfeda9cd FPU experiment program.  Confirmed FLD 3.0->FLD 10.0->FDIV will make 3.0/10.0.
+02f16d4a Corrected clocks
+ff9a0872 Working on FPU
+221937d9 Working on FPU
+b48da764 Working on FPU
+f749b4c1 Working on FPU
+5e562a97 Added FPU test.
+add8d9d8 Working on FPU
+be3001dd Working on FPU
+54ccacb2 Fixed loading 32-bit float.
+398b18e1 Really fixed 80 bit to 64 bit floating point conversion.
+58a894a8 Fixed 80 bit to 64 bit floating point conversion.
+9ffd7127 Working on FPU
+2574e4a3 Working on FPU
+8087a7eb Working on FPU
+c9cc6b59 Working on FPU
+297c001f Working on FPU
+5e35ade9 Working on FPU
+c132807a Merge branch 'master' of //albatross/git/TOWNSEMU
+7a891818 Support FADD64, FLD64
+9108b053 Merge pull request #36 from pinterior/fix-ror-rol
+6ff1d991 Merge branch 'master' into fix-ror-rol
+00c63b54 trivial change
+523a78ac Fix Linux build.
+1cfc3a1c Merge pull request #35 from pinterior/d000-efff-mapping
+153a171f fix non-msvc build
+1e085958 fix CF not set on `mov al, 01h`, `rol al, 16`
+0e9acc4c fix register cleard on `mov al, ffh`, `ror al, 16`
+172753ae fix opcode d2 label
+e131a19c fix disassemble of `ror byte ptr...` (opcode d0, d2)
+e3d8572e Working on FLD m64, FADD m64, FSTP m64
+3d60ae5b DOS Extender FPU test passes.
+842f8d9e fix memory mapped CMOS size
+ca34d013 fix GetStatusText
+1c50c282 use 404h to change dic/cmos mapping
+a1c42d8d Support FCOMPP
+9a1ac1bb Added memo.
+43868bdd Working on FCOMPP
+7dc815a3 Working on FPU
+92e8a059 Working on FPU
+69418b84 Working on FPU instructions.
+27f8d3fc Experimenting with FPU.
+2a7665ce Looking into FPU emulation.
+72c01c73 Support version 0 state files.
+fffd573f Merge pull request #34 from pinterior/sprite-spys-bit
+7223f961 Merge pull request #33 from pinterior/double-buffered-sprite
+d414b5f5 reduce device callback
+077f2160 VMBase::RunScheduledTasks is made inline.
+8447aad5 copy SPYS to MSB
+f27b7eef impl double buffered sprite
+ce5a2808 Fixed Linux build.
+458983a7 Fixed macOS build.
+76f9386c Fixed.  All tests pass.
+c4059834 Multi-threadint SCSI read.  Can read disk after booting from CD, but cannot boot from hard disk.
+6cfba376 Multi-threadint SCSI read.
+2dff363e Multi-threadint SCSI read.
+63e8d27f Added CD binary cache.  Didn't fix Sherlock Holmes' Consultant Detective playback  :-(
+1079b75c Working on CD Binary Cache
+cf7c540e Working on CD Binary Cache
+22b21b9e Removed catch-up
+50bfc8b9 Use townsTime not cpuTime for timing.
+e831e136 Trying better way of adjusting timer.  Not working actually.
+290e54bd TownsThread::AdjustRealTime takes into account a possible time deficit if new wave is added while waiting for the real time to catch up.
+2821ba70 Take time deficit log.
+0bfa51da Added mouse range option in GUI.
+8c44655c Adding mouse-range option.
+778b4179 Initialize wave RAM with 0xFF.  Solves repeating gunshot sound problem in Operation Wolf.  SAVEWAVRAM command.  Realized I was having a buffer for wave RAM in TownsPhysicalMemory class, although RF5C68 class is managing it.  I guess I prepared a buffer in TownsPhysicalMemory before I implemented RF5C68 and forgot.  Renamed to 'notUsed' before deleting.
+1dd01b92 PCMCH command.
+2f7688fd Do not consider VRAM offset in mouse integration when -APP OPERATIONWOLF is selected.
+2a460e15 Merge pull request #31 from fuzz6001/fix-mouse-y-offset
+82ffddbc Correct the offset by considering VRAM size
+5b41a809 Fixed: UpdateSpriteHardware was not called on word-write to the CRTC I/O.
+23b5ebe8 Removed debug output.
+fd60c3f0 Fixed: CD-ROM was processing a command on write to 04C0H if command has been received and parameter queue was set.
+41576eeb Updated FM TOWNS Technical Databook Errata.
+7ea6ec3c Was forgetting to copy considerVRAMOffsetInMouseIntegration from TownsStartParameters to FMTowns::Variables.
+b964f430 Do not change mouse-reading state when COM does not change.
+1e822d40 Switch for controlling if mouse integration considers VRAM offset.
+539d1ef8 Fixed profile dialog
+693f1ae0 Reopen profile dialog when separate-process VMcloses.
+e59f16be Added Auto Shot
+c4d17d5c Added command for enabling/disabling auto shot.
+b709d434 Implementing auto shot of MSX game pad.
+c8f97311 Added variables for auto shot.
+3c824b1b Corrected VSYNC duration.
+fd815c78 Corrected sprite and VSYNC timings.
+2bfffe6f Sprite Timing Checker.
+f47fd831 Sprite timing tester.
+27082b55 Sprite timing tester.
+18e1065f Fixed: Screen-clear time for sprite was double counted.
+f5a2c863 Fixed: Quick Save File dialog was in OPEN mode.  Must be SAVE mode.
+5df6d271 Added unit test for TownsProfile.
+3819580a Can run unit tests from GUI build dir.
+d5ad6197 Fixed profile load/save
+bfa422ea Made PAUSE/RESUME customizable.
+5b51728a Adding PAUSE/RESUME key customization.
+cd66e093 Added quick save and load
+b4b99c56 Adding Quick State Save/Load
+9f1ef06d Adding Quick State Save/Load
+c1028f5d Added variables for quick state save
+2e5b2b52 Exposed Quick Screenshot in GUI.
+0678c3dc Adding GUI.  Quick Screenshot Pages is made a command parameter.
+49e11a55 Adding GUI
+08e83010 Adding GUI
+1f062d3d Working on Host Short Cut Keys.
+7a3ebfff Working on Host Short Cut Keys.
+1ce2c67f Working on Host Short Cut Keys.
+c682b1e4 Working on Host Short Cut Keys.
+6e28a9dd Working on quick screenshot.
+104f56c7 Working on quick screenshot.
+a99cc71e Fixed: Word-Read access to IO 0026H was returning nanoseconds where it was supposed to be microseconds.
+f57f8029 Corrected comment.
+bb0caa5c Confirmed INT FDH waits for 10*CX ticks of Free-Run Timer (0026H).  If the Free-Run timer is 1us per tick, CX is MULed by 10 in INT FDH.  It must be 10*CXus instead of CXus.
+1ecda6b3 Corrected timing for the first sprite busy time after SPEN 0->1
+72fb4cf8 Corrected first sprite device callback timing after SPEN=1.
+9a7e0b39 Added comment on ImageFight fix.
+125709b8 Fixed timing issue of ImageFight.  ImageFight was writing sprite-enable bit repeatedly.  Tsugaru was not checking if the sprite has already been enabled, and therefore every time sprite-enable bit was set, it was resetting the sprite device callback timing.  The function now schedules device call back only on the rising edge of sprite-enable bit.
+01b4b26c Added File->CMOS->Clear CMOS in GUI.  In case VM stops working.
+c0fb0c26 Exposed Start-Up State File in GUI.
+b667aa00 Fixed: Was loading VM state at a wrong location on start up.
+5f22bf22 Added tests for state-load.
+1aaeed25 Fixed I/O 04EAH.  It is supposed to be Read/Write.  I was only supporting Write.
+11fe155d Stupid mistake: I was writing for(unsigned int pri=0; pri<7; ++pri) where it needs to be for(unsigned int pri=0; pri<8; ++pri).
+20054233 (I think) fixed PCM playback.
+19c5200e Prevent (at least reduce) noise when loop-stop pointer and loop-stop code is one byte apart.
+d32a31d7 Removed imgFileName of TownsCDROM, which was redundant with DiscImage::fName.  State-Save remembers CUE or ISO file name.
+354c3219 Prevent playing wave from data track.
+478822e5 RF5C68 status output play pointer.
+88563969 Added CD-Speed drop list in the GUI.
+f9f6b710 Added -CDSPEED option.
+30270081 Adding option for controlling CD-ROM speed.
+d3bff9dd Adding break on beep to debug PUYOPUYO beep problem.
+e13962b0 Adding break on beep to debug PUYOPUYO beep problem.
+02a46d69 Fixed GAMEPORT command.
+bd485bcf Adding game port device menu in the GUI.
+bc82bf4b Adding game port device menu in the GUI.
+f393c587 Adding GUI for selecting Game-Port devices.
+99a182fe Working on CAPCOM CFPS joystick.  Muscle Bomber needs to configure to use CFPS Joystick.  However, to enter configuration, the user needs to press START button of the Towns game pad.  So, for the time being, I assigned buttons 8 and 9 as START/STOP of Towns game pad, but I don't know if it is correct behavior.
+b842dde6 Working on CAPCOM CFPS joystick.  Almost works, but some issues in Muscle Bomber.
+5306561f Working on CAPCOM SPSF 6-button joystick emulation.
+6793e9fd Working on CyberStick support.
+f3d62cc6 Added GAMEPORT command.  ChaseHQ can use CyberStick analog mode.
+454bb2b7 Added Sound tab in GUI.
+1f840597 Added JISCode, UNICODE, TownsCode table.
+2a146d46 Increased click interval.
+fc8757b4 Dungeon Master keyboard shortcuts (need to specify app-specific augumentation).
+409ed09d Fixed crash in GUI tight integration.  The program was re-entering OnDraw from FsResizeWindow in Outside_World::Start.  Icons must be ready before FsResizeWindow.
+e7f513da A little bit more of control in the automation.
+6954220f Working on event log.  Fixed MENU button response area.
+10ea2d9a Fixed Event Log
+a1a48b7a Working on event log.
+2503a3a8 Prevent division-by-zero
+4b8fa52d Updated README
+21df24d1 Added Recent Profile in GUI.
+d8486784 User can choose same process or separate process in GUI.
+a1fb9507 Adding GUI option to separate process.
+1b6ed87c GUI fixes.
+9269e7f3 Re-open profile dialog when file->open.
+4596b3d4 Show VM screen behind GUI.
+12df3179 Tight GUI integration.
+501145ef I think I fixed the crash.
+8b6be465 CMOS file name in tight GUI integration.
+c997c0bf Flipped icon right-side up.
+a57525cb Fixes
+eccc6cf3 Merge branch 'master' of //albatross/git/TOWNSEMU
+c66a9980 Scroll Lock to unpause.
+61d0b7b9 Added [MENU] icon on the lower-right corner in GUI integration.
+7633670d Fixed Linux build.
+698d91d4 Tight GUI integration.
+ad12288d Tight GUI integration.
+611de05d Tight GUI integration.
+d654360c Tight GUI integration.
+7e63cbc7 Refactoring
+0a90a5d6 Refactoring
+096fef50 Increased virtual keys in GUI to 20.
+878e7646 Integrated Strike Commander/Wing Commander Throttle Axis option.
+569fb536 Integrated SCSI Image
+588548b3 Merged SCSIImg
+f299888f Merged TownsProfile::VirtualKey and TownsStartParameter::VirtualKey
+a05b5a1f Removing duplicate variables.
+59304dab Removed Stand-by FD Image placeholders.
+1bc846c2 Removing duplicate variables.
+9f83f452 Removing duplicate variables.
+f7158ea5 Making TownsProfile a sub-class of TownsStartParameters
+a7eb386b Making TownsProfile a sub-class of TownsStartParameters
+17a0a319 Separated TownsStartParam class in library.
+d09e092f Added CyberStick support.  Not exposed in the GUI yet.
+7869430b Working on Cyber Stick
+3ba47ab4 Working on Cyber Stick
+64465783 Working on Cyber Stick.
+c842668e Working on CyberStick
+88718b8b Fix in Load State GUI.
+f4ac242c Better stability in loading maching state.
+ea23c692 Exposed state-save in the GUI.
+5c990535 Force Quit on Power-Off option.
+912a6564 Fixed GUI dialog defaults.
+ff3f9de1 CDDA resumes after loading state.
+cb1a1e52 Working on state save.
+54713cbe Device schedule is correctly restored.
+fe056c15 Working on state save.
+175dcbce Working on state save.
+8ee13c6d Working on state save.
+780b37af YM2612 saves two sets of registers.
+ecbd938c Working on State Save.
+0be0ba7f Working on state save.
+2bd97c53 Working on state save.
+8081ee33 Working on State Save
+ace265cc Working on state save.
+8e2d2564 Working on state save.
+995fcdcd Working on state save.
+2e829bd2 Working on state save.
+bd29d500 Added MakeRelativePath test.
+9c4f3ed9 Working on state save.
+f73ab982 Working on state save.
+ddb7ad79 Working on state save.
+9e7ff460 Working on state save.
+da1fc6ce Working on state save.
+e5a5ebc1 Fix in event logging.
+2f059236 Added break on fopen.
+18f993c9 Adding break on fopen.
+e61e94e0 Added pass count.
+38ccf566 Adding pass count.
+888194e3 Adding pass count.
+c2c8951b Fixed SCSI behavior.
+eed5e7a2 Expanded auto-type.
+93601b4b Added -COPYFILE option for unit testing.
+4c597c75 Support INT 21H AH=46H Force Duplicate File Handle.  Towns OS V1.1 L10 Starts.
+bddb6558 SAVEMEMDUMP command.
+7a525242 EMB/EMW/EMD can write multiple bytes/words/dwords.
+e2127b7f CUI uses reported DOSSEG.
+374d3e78 Added VMIF command Notify_DOSSEG
+01cf505e Added DOS INT labels.
+713dee86 MSDOS.SYS labels
+2997dbd9 Added DOS CDS dump.
+40e9e038 Added DOS DPB dump.
+bfb893fe Added DOS SFT dump.
+3d662d8c More MSDOS.SYS labels.  Fixed output of DOS Buffers.
+571e6a51 More MSDOS.SYS labels.
+d3b6fc85 Merge pull request #29 from pinterior/fix-into
+7919c50a fix INTO instruction
+061e6956 Merge pull request #28 from pinterior/fix-out-of-bounds-access
+4306f157 Fixing Linux build.
+2d32ff4a Looks like g++ or something is broken.  I'm not supposed to explicitly link pthread to use std::thread because libstdc++ is supposed to link it from there.  But, it does require now.
+19df6618 Label fix.
+a5a81a14 fix 'CDLOAD no-such-file' command
+be09a319 fix 'KEYBOARD' command
+711a06f0 More labels from MSDOS.SYS of TOWNS.
+bbbffd95 More symbols of DOS
+28b993ba New command for browsing symbol table.  SYM, SYMLAB, SYMPROC, and SYMFIND.  All of them can specify segment in the first argument.  SYMFIND can take a wildcard to search a label.
+1dae6059 Added wildcard pattern matching function.  (Will use it in the debugger.)
+01b2f7f2 More symbols of MSDOS.SYS of Towns OS V2.1 L20
+ce5c0ae6 Looking into MSDOS.SYS
+01591deb Added memo to myself.
+7bb1dcc0 Added DOSSEG command.
+b3558590 Updated F-BASIC386 script.
+d344a1c3 Added WAV to SND converter.
+18aa557e Sync fssimplewindow and yssimplesound libraries.
+2cb7f6d3 Fujitsu Air Warrior V2.1 L10 improved Joystick Integration.
+d4a79056 Fujitsu Air Warrior V2.1 L10 Throttle Integration.
+83d4ec23 Working on AirWarrior V2 throttle integration.
+3a5d834d Merged Wing Commander and Strike Commander throttle integration variables.
+fad91450 More memory filter.
+b2c0f01f Joystick integration for Air Warior V2.1 L10
+63f87b46 Mouse integration for Brandish
+0bb68191 Fixed disassembly of MOVSX and MOVZX.  Was not writing segment override.
+7364d1d5 ClearStopFlag and ExternalBreak also clears lastBreakPointInfo.
+67223c32 Print more detailed page-translation info.
+f7710502 Added Microcosm Opening in unit tests.
+d84db644 Implemented INT to inner level.
+12fc0fbb Implemented IRET to outer level.
+e385868f Keep track of CPL.
+424f1339 Added Mega Morph intro to the unit tests.
+f51c7790 Fixed TSS output (ESP0 was not printed correctly).
+31a88da1 Mouse Integration for Operation Wolf.
+f74a60bc Added debugger output for GDT,LDT, and IDT.
+3039a39b Handle 16-bit INT and Trap gates.  I don't know if it is correct.  Windows 3.1 does not crash, but does not start either.  It goes into infinite INT 30H->Handler->INT30H loop.
+0fd7df26 Use MP command instead of BP CS:EIP MON for adding a monitor-only breakpoint.
+e4c055a2 Added Monitor-Only Breakpoint
+3d889a59 Set linear address in CR2 on Page Fault.
+2be04359 Fixing call stack
+629bf939 Added information in call stack for exceptions.
+d0a745a6 IRET to VM86 mode (Stack Return to VM86) does not pop call stack.
+47f28900 Added support for LAR instruction.
+837534c5 Adding LAR instruction.
+3733e4cc Interrpupt shoots General Protection Fault if IDT entry for the interrupt does not exist.
+07379dce Added more detailed information on unhandled exception.
+a2691697 Fixed Strike Commander Pong cheat lines for smaller window size.
